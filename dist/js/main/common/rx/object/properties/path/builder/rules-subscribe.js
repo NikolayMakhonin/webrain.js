@@ -77,6 +77,8 @@ function forEachCollection(object, changeItem) {
 } // region subscribeObjectValue
 
 
+var allowSubscribePrototype = true;
+
 function getFirstExistProperty(object, propertyNames) {
   for (var i = 0, len = propertyNames.length; i < len; i++) {
     var _propertyName = propertyNames[i];
@@ -118,11 +120,11 @@ function subscribeObjectValue(propertyNames, object, changeItem) {
       changeItem(value, object, propertyName, _common.ValueKeyType.ValueProperty);
     }
   }
+
+  return null;
 } // endregion
 // region subscribeObject
 
-
-var allowSubscribePrototype = true;
 
 function hasDefaultProperty(object) {
   return object instanceof Object && (allowSubscribePrototype ? _valueProperty.VALUE_PROPERTY_DEFAULT in object : Object.prototype.hasOwnProperty.call(object, _valueProperty.VALUE_PROPERTY_DEFAULT)) && object.constructor !== Object && !(0, _isArray.default)(object);
@@ -139,29 +141,27 @@ function subscribeObject(propertyNames, propertyPredicate, object, changeItem) {
         changeItem(object[_propertyName2], object, _propertyName2, _common.ValueKeyType.Property);
       }
     }
-  } else {
-    if ((0, _isArray.default)(propertyNames)) {
-      for (var i = 0, len = propertyNames.length; i < len; i++) {
-        var _propertyName3 = propertyNames[i];
+  } else if ((0, _isArray.default)(propertyNames)) {
+    for (var i = 0, len = propertyNames.length; i < len; i++) {
+      var _propertyName3 = propertyNames[i];
 
-        if (allowSubscribePrototype ? _propertyName3 in object : Object.prototype.hasOwnProperty.call(object, _propertyName3)) {
-          var value = object[_propertyName3];
+      if (allowSubscribePrototype ? _propertyName3 in object : Object.prototype.hasOwnProperty.call(object, _propertyName3)) {
+        var value = object[_propertyName3];
 
-          if (typeof value !== 'undefined') {
-            changeItem(value, object, _propertyName3, _common.ValueKeyType.Property);
-          }
-        }
-      }
-    } else {
-      if (allowSubscribePrototype ? propertyNames in object : Object.prototype.hasOwnProperty.call(object, propertyNames)) {
-        var _value = object[propertyNames];
-
-        if (typeof _value !== 'undefined') {
-          changeItem(_value, object, propertyNames, _common.ValueKeyType.Property);
+        if (typeof value !== 'undefined') {
+          changeItem(value, object, _propertyName3, _common.ValueKeyType.Property);
         }
       }
     }
+  } else if (allowSubscribePrototype ? propertyNames in object : Object.prototype.hasOwnProperty.call(object, propertyNames)) {
+    var _value = object[propertyNames];
+
+    if (typeof _value !== 'undefined') {
+      changeItem(_value, object, propertyNames, _common.ValueKeyType.Property);
+    }
   }
+
+  return null;
 } // endregion
 // region subscribeMap
 
@@ -188,6 +188,8 @@ function subscribeMap(keys, keyPredicate, object, changeItem) {
       }
     }
   }
+
+  return null;
 } // endregion
 // region subscribeCollection
 
@@ -218,6 +220,7 @@ function subscribeChange(object) {
   }
 
   (0, _getIterator2.default)(object);
+  return null;
 } // endregion
 // endregion
 // region RuleSubscribeObject
@@ -239,23 +242,23 @@ function createPropertyPredicate(propertyNames) {
       // PROF: 226 - 0.5%
       return propName === _propertyName4;
     };
-  } else {
-    var propertyNamesMap = {};
+  }
 
-    for (var i = 0, len = propertyNames.length; i < len; i++) {
-      var _propertyName5 = propertyNames[i] + '';
+  var propertyNamesMap = {};
 
-      if (_propertyName5 === _constants.ANY) {
-        return null;
-      }
+  for (var i = 0, len = propertyNames.length; i < len; i++) {
+    var _propertyName5 = propertyNames[i] + '';
 
-      propertyNamesMap[_propertyName5] = true;
+    if (_propertyName5 === _constants.ANY) {
+      return null;
     }
 
-    return function (propName) {
-      return !!propertyNamesMap[propName];
-    };
+    propertyNamesMap[_propertyName5] = true;
   }
+
+  return function (propName) {
+    return !!propertyNamesMap[propName];
+  };
 }
 
 var SubscribeObjectType;
@@ -361,19 +364,19 @@ function createKeyPredicate(keys) {
     return function (k) {
       return k === _key3;
     };
-  } else {
-    for (var i = 0, len = keys.length; i < len; i++) {
-      var _key4 = keys[i]; // @ts-ignore
-
-      if (_key4 === _constants.ANY) {
-        return null;
-      }
-    }
-
-    return function (k) {
-      return (0, _indexOf.default)(keys).call(keys, k) >= 0;
-    };
   }
+
+  for (var i = 0, len = keys.length; i < len; i++) {
+    var _key4 = keys[i]; // @ts-ignore
+
+    if (_key4 === _constants.ANY) {
+      return null;
+    }
+  }
+
+  return function (k) {
+    return (0, _indexOf.default)(keys).call(keys, k) >= 0;
+  };
 }
 
 function createSubscribeMap(keyPredicate) {

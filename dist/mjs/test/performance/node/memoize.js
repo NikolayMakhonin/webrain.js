@@ -5,8 +5,8 @@ import memoize from 'fast-memoize'; // @ts-ignore
 import { calcPerformance } from 'rdtsc';
 import { depend } from '../../../main/common/rx/depend/core/depend';
 import { describe, it } from '../../../main/common/test/Mocha';
-import { calcMemAllocate } from "../../../main/common/test/calc-mem-allocate";
-import { CalcType } from "../../../main/common/test/calc";
+import { calcMemAllocate } from '../../../main/common/test/calc-mem-allocate';
+import { CalcType } from '../../../main/common/test/calc';
 describe('memoize', function () {
   this.timeout(300000);
 

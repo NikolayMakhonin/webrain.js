@@ -50,6 +50,8 @@ var _Assert = require("../../../../../../../main/common/test/Assert");
 
 var _helpers2 = require("../../../../../../../main/common/time/helpers");
 
+/* eslint-disable no-multi-spaces */
+
 /* tslint:disable:no-identical-functions no-shadowed-variable no-duplicate-string no-construct use-primitive-type */
 if (typeof global !== 'undefined') {
   // for debug only

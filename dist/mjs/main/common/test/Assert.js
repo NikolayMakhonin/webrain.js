@@ -1,6 +1,7 @@
 /* tslint:disable:no-var-requires triple-equals */
 import { DeepCloneEqual } from './DeepCloneEqual';
-export const AssertionError = typeof require === 'function' ? require('assertion-error') : class extends Error {};
+export const AssertionError = typeof require === 'function' // eslint-disable-next-line global-require
+? require('assertion-error') : class extends Error {};
 const deepCloneEqualDefault = new DeepCloneEqual();
 
 if (!console.debug) {
@@ -55,14 +56,14 @@ export class Assert {
   }
 
   equal(actual, expected, message) {
-    // noinspection EqualityComparisonWithCoercionJS
+    // eslint-disable-next-line eqeqeq
     if (actual != expected) {
       this.throwAssertionError(actual, expected, message);
     }
   }
 
   notEqual(actual, expected, message) {
-    // noinspection EqualityComparisonWithCoercionJS
+    // eslint-disable-next-line eqeqeq
     if (actual == expected) {
       this.throwAssertionError(actual, expected, message);
     }
@@ -89,10 +90,8 @@ export class Assert {
         if (!errType.some(o => o === actualErrType)) {
           this.throwAssertionError(actualErrType.name, errType.map(o => o && o.name), err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
         }
-      } else {
-        if (actualErrType !== errType) {
-          this.throwAssertionError(actualErrType.name, errType.name, err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
-        }
+      } else if (actualErrType !== errType) {
+        this.throwAssertionError(actualErrType.name, errType.name, err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
       }
     }
 

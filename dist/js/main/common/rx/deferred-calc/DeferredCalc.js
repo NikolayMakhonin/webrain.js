@@ -142,7 +142,9 @@ var DeferredCalc = /*#__PURE__*/function () {
           this._pulse();
 
           return;
-        } else if (timeNextPulse <= now || canBeCalcTime < timeNextPulse) {
+        }
+
+        if (timeNextPulse <= now || canBeCalcTime < timeNextPulse) {
           timeNextPulse = canBeCalcTime;
         }
       } // endregion
@@ -156,7 +158,9 @@ var DeferredCalc = /*#__PURE__*/function () {
           this._calc();
 
           return;
-        } else if (timeNextPulse <= now || calcTime < timeNextPulse) {
+        }
+
+        if (timeNextPulse <= now || calcTime < timeNextPulse) {
           timeNextPulse = calcTime;
         }
       } // endregion
@@ -176,7 +180,9 @@ var DeferredCalc = /*#__PURE__*/function () {
           }
 
           return;
-        } else if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
+        }
+
+        if (timeNextPulse <= now || autoInvalidateTime < timeNextPulse) {
           timeNextPulse = autoInvalidateTime;
         }
       } // endregion

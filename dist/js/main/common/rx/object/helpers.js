@@ -30,6 +30,9 @@ function makeDependPropertySubscriber(name) {
           case _contracts.CallStatusShort.CalculatedError:
             console.error(state.error);
             break;
+
+          default:
+            break;
         }
 
         dependUnsubscribe = state.subscribe(function () {
@@ -39,22 +42,27 @@ function makeDependPropertySubscriber(name) {
               break;
 
             case _contracts.CallStatusShort.CalculatedValue:
-              var oldValue = value;
-              var newValue = state.value;
-              value = newValue;
+              {
+                var oldValue = value;
+                var newValue = state.value;
+                value = newValue;
 
-              if (!(0, _webrainOptions.webrainEquals)(oldValue, newValue)) {
-                state._this.propertyChanged.emit({
-                  name: name,
-                  oldValue: oldValue,
-                  newValue: newValue
-                });
+                if (!(0, _webrainOptions.webrainEquals)(oldValue, newValue)) {
+                  state._this.propertyChanged.emit({
+                    name: name,
+                    oldValue: oldValue,
+                    newValue: newValue
+                  });
+                }
+
+                break;
               }
-
-              break;
 
             case _contracts.CallStatusShort.CalculatedError:
               console.error(state.error);
+              break;
+
+            default:
               break;
           }
         });

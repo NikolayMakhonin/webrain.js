@@ -227,9 +227,9 @@ export class RuleBuilder {
     const rule = new RuleIf(exclusiveConditionRules.map(o => {
       if (Array.isArray(o)) {
         return [o[0], o[1](this.clone(true)).ruleFirst];
-      } else {
-        return o(this.clone(true)).ruleFirst;
       }
+
+      return o(this.clone(true)).ruleFirst;
     }));
     return this.rule(rule);
   }

@@ -19,4 +19,4 @@ export declare class RuleSubscribe<TObject = any, TChild = any> extends Rule imp
     clone(): IRuleSubscribe<TObject, TChild>;
 }
 export declare function createSubscribeObject<TObject extends object, TValue>(subType: SubscribeObjectType, propertyPredicate: (propertyName: string, object: any) => boolean, ...propertyNames: string[]): ISubscribeObject<TObject, TValue>;
-export declare function createSubscribeMap<TObject extends Map<K, V>, K, V>(keyPredicate: (key: K, object: any) => boolean, ...keys: K[]): (object: any, changeItem: any) => void;
+export declare function createSubscribeMap<TObject extends Map<K, V>, K, V>(keyPredicate: (key: K, object: TObject) => boolean, ...keys: K[]): (object: any, changeItem: any) => void;

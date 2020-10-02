@@ -18,8 +18,12 @@ export function fillMap(map, arrayOrIterable) {
   return fillCollection(map, arrayOrIterable, (c, o) => c.set.apply(c, o));
 }
 export function fillObject(object, arrayOrIterable) {
-  return fillCollection(object, arrayOrIterable, (c, o) => c[o[0]] = o[1]);
+  return fillCollection(object, arrayOrIterable, (c, o) => {
+    c[o[0]] = o[1];
+  });
 }
 export function fillObjectKeys(object, arrayOrIterable) {
-  return fillCollection(object, arrayOrIterable, (c, o) => c[o] = true);
+  return fillCollection(object, arrayOrIterable, (c, o) => {
+    c[o] = true;
+  });
 }

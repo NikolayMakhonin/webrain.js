@@ -28,8 +28,7 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
-// eslint-disable-next-line no-shadow
-// tslint:disable-next-line:no-shadowed-variable
+// eslint-disable-next-line @typescript-eslint/no-shadow
 function createHasSubscribersSubjectDefault(hasSubscribers) {
   var subject = new _behavior.BehaviorSubject(hasSubscribers);
   subject.unsubscribeValue = null;
@@ -62,8 +61,7 @@ function hasSubscribers(base, createHasSubscribersSubject) {
 
         if (description) {
           subscriber.description = description;
-        } // eslint-disable-next-line no-shadow
-        // tslint:disable-next-line:no-shadowed-variable
+        } // eslint-disable-next-line @typescript-eslint/no-shadow
 
 
         var hasSubscribers = this.hasSubscribers;
@@ -74,8 +72,7 @@ function hasSubscribers(base, createHasSubscribersSubject) {
         }
 
         return function () {
-          // eslint-disable-next-line no-shadow
-          // tslint:disable-next-line:no-shadowed-variable
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           var hasSubscribers = _this.hasSubscribers;
           unsubscribe();
 

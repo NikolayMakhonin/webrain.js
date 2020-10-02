@@ -237,7 +237,8 @@ var ValueState = /*#__PURE__*/function () {
         var options = this.mergerState.options;
 
         _cloneInstance = (options && options.valueFactory || this.meta.valueFactory || function () {
-          return (!options || !options.valueType || _this.target.constructor === (options && options.valueType)) && new _type();
+          return (!options || !options.valueType // eslint-disable-next-line new-cap
+          || _this.target.constructor === (options && options.valueType)) && new _type();
         })(target);
 
         if (!_cloneInstance) {
@@ -276,18 +277,20 @@ var ValueState = /*#__PURE__*/function () {
               break;
 
             case true:
-              var _this$mergerState = this.mergerState,
-                  mergerVisitor = _this$mergerState.mergerVisitor,
-                  options = _this$mergerState.options;
-              this.setRef(_clone); // mergerVisitor.setStatus(_clone, ObjectStatus.Cloned)
+              {
+                var _this$mergerState = this.mergerState,
+                    mergerVisitor = _this$mergerState.mergerVisitor,
+                    options = _this$mergerState.options;
+                this.setRef(_clone); // mergerVisitor.setStatus(_clone, ObjectStatus.Cloned)
 
-              var preferClone = this.preferClone,
-                  refs = this.refs;
-              this.merge(mergerVisitor.getNextMerge(false, preferClone, preferClone, refs, refs, refs, options), _clone, target, target, function () {
-                throw new Error("Class (" + _this2.type.name + ") cannot be merged with clone");
-              }, preferClone, preferClone // options,
-              );
-              break;
+                var preferClone = this.preferClone,
+                    refs = this.refs;
+                this.merge(mergerVisitor.getNextMerge(false, preferClone, preferClone, refs, refs, refs, options), _clone, target, target, function () {
+                  throw new Error("Class (" + _this2.type.name + ") cannot be merged with clone");
+                }, preferClone, preferClone // options,
+                );
+                break;
+              }
 
             case false:
               if (this.merge) {
@@ -295,6 +298,9 @@ var ValueState = /*#__PURE__*/function () {
               }
 
               break;
+
+            default:
+              throw new Error('Unknown mergeResult: ' + canMergeResult);
           }
         } else {
           _clone = target;
@@ -614,27 +620,31 @@ var MergerVisitor = /*#__PURE__*/function () {
 
 
       var fillOlderNewer = function fillOlderNewer() {
-        switch (mergeState.olderState.canMerge(mergeState.newerState)) {
+        // eslint-disable-next-line no-shadow
+        var mergeResult = mergeState.olderState.canMerge(mergeState.newerState);
+
+        switch (mergeResult) {
           case null:
             if (mergeState.olderState.mustBeCloned) {
               set(mergeState.newerState.clone);
+            } else if (mergeState.newerState.mustBeCloned) {
+              set(mergeState.olderState.target);
             } else {
-              if (mergeState.newerState.mustBeCloned) {
-                set(mergeState.olderState.target);
-              } else {
-                set(mergeState.newerState.target);
-              }
+              set(mergeState.newerState.target);
             }
 
-            break;
+            return null;
 
           case false:
             set(mergeState.newerState.clone);
-            break;
+            return false;
 
           case true:
             mergeState.fillOlderNewer();
             return true;
+
+          default:
+            throw new Error('Unknown mergeResult: ' + mergeResult);
         }
       };
 
@@ -656,8 +666,12 @@ var MergerVisitor = /*#__PURE__*/function () {
         return false;
       }
 
+      var mergeResult;
+
       if (isPrimitive(older)) {
-        switch (mergeState.baseState.canMerge(mergeState.newerState)) {
+        mergeResult = mergeState.baseState.canMerge(mergeState.newerState);
+
+        switch (mergeResult) {
           case null:
             if (set) {
               set(older);
@@ -685,12 +699,20 @@ var MergerVisitor = /*#__PURE__*/function () {
             }
 
             return true;
+
+          default:
+            throw new Error('Unknown mergeResult: ' + mergeResult);
         }
 
         return false;
       }
 
-      switch (mergeState.baseState.canMerge(mergeState.newerState)) {
+      mergeResult = mergeState.baseState.canMerge(mergeState.newerState);
+
+      switch (mergeResult) {
+        case true:
+          break;
+
         case false:
           if (set) {
             fillOlderNewer();
@@ -700,7 +722,9 @@ var MergerVisitor = /*#__PURE__*/function () {
           return false;
 
         case null:
-          switch (mergeState.baseState.canMerge(mergeState.olderState)) {
+          mergeResult = mergeState.baseState.canMerge(mergeState.olderState);
+
+          switch (mergeResult) {
             case null:
               return false;
 
@@ -714,12 +738,20 @@ var MergerVisitor = /*#__PURE__*/function () {
 
             case true:
               return mergeState.mergeWithBase(mergeState.olderState, mergeState.olderState);
+
+            default:
+              throw new Error('Unknown mergeResult: ' + mergeResult);
           }
 
           throw new Error('Unreachable code');
+
+        default:
+          throw new Error('Unknown mergeResult: ' + mergeResult);
       }
 
-      switch (mergeState.baseState.canMerge(mergeState.olderState)) {
+      mergeResult = mergeState.baseState.canMerge(mergeState.olderState);
+
+      switch (mergeResult) {
         case null:
           return mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState);
         // if (!mergeState.mergeWithBase(mergeState.newerState, mergeState.newerState)) {
@@ -744,6 +776,9 @@ var MergerVisitor = /*#__PURE__*/function () {
 
         case true:
           return mergeState.mergeWithBase(mergeState.olderState, mergeState.newerState);
+
+        default:
+          throw new Error('Unknown mergeResult: ' + mergeResult);
       }
 
       throw new Error('Unreachable code');
@@ -988,7 +1023,7 @@ registerMerger(Array, {
     canMerge: function canMerge(target, source) {
       return deepEqualsPrimitive(target, source) ? null : true;
     },
-    merge: function merge(_merge3, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer, options) {
+    merge: function merge(_merge3, base, older, newer, set, preferCloneBase, preferCloneOlder, preferCloneNewer) {
       if (!base || (0, _isFrozen.default)(base)) {
         set(newer && preferCloneNewer ? (0, _slice.default)(newer).call(newer) : newer);
         return true;

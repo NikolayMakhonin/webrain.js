@@ -5,25 +5,25 @@ module.exports = {
 	],
 	rules: {
 		// Temporary disable: TypeError: Cannot read property 'value' of null (waiting for update babel-eslint)
-		'template-curly-spacing'                           : 'off',
-		'object-curly-spacing'                             : 'off',
-		indent                                             : 'off',
-		'prefer-destructuring'                             : 'off',
-		'no-sync'                                          : 'off',
-		'no-warning-comments'                              : 'warn',
-		'array-bracket-newline'                            : 'off',
-		'require-atomic-updates'                           : 'off',
-		'sort-imports'                                     : 'off',
-		'lines-between-class-members'                      : 'off',
-		'no-new-wrappers'                                  : 'off',
-		'generator-star-spacing'                           : ['error', {before: true, after: false}],
-		'object-property-newline'                          : 'off',
-		'@typescript-eslint/ban-ts-comment'                : 'off',
-		'@typescript-eslint/no-var-requires'               : 'off',
-		'@typescript-eslint/no-this-alias'                 : 'off',
+		'template-curly-spacing': 'off',
+		// 'object-curly-spacing'                             : 'off',
+		// indent                                             : 'off',
+		// 'prefer-destructuring'                             : 'off',
+		// 'no-sync'                                          : 'off',
+		// 'no-warning-comments'                              : 'warn',
+		// 'array-bracket-newline'                            : 'off',
+		// 'require-atomic-updates'                           : 'off',
+		// 'sort-imports'                                     : 'off',
+		// 'lines-between-class-members'                      : 'off',
+		// 'no-new-wrappers'                                  : 'off',
+		// 'generator-star-spacing'                           : ['error', {before: true, after: false}],
+		// 'object-property-newline'                          : 'off',
+		// '@typescript-eslint/ban-ts-comment'                : 'off',
+		// '@typescript-eslint/no-var-requires'               : 'off',
+		// '@typescript-eslint/no-this-alias'                 : 'off',
 		'@typescript-eslint/explicit-module-boundary-types': 'off',
-		'arrow-body-style'                                 : 'off',
-		'object-shorthand'                                 : 'off',
+		// 'arrow-body-style'                                 : 'off',
+		// 'object-shorthand'                                 : 'off',
 
 		// new
 
@@ -86,7 +86,7 @@ module.exports = {
 		],
 		'brace-style'         : 'off',
 		'no-confusing-arrow'  : 'off',
-		'no-duplicate-imports': ['error', { includeExports: false }],
+		'no-duplicate-imports': ['error', {includeExports: false}],
 
 		'lines-around-comment': [
 			'off',
@@ -132,14 +132,16 @@ module.exports = {
 		],
 
 		'no-use-before-define'                   : 'off',
-		'@typescript-eslint/no-use-before-define': ['error', {
-			functions           : false,
-			classes             : false,
-			variables           : true,
-			enums               : true,
-			typedefs            : false,
-			ignoreTypeReferences: true,
-		}],
+		'@typescript-eslint/no-use-before-define': [
+			'error', {
+				functions           : false,
+				classes             : false,
+				variables           : true,
+				enums               : true,
+				typedefs            : false,
+				ignoreTypeReferences: true,
+			}
+		],
 
 		'@typescript-eslint/no-inferrable-types': 'off',
 		'@typescript-eslint/no-empty-interface' : 'off',
@@ -187,9 +189,7 @@ module.exports = {
 		project: 'tsconfig.eslint.json',
 	},
 
-	plugins: [
-		'@typescript-eslint', 'sonarjs', 'html'
-	],
+	plugins : ['@typescript-eslint', 'sonarjs', 'html'],
 	settings: {
 		'html/indent'           : '+tab',
 		'html/report-bad-indent': 'error',

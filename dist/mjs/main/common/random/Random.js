@@ -135,7 +135,7 @@ export class Random {
 
   nextArrayItems(array, minCount, maxCount, maxCountRelative) {
     if (maxCountRelative) {
-      maxCount = array.length * maxCount;
+      maxCount *= array.length;
     }
 
     const count = this.nextInt(minCount, maxCount);
@@ -152,7 +152,7 @@ export class Random {
     arrayShuffle(array, () => this.next());
 
     if (maxCountRelative) {
-      maxCount = array.length * maxCount;
+      maxCount *= array.length;
     }
 
     const count = this.nextInt(minCount, maxCount);

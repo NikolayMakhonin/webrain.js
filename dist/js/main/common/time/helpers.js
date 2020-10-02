@@ -34,6 +34,7 @@ function delay(timeMilliseconds) {
 var _fastNow = (0, _now.default)();
 
 var lastAccessTime = 0;
+var fastNowTimer = null;
 
 function fastNowUpdate() {
   _fastNow = (0, _now.default)();
@@ -43,8 +44,6 @@ function fastNowUpdate() {
     fastNowTimer = null;
   }
 }
-
-var fastNowTimer = null;
 
 function fastNowSchedule() {
   lastAccessTime = _fastNow;

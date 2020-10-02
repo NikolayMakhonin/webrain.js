@@ -139,6 +139,7 @@ export class ObservableObjectBuilder extends ObjectBuilder {
     const initializeValue = options && options.init;
 
     if (factory) {
+      // eslint-disable-next-line func-style
       const init = function () {
         const factoryValue = factory.call(this, initValue);
         createInstanceProperty(this);

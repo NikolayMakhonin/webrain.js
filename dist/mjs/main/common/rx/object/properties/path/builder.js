@@ -21,16 +21,14 @@ export function pathsConcat(...paths) {
         } else {
           result.push(...path);
         }
+      } else if (result == null) {
+        result = [isNewArray];
+        isNewArray = true;
+      } else if (!isNewArray) {
+        result = [...result, path];
+        isNewArray = true;
       } else {
-        if (result == null) {
-          result = [isNewArray];
-          isNewArray = true;
-        } else if (!isNewArray) {
-          result = [...result, path];
-          isNewArray = true;
-        } else {
-          result.push(path);
-        }
+        result.push(path);
       }
     }
   }

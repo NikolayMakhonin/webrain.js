@@ -824,16 +824,16 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
               // metricsMin: {"garbageCollectMode":1,"countObjects":3,"iterations":28,"countUnBinds":2,"countBinds":6,"countSetsLast":0,"countChecksLast":0,"countSets":22,"countChecks":0,"countValues":4},
               customSeed: 454986460,
               metricsMin: {
-                'garbageCollectMode': 1,
-                'countObjects': 1,
-                'iterations': 5,
-                'countUnBinds': 1,
-                'countBinds': 2,
-                'countSetsLast': 0,
-                'countChecksLast': 0,
-                'countSets': 2,
-                'countChecks': 0,
-                'countValues': 2
+                garbageCollectMode: 1,
+                countObjects: 1,
+                iterations: 5,
+                countUnBinds: 1,
+                countBinds: 2,
+                countSetsLast: 0,
+                countChecksLast: 0,
+                countSets: 2,
+                countChecks: 0,
+                countValues: 2
               },
               searchBestError: true
             });

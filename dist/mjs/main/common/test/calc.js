@@ -47,7 +47,8 @@ export let CalcType;
   CalcType[CalcType["Min"] = 1] = "Min";
 })(CalcType || (CalcType = {}));
 
-export function calcMin(countTests, testFunc, ...args) {
+export function calcMin(countTests, // eslint-disable-next-line @typescript-eslint/no-shadow
+testFunc, ...args) {
   let min;
   let count = 0;
 
@@ -81,7 +82,8 @@ export function calcMin(countTests, testFunc, ...args) {
     count
   });
 }
-export function calcStat(countTests, testFunc, ...args) {
+export function calcStat(countTests, // eslint-disable-next-line @typescript-eslint/no-shadow
+testFunc, ...args) {
   let sum;
   let sumSqr;
   let count = 0;
@@ -123,7 +125,8 @@ export function calcStat(countTests, testFunc, ...args) {
     count
   });
 }
-export function calc(calcType, countTests, testFunc, ...args) {
+export function calc(calcType, countTests, // eslint-disable-next-line @typescript-eslint/no-shadow
+testFunc, ...args) {
   switch (calcType) {
     case CalcType.Stat:
       return calcStat(countTests, testFunc, ...args);

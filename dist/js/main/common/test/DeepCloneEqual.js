@@ -213,6 +213,9 @@ var DeepCloneEqual = /*#__PURE__*/function () {
             }
 
             return cloned;
+
+          default:
+            break;
         }
 
         if ((0, _helpers.isIterable)(source) && !(0, _helpers.isIterable)(cloned)) {
@@ -248,9 +251,9 @@ var DeepCloneEqual = /*#__PURE__*/function () {
         if (isPrimitive(o1) || isPrimitive(o2)) {
           if ((0, _helpers.equals)(o1, o2) || (!options || !options.strictEqualFunctions) && typeof o1 === 'function' && typeof o2 === 'function' && o1.toString() === o2.toString()) {
             return true;
-          } else {
-            return false;
           }
+
+          return false;
         }
 
         if (nodeId == null) {
@@ -285,11 +288,11 @@ var DeepCloneEqual = /*#__PURE__*/function () {
             if (o1 === o2) {
               if (options.noCrossReferences) {
                 return false;
-              } else {
-                cache1[id1] = nodeId;
-                cache2[id2] = nodeId;
-                return true;
               }
+
+              cache1[id1] = nodeId;
+              cache2[id2] = nodeId;
+              return true;
             }
 
             if (options.noCrossReferences && (cache1[id2] || cache2[id1])) {
@@ -318,9 +321,9 @@ var DeepCloneEqual = /*#__PURE__*/function () {
         } else if (o1 === o2) {
           if (options && options.noCrossReferences) {
             return false;
-          } else {
-            return true;
           }
+
+          return true;
         }
 
         if (customEqual) {
@@ -346,9 +349,9 @@ var DeepCloneEqual = /*#__PURE__*/function () {
         if (valueOf1 !== o1 || valueOf2 !== o2) {
           if ((0, _helpers.equals)(valueOf1, valueOf2)) {
             return true;
-          } else {
-            return false;
           }
+
+          return false;
         }
 
         if ((0, _helpers.isIterable)(o1)) {

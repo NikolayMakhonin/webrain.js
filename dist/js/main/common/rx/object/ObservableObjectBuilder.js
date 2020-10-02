@@ -184,6 +184,7 @@ var ObservableObjectBuilder = /*#__PURE__*/function (_ObjectBuilder) {
       var initializeValue = options && options.init;
 
       if (factory) {
+        // eslint-disable-next-line func-style
         var init = function init() {
           var factoryValue = factory.call(this, initValue);
           createInstanceProperty(this);

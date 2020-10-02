@@ -49,14 +49,14 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
 function createGetValue(calcSourcePath, getValue) {
   if (calcSourcePath == null) {
     return getValue;
-  } else {
-    var path = calcSourcePath.clone().append(function (o) {
-      return getValue.call(o);
-    }).init();
-    return function () {
-      return path.get(this);
-    };
   }
+
+  var path = calcSourcePath.clone().append(function (o) {
+    return getValue.call(o);
+  }).init();
+  return function () {
+    return path.get(this);
+  };
 }
 
 var CalcObjectBuilder = /*#__PURE__*/function (_ConnectorBuilder) {
@@ -118,6 +118,7 @@ var CalcObjectBuilder = /*#__PURE__*/function (_ConnectorBuilder) {
       var propClass = propertyClass(build);
       return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
         factory: function factory() {
+          // eslint-disable-next-line new-cap
           return new propClass(this);
         }
       });

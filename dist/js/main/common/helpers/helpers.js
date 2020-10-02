@@ -20,6 +20,7 @@ var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 function equals(v1, v2) {
   return v1 === v2 // is NaN
+  // eslint-disable-next-line no-self-compare
   || v1 !== v1 && v2 !== v2;
 }
 
@@ -33,15 +34,17 @@ function isIterator(value) {
 
 function typeToDebugString(type) {
   return type == null ? type + '' : type && type.name || type.toString();
-} // tslint:disable-next-line:no-empty no-shadowed-variable
+} // eslint-disable-next-line func-style
 
 
-var EMPTY = function EMPTY() {};
+var EMPTY = function EMPTY() {// empty
+};
 
 exports.EMPTY = EMPTY;
 
 var allowCreateFunction = function () {
   try {
+    // eslint-disable-next-line no-new-func
     var func = new Function('a', 'b', 'return a + b');
     return !!func;
   } catch (err) {
@@ -60,7 +63,8 @@ function createFunction(alternativeFuncFactory) {
   var func = createFunctionCache[id];
 
   if (!func) {
-    createFunctionCache[id] = func = allowCreateFunction ? Function.apply(void 0, args) : alternativeFuncFactory();
+    createFunctionCache[id] = func = allowCreateFunction // eslint-disable-next-line no-new-func
+    ? Function.apply(void 0, args) : alternativeFuncFactory();
   }
 
   return func;

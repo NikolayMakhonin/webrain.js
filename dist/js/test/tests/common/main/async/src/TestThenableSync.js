@@ -368,10 +368,13 @@ function createIterator(value, isThrow) {
 }
 
 function createThenable(useExecutor) {
+  var _context4, _context5;
+
   if (useExecutor) {
     var resultResolve = null;
     var resultReject = null;
-    var thenable = new _ThenableSync.ThenableSync(function (resolve, reject) {
+
+    var _thenable = new _ThenableSync.ThenableSync(function (resolve, reject) {
       resultResolve = resolve;
       resultReject = reject;
     });
@@ -380,14 +383,11 @@ function createThenable(useExecutor) {
 
     _Assert.assert.ok(resultReject);
 
-    return [thenable, resultResolve, resultReject];
-  } else {
-    var _context4, _context5;
-
-    var _thenable = new _ThenableSync.ThenableSync();
-
-    return [_thenable, (0, _bind.default)(_context4 = _thenable.resolve).call(_context4, _thenable), (0, _bind.default)(_context5 = _thenable.reject).call(_context5, _thenable)];
+    return [_thenable, resultResolve, resultReject];
   }
+
+  var thenable = new _ThenableSync.ThenableSync();
+  return [thenable, (0, _bind.default)(_context4 = thenable.resolve).call(_context4, thenable), (0, _bind.default)(_context5 = thenable.reject).call(_context5, thenable)];
 }
 
 function createValue(value, getValueType, addResolve, valueInfo) {
@@ -496,6 +496,9 @@ function createValue(value, getValueType, addResolve, valueInfo) {
           value = createIterator(value, true);
           break;
         }
+
+      default:
+        throw new Error('Unexpected behavior');
     }
   }
 
@@ -516,9 +519,9 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
     var onResult = function onResult(o, e) {
       if (e) {
         return onrejected(o);
-      } else {
-        return onfulfilled(o);
       }
+
+      return onfulfilled(o);
     };
 
     var result = (0, _async.resolveValue)(value, onResult, onResult);
@@ -566,19 +569,17 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
                 throw createThenValue(o);
               }, null);
             }
+          } else if (valueInfo.useReject) {
+            valueInfo.useReject = false;
+            calcValueInfo(valueInfo);
+            thenable = thenable.then(null, function (o) {
+              return createThenValue(o);
+            });
           } else {
-            if (valueInfo.useReject) {
-              valueInfo.useReject = false;
-              calcValueInfo(valueInfo);
-              thenable = thenable.then(null, function (o) {
-                return createThenValue(o);
-              });
-            } else {
-              calcValueInfo(valueInfo);
-              thenable = thenable.then(function (o) {
-                return createThenValue(o);
-              }, null);
-            }
+            calcValueInfo(valueInfo);
+            thenable = thenable.then(function (o) {
+              return createThenValue(o);
+            }, null);
           }
         }
 
@@ -600,19 +601,17 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
                   throw createThenValue(o);
                 }, null);
               }
+            } else if (valueInfo.useReject) {
+              valueInfo.useReject = false;
+              calcValueInfo(valueInfo);
+              thenable = thenable.thenLast(null, function (o) {
+                return createThenValue(o);
+              });
             } else {
-              if (valueInfo.useReject) {
-                valueInfo.useReject = false;
-                calcValueInfo(valueInfo);
-                thenable = thenable.thenLast(null, function (o) {
-                  return createThenValue(o);
-                });
-              } else {
-                calcValueInfo(valueInfo);
-                thenable = thenable.thenLast(function (o) {
-                  return createThenValue(o);
-                }, null);
-              }
+              calcValueInfo(valueInfo);
+              thenable = thenable.thenLast(function (o) {
+                return createThenValue(o);
+              }, null);
             }
           }
         } catch (err) {

@@ -390,7 +390,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       customEqual: function customEqual(o1, o2) {
         if (typeof o1 === 'function') {
           return typeof o2 === 'function';
-        } else if (typeof o2 === 'function') {
+        }
+
+        if (typeof o2 === 'function') {
           return typeof o1 === 'function';
         }
 

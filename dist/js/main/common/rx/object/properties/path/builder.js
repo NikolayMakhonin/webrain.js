@@ -43,18 +43,16 @@ function pathsConcat() {
 
           (_result = result).push.apply(_result, _path);
         }
-      } else {
-        if (result == null) {
-          result = [isNewArray];
-          isNewArray = true;
-        } else if (!isNewArray) {
-          var _context2;
+      } else if (result == null) {
+        result = [isNewArray];
+        isNewArray = true;
+      } else if (!isNewArray) {
+        var _context2;
 
-          result = (0, _concat.default)(_context2 = []).call(_context2, result, [_path]);
-          isNewArray = true;
-        } else {
-          result.push(_path);
-        }
+        result = (0, _concat.default)(_context2 = []).call(_context2, result, [_path]);
+        isNewArray = true;
+      } else {
+        result.push(_path);
       }
     }
   }

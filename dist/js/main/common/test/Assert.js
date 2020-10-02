@@ -41,7 +41,8 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
-var AssertionError = typeof require === 'function' ? require('assertion-error') : /*#__PURE__*/function (_Error) {
+var AssertionError = typeof require === 'function' // eslint-disable-next-line global-require
+? require('assertion-error') : /*#__PURE__*/function (_Error) {
   (0, _inherits2.default)(_class, _Error);
 
   var _super = _createSuper(_class);
@@ -118,7 +119,7 @@ var Assert = /*#__PURE__*/function () {
   }, {
     key: "equal",
     value: function equal(actual, expected, message) {
-      // noinspection EqualityComparisonWithCoercionJS
+      // eslint-disable-next-line eqeqeq
       if (actual != expected) {
         this.throwAssertionError(actual, expected, message);
       }
@@ -126,7 +127,7 @@ var Assert = /*#__PURE__*/function () {
   }, {
     key: "notEqual",
     value: function notEqual(actual, expected, message) {
-      // noinspection EqualityComparisonWithCoercionJS
+      // eslint-disable-next-line eqeqeq
       if (actual == expected) {
         this.throwAssertionError(actual, expected, message);
       }
@@ -161,10 +162,8 @@ var Assert = /*#__PURE__*/function () {
               return o && o.name;
             }), err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
           }
-        } else {
-          if (actualErrType !== errType) {
-            this.throwAssertionError(actualErrType.name, errType.name, err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
-          }
+        } else if (actualErrType !== errType) {
+          this.throwAssertionError(actualErrType.name, errType.name, err ? (message || '') + '\r\n' + err + '\r\n' + err.stack : message);
         }
       }
 

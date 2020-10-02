@@ -313,17 +313,17 @@ export function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsG
           compareMetrics,
           func
         });
-      } else {
-        return testRunner(this, {
-          stopPredicate,
-
-          *func(testRunnerMetrics) {
-            const metrics = yield createMetrics(testRunnerMetrics);
-            return func.call(this, customSeed, metrics, metricsMin || {});
-          }
-
-        });
       }
+
+      return testRunner(this, {
+        stopPredicate,
+
+        *func(testRunnerMetrics) {
+          const metrics = yield createMetrics(testRunnerMetrics);
+          return func.call(this, customSeed, metrics, metricsMin || {});
+        }
+
+      });
     });
   };
 } // endregion

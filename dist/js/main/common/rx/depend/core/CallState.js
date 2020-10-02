@@ -397,10 +397,11 @@ function subscriberLinkDelete(item) {
   releaseSubscriberLink(item);
 } // endregion
 // region helpers
-// tslint:disable-next-line:no-empty
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 
-function EMPTY_FUNC() {}
+function EMPTY_FUNC() {// empty
+}
 
 function invalidateParent(link, status) {
   var next = link.next;
@@ -479,7 +480,7 @@ var CallState = /*#__PURE__*/function () {
       var currentState = (0, _currentState.getCurrentState)();
 
       if (currentState != null && (currentState.status & Flag_Check) === 0) {
-        currentState._subscribeDependency.call(currentState, this, !!isLazy);
+        currentState._subscribeDependency(this, !!isLazy);
       } // TODO: delete line and test
 
 
@@ -489,7 +490,9 @@ var CallState = /*#__PURE__*/function () {
       if (isCalculated(this.status)) {
         this._lastAccessTime = (0, _helpers2.fastNow)();
         return dontThrowOnError ? this.value : this.valueOrThrow;
-      } else if (getCalculate(this.status) !== 0) {
+      }
+
+      if (getCalculate(this.status) !== 0) {
         if ((this.status & Flag_Async) !== 0) {
           var parentCallState = currentState;
 
@@ -506,7 +509,9 @@ var CallState = /*#__PURE__*/function () {
           }
 
           return this.valueAsync;
-        } else if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
+        }
+
+        if ((this.status & (Flag_Check | Flag_Calculating)) !== 0) {
           this._internalError('Recursive sync loop detected');
         } else {
           this._internalError("Unknown CallStatus: " + statusToString(this.status));
@@ -629,6 +634,8 @@ var CallState = /*#__PURE__*/function () {
         if (dontThrowOnError !== true || error instanceof _helpers3.InternalError) {
           throw error;
         }
+
+        return void 0;
       } finally {
         (0, _currentState.setCurrentState)(this._parentCallState);
 
@@ -1080,26 +1087,24 @@ var CallState = /*#__PURE__*/function () {
         }
 
         this.status = prevStatus | status;
-      } else {
-        if (isInvalidated(prevStatus)) {
-          if (!isRecalc(prevStatus) && isRecalc(status)) {
-            this.status = prevStatus | Flag_Recalc;
-          }
-
-          if (parentRecalc) {
-            statusBefore = Update_Invalidated_Recalc;
-          }
-        } else if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
-          this.status = prevStatus & ~(Mask_Invalidate | Flag_Calculated) | status;
-          statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating;
-          statusAfter = Update_Invalidating;
-        } else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
-          this.status = prevStatus & ~(Mask_Invalidate | Flag_Calculated) | status;
-          statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated;
-          statusAfter = Update_Invalidated;
-        } else {
-          this._internalError("Unknown status: " + statusToString(status));
+      } else if (isInvalidated(prevStatus)) {
+        if (!isRecalc(prevStatus) && isRecalc(status)) {
+          this.status = prevStatus | Flag_Recalc;
         }
+
+        if (parentRecalc) {
+          statusBefore = Update_Invalidated_Recalc;
+        }
+      } else if (status === Update_Invalidating || status === Update_Invalidating_Recalc) {
+        this.status = prevStatus & ~(Mask_Invalidate | Flag_Calculated) | status;
+        statusBefore = parentRecalc ? Update_Invalidating_Recalc : Update_Invalidating;
+        statusAfter = Update_Invalidating;
+      } else if (status === Update_Invalidated || status === Update_Invalidated_Recalc) {
+        this.status = prevStatus & ~(Mask_Invalidate | Flag_Calculated) | status;
+        statusBefore = parentRecalc ? Update_Invalidated_Recalc : Update_Invalidated;
+        statusAfter = Update_Invalidated;
+      } else {
+        this._internalError("Unknown status: " + statusToString(status));
       } // TODO
 
 
@@ -1336,8 +1341,11 @@ function findCallState(callStates, countValueStates, _valueIdsBuffer) {
   }
 
   return null;
-} // tslint:disable-next-line:no-shadowed-variable
+}
 
+var callStateHashTable = new _map.default();
+exports.callStateHashTable = callStateHashTable;
+var callStatesCount = 0; // tslint:disable-next-line:no-shadowed-variable
 
 function createCallStateProvider(func, funcCall, initCallState) {
   var funcId = nextValueId++;
@@ -1498,6 +1506,9 @@ function subscribeCallState(callState, subscriber) {
         }
 
         break;
+
+      default:
+        break;
     }
   });
 
@@ -1516,9 +1527,9 @@ function getCallState(func) {
 
   if (callStateProvider == null) {
     return EMPTY_FUNC;
-  } else {
-    return callStateProvider.get;
   }
+
+  return callStateProvider.get;
 }
 
 function getOrCreateCallState(func) {
@@ -1526,10 +1537,10 @@ function getOrCreateCallState(func) {
 
   if (callStateProviderState == null) {
     return EMPTY_FUNC;
-  } else {
-    // currentCallStateProviderState = callStateProviderState
-    return callStateProviderState.getOrCreate; // return _getOrCreateCallState
-  }
+  } // currentCallStateProviderState = callStateProviderState
+
+
+  return callStateProviderState.getOrCreate; // return _getOrCreateCallState
 }
 
 function dependBindThis(_this, func) {
@@ -1567,11 +1578,8 @@ function dependBindThis(_this, func) {
 } // endregion
 // endregion
 // region get/create/delete/reduce CallStates
+// region deleteCallState
 
-
-var callStateHashTable = new _map.default();
-exports.callStateHashTable = callStateHashTable;
-var callStatesCount = 0; // region deleteCallState
 
 function deleteCallState(callState) {
   callState._unsubscribeDependencies();
@@ -1683,8 +1691,11 @@ function reduceCallStates(deleteSize, _minCallStateLifeTime) {
 
   reduceCallStatesHeap.clear();
   return countDeleted;
-} // Garbage collector
+} // endregion
+// region Garbage collector
 
+
+var garbageCollectTimer = null;
 
 function garbageCollect() {
   try {
@@ -1696,7 +1707,6 @@ function garbageCollect() {
     var _webrainOptions$callS = _webrainOptions.webrainOptions.callState.garbageCollect,
         bulkSize = _webrainOptions$callS.bulkSize,
         minLifeTime = _webrainOptions$callS.minLifeTime,
-        interval = _webrainOptions$callS.interval,
         disabled = _webrainOptions$callS.disabled;
 
     if (!disabled) {
@@ -1714,8 +1724,6 @@ function garbageCollect() {
     throw error;
   }
 }
-
-var garbageCollectTimer = null;
 
 function garbageCollectSchedule() {
   if (callStatesCount > 0 && garbageCollectTimer === null) {

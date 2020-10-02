@@ -43,7 +43,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   var objectOptions = {
     undefined: true,
     array: true,
-    function: true,
+    'function': true,
     map: true,
     arrayMap: true,
     objectMap: true,

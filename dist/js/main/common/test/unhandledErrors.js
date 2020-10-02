@@ -82,7 +82,8 @@ function interceptEval(callback) {
       throw ex;
     }
   };
-}
+} // eslint-disable-next-line no-new-func
+
 
 var isBrowser = new Function('try {return this===window;}catch(e){ return false;}');
 
@@ -104,6 +105,7 @@ function unhandledErrors(callback) {
 
 function exit() {
   if (isNode()) {
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   } else {
     window.close();

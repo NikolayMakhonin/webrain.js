@@ -10,10 +10,10 @@ describe('map perf', function () {
   // see: https://github.com/garycourt/murmurhash-js
   // see: https://stackoverflow.com/a/22429679/5221762
   function murmurhash2_32_gc(str, seed) {
-    let l = str.length,
-        h = seed ^ l,
-        i = 0,
-        k;
+    let l = str.length;
+    let h = seed ^ l;
+    let i = 0;
+    let k;
     const step = l >= 128 ? l / 128 | 0 : 1;
 
     while (l >= 4 * step) {
@@ -24,14 +24,17 @@ describe('map perf', function () {
       h = (h & 0xffff) * 0x5bd1e995 + (((h >>> 16) * 0x5bd1e995 & 0xffff) << 16) ^ k;
       l -= 4 * step;
       i += step;
-    }
+    } // eslint-disable-next-line default-case
+
 
     switch (l) {
       case 3:
         h ^= (str.charCodeAt(i + 2 * step) & 0xff) << 16;
+      // eslint-disable-next-line no-fallthrough
 
       case 2:
         h ^= (str.charCodeAt(i + step) & 0xff) << 8;
+      // eslint-disable-next-line no-fallthrough
 
       case 1:
         h ^= str.charCodeAt(i) & 0xff;
@@ -45,7 +48,16 @@ describe('map perf', function () {
   }
 
   function murmurhash3_32_gc(key, seed) {
-    let remainder, bytes, h1, h1b, c1, c1b, c2, c2b, k1, i;
+    let remainder;
+    let bytes;
+    let h1;
+    let h1b;
+    let c1;
+    let c1b;
+    let c2;
+    let c2b;
+    let k1;
+    let i;
     remainder = key.length & 3; // key.length % 4
 
     bytes = key.length - remainder;
@@ -66,14 +78,16 @@ describe('map perf', function () {
       h1 = (h1b & 0xffff) + 0x6b64 + (((h1b >>> 16) + 0xe654 & 0xffff) << 16);
     }
 
-    k1 = 0;
+    k1 = 0; // eslint-disable-next-line default-case
 
     switch (remainder) {
       case 3:
         k1 ^= (key.charCodeAt(i + 2) & 0xff) << 16;
+      // eslint-disable-next-line no-fallthrough
 
       case 2:
         k1 ^= (key.charCodeAt(i + 1) & 0xff) << 8;
+      // eslint-disable-next-line no-fallthrough
 
       case 1:
         k1 ^= key.charCodeAt(i) & 0xff;
@@ -108,22 +122,22 @@ describe('map perf', function () {
       }
 
       return hash;
-    } else {
-      let hash = len;
-      const len_2 = len / 2 | 0;
-      let i = 1;
-
-      while (i <= len_2) {
-        hash ^= str.charCodeAt(i - 1);
-        hash = hash + (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24) | 0;
-        hash ^= str.charCodeAt(len - i);
-        hash = hash + (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24) | 0; // hash  = (((hash << 5) - hash) + str.charCodeAt(i)) | 0
-
-        i <<= 1;
-      }
-
-      return hash;
     }
+
+    let hash = len;
+    const len_2 = len / 2 | 0;
+    let i = 1;
+
+    while (i <= len_2) {
+      hash ^= str.charCodeAt(i - 1);
+      hash = hash + (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24) | 0;
+      hash ^= str.charCodeAt(len - i);
+      hash = hash + (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24) | 0; // hash  = (((hash << 5) - hash) + str.charCodeAt(i)) | 0
+
+      i <<= 1;
+    }
+
+    return hash;
   }
 
   it('base', function () {

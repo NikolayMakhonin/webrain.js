@@ -36,7 +36,8 @@ function calcMemAllocate(calcType, countTests, testFunc) {
     var _context2, _context3;
 
     // tslint:disable-next-line:no-empty
-    var zero = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context2 = [calcType, countTests, function () {}]).call(_context2, testFuncArgs));
+    var zero = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context2 = [calcType, countTests, function () {// empty
+    }]).call(_context2, testFuncArgs));
 
     var value = _calcMemAllocate.apply(void 0, (0, _concat.default)(_context3 = [calcType, countTests, testFunc]).call(_context3, testFuncArgs));
 

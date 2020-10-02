@@ -39,5 +39,5 @@ export class CalcStat {
 }
 
 function round(value) {
-  return +value.toPrecision(3);
+  return Number(value.toPrecision(3));
 }

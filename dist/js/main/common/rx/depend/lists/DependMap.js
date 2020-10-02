@@ -64,7 +64,7 @@ var DependMap = /*#__PURE__*/function () {
     // region depend methods
     value: function dependAll() {
       return _CallState.ALWAYS_CHANGE_VALUE;
-    } // noinspection JSUnusedLocalSymbols
+    } // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   }, {
     key: "dependKey",

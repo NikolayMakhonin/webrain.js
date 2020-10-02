@@ -1,10 +1,11 @@
+import { FuncAny } from './typescript';
 export declare function equals(v1: any, v2: any): boolean;
 export declare function isIterable(value: any): boolean;
 export declare function isIterator(value: any): boolean;
 export declare function typeToDebugString(type: any): any;
 export declare const EMPTY: any;
 export declare type TClass<T> = new (...args: any[]) => T;
-export declare function createFunction(alternativeFuncFactory: any, ...args: string[]): Function;
+export declare function createFunction(alternativeFuncFactory: any, ...args: string[]): FuncAny;
 export declare function equalsObjects(o1: any, o2: any): any;
 export declare function nextHash(hash: number, value: number): number;
 export declare function missingGetter(): void;

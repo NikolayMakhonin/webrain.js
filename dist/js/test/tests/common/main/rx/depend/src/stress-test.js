@@ -108,7 +108,7 @@ function getCallId(funcId) {
 
 function checkCallState(call, state, canBeNull) {
   if (state == null && canBeNull) {
-    return;
+    return null;
   }
 
   _Assert.assert.ok(state);
@@ -465,7 +465,7 @@ function runAsIterator(rnd, state, sumArgs, countDependencies, getNextCall, disa
       }
     }
   }, _marked);
-} //endregion
+} // endregion
 
 
 var nextObjectId = 1;

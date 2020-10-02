@@ -105,7 +105,9 @@ export class Property extends ObservableClass {
   }
 
   deSerialize(deSerialize, serializedValue) {
-    deSerialize(serializedValue.value, o => this.value = o);
+    deSerialize(serializedValue.value, o => {
+      this.value = o;
+    });
   } // endregion
 
 

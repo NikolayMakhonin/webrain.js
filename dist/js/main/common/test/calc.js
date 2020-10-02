@@ -77,7 +77,8 @@ exports.CalcType = CalcType;
   CalcType[CalcType["Min"] = 1] = "Min";
 })(CalcType || (exports.CalcType = CalcType = {}));
 
-function calcMin(countTests, testFunc) {
+function calcMin(countTests, // eslint-disable-next-line @typescript-eslint/no-shadow
+testFunc) {
   for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     args[_key - 2] = arguments[_key];
   }
@@ -120,7 +121,8 @@ function calcMin(countTests, testFunc) {
   });
 }
 
-function calcStat(countTests, testFunc) {
+function calcStat(countTests, // eslint-disable-next-line @typescript-eslint/no-shadow
+testFunc) {
   for (var _len2 = arguments.length, args = new Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
     args[_key2 - 2] = arguments[_key2];
   }
@@ -171,7 +173,8 @@ function calcStat(countTests, testFunc) {
   });
 }
 
-function calc(calcType, countTests, testFunc) {
+function calc(calcType, countTests, // eslint-disable-next-line @typescript-eslint/no-shadow
+testFunc) {
   var _context, _context2;
 
   for (var _len4 = arguments.length, args = new Array(_len4 > 3 ? _len4 - 3 : 0), _key3 = 3; _key3 < _len4; _key3++) {

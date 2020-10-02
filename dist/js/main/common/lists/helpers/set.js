@@ -58,12 +58,12 @@ function fillMap(map, arrayOrIterable) {
 
 function fillObject(object, arrayOrIterable) {
   return fillCollection(object, arrayOrIterable, function (c, o) {
-    return c[o[0]] = o[1];
+    c[o[0]] = o[1];
   });
 }
 
 function fillObjectKeys(object, arrayOrIterable) {
   return fillCollection(object, arrayOrIterable, function (c, o) {
-    return c[o] = true;
+    c[o] = true;
   });
 }

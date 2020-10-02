@@ -196,10 +196,10 @@ export class ThenableSync {
             }
 
             return reject(result);
-          } else {
-            const result = resolveAsync(_value, null, onrejected, !lastExpression, customResolveValue);
-            return lastExpression || isThenable(result) ? result : createResolved(result, customResolveValue);
           }
+
+          const result = resolveAsync(_value, null, onrejected, !lastExpression, customResolveValue);
+          return lastExpression || isThenable(result) ? result : createResolved(result, customResolveValue);
         }
 
       case ThenableSyncStatus.Rejected:
@@ -337,9 +337,10 @@ function _resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError
         onResult = (o, e) => {
           if (isError || e) {
             reject(o);
-          } else {
-            resolve(o);
+            return;
           }
+
+          resolve(o);
         };
       }, customResolveValue);
     }

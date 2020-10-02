@@ -39,6 +39,7 @@ export class Rule {
   }
 
   clone() {
+    // eslint-disable-next-line no-shadow
     const {
       type,
       subType,
@@ -82,10 +83,10 @@ export class RuleNever extends Rule {
 
   get next() {
     return null;
-  } // tslint:disable-next-line:no-empty
+  }
 
-
-  set next(value) {}
+  set next(value) {// empty
+  }
 
   clone() {
     return this;

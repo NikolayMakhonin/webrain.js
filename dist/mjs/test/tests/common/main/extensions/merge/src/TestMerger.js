@@ -128,6 +128,9 @@ function resolveValue(opts, value, functions, refers) {
         case NEWER:
           value = opts.newer;
           continue;
+
+        default:
+          break;
       }
 
       break;

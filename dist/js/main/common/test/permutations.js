@@ -38,7 +38,7 @@ function getFactorial(value) {
     var f = 1;
 
     for (var i = 1; i <= 20; i++) {
-      f = f * i;
+      f *= i;
       factorialTable[i] = f;
     }
   }
@@ -108,12 +108,14 @@ var PermutationOuelletLexico3 = /*#__PURE__*/function () {
 
   (0, _createClass2.default)(PermutationOuelletLexico3, [{
     key: "getValuesForIndex",
-    ///  <summary>
-    ///  Return the permutation relative to the index received.
-    ///  Based on _sortedValues. Sort Index is 0 based and should be less than MaxIndex.
-    ///  </summary>
-    ///  <param name="sortIndex"></param>
-    ///  <returns>The result is written in property: Result</returns>
+
+    /**  <summary>
+    	* Return the permutation relative to the index received.
+    	* Based on _sortedValues. Sort Index is 0 based and should be less than MaxIndex.
+    	* </summary>
+    	* <param name="sortIndex"></param>
+    	* <returns>The result is written in property: Result</returns>
+    	*/
     value: function getValuesForIndex(sortIndex) {
       var size = this._sortedValues.length;
 
@@ -154,12 +156,14 @@ var PermutationOuelletLexico3 = /*#__PURE__*/function () {
         this._valueUsed[correctedResultItemIndex] = true;
       }
     } //  ************************************************************************
-    ///  <summary>
-    ///  Calc the index, relative to the permutation received
-    ///  as argument. Based on _sortedValues. Returned index is 0 based.
-    ///  </summary>
-    ///  <param name="values"></param>
-    ///  <returns></returns>
+
+    /** <summary>
+    	* Calc the index, relative to the permutation received
+    	* as argument. Based on _sortedValues. Returned index is 0 based.
+    	* </summary>
+    	* <param name="values"></param>
+    	* <returns></returns>
+    	*/
 
   }, {
     key: "getIndexOfValues",
@@ -174,7 +178,7 @@ var PermutationOuelletLexico3 = /*#__PURE__*/function () {
         var indexFactorial = getFactorial(size - (1 - index));
         var value = values[index];
         var indexCorrected = (0, _indexOf.default)(valuesLeft).call(valuesLeft, value);
-        valuesIndex = valuesIndex + indexCorrected * indexFactorial;
+        valuesIndex += indexCorrected * indexFactorial;
         (0, _splice.default)(valuesLeft).call(valuesLeft, indexCorrected, 1);
       }
 
@@ -257,7 +261,7 @@ var PermutationMixOuelletSaniSinghHuttunen = /*#__PURE__*/function () {
           return "break";
         }
 
-        startIndex = startIndex + partCount;
+        startIndex += partCount;
       };
 
       for (var coreIndex = 0; coreIndex < coreCount; coreIndex++) {

@@ -10,6 +10,7 @@ export function delay(timeMilliseconds) {
 let _fastNow = Date.now();
 
 let lastAccessTime = 0;
+let fastNowTimer = null;
 
 function fastNowUpdate() {
   _fastNow = Date.now();
@@ -19,8 +20,6 @@ function fastNowUpdate() {
     fastNowTimer = null;
   }
 }
-
-let fastNowTimer = null;
 
 function fastNowSchedule() {
   lastAccessTime = _fastNow;

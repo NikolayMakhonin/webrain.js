@@ -33,7 +33,7 @@ export function subject(base) {
       return () => {
         if (!subscriber) {
           return;
-        } // tslint:disable-next-line:no-shadowed-variable
+        } // eslint-disable-next-line @typescript-eslint/no-shadow
 
 
         const {

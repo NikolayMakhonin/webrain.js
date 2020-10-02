@@ -197,12 +197,12 @@ var SerializerVisitor = /*#__PURE__*/function () {
     }
   }]);
   return SerializerVisitor;
-}(); // tslint:disable-next-line:no-shadowed-variable no-empty
-
+}();
 
 exports.SerializerVisitor = SerializerVisitor;
 
-var LOCKED = function LOCKED() {};
+function LOCKED() {// empty
+}
 
 var DeSerializerVisitor = /*#__PURE__*/function () {
   function DeSerializerVisitor(typeMeta, types, objects) {
@@ -358,7 +358,8 @@ var DeSerializerVisitor = /*#__PURE__*/function () {
 
       if (!serializer.deSerialize) {
         throw new Error("Class (" + (0, _helpers.typeToDebugString)(type) + ") serializer have no deSerialize method");
-      }
+      } // eslint-disable-next-line new-cap
+
 
       var factory = options && options.valueFactory || meta.valueFactory || function () {
         for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {

@@ -63,7 +63,7 @@ function subject(base) {
         return function () {
           if (!subscriber) {
             return;
-          } // tslint:disable-next-line:no-shadowed-variable
+          } // eslint-disable-next-line @typescript-eslint/no-shadow
 
 
           var _subscribers = _this._subscribers;

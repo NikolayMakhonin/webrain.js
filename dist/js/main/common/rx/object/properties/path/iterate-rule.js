@@ -71,24 +71,22 @@ function forkToArray(ruleIterable) {
       } else {
         array.push(itemArray);
       }
+    } else if (item.type === _rules.RuleType.Never) {
+      never = true;
     } else {
-      if (item.type === _rules.RuleType.Never) {
-        never = true;
-      } else {
-        throw new Error('Unexpected rule type: ' + _rules.RuleType[item.type]);
-      }
+      throw new Error('Unexpected rule type: ' + _rules.RuleType[item.type]);
     }
   }
 
   if (array) {
     return array;
-  } else {
-    if (never) {
-      return _rules2.RuleNever.instance;
-    }
-
-    return ARRAY_EMPTY;
   }
+
+  if (never) {
+    return _rules2.RuleNever.instance;
+  }
+
+  return ARRAY_EMPTY;
 }
 
 var COMPRESS_FORKS_DISABLED = false;
@@ -217,7 +215,7 @@ function compressForks(ruleOrForkIterable, iterator, iteration) {
           ruleOrFork = iteration.value;
 
           if (!(0, _helpers.isIterable)(ruleOrFork)) {
-            _context2.next = 13;
+            _context2.next = 11;
             break;
           }
 
@@ -230,25 +228,25 @@ function compressForks(ruleOrForkIterable, iterator, iteration) {
         case 10:
           return _context2.abrupt("return");
 
-        case 13:
-          _context2.next = 15;
+        case 11:
+          _context2.next = 13;
           return ruleOrFork;
 
-        case 15:
+        case 13:
           iteration = iterator.next();
           nextIterable = iteration.value;
 
           if (!nextIterable) {
-            _context2.next = 20;
+            _context2.next = 18;
             break;
           }
 
-          _context2.next = 20;
+          _context2.next = 18;
           return function (nextObject) {
             return compressForks(nextIterable(nextObject));
           };
 
-        case 20:
+        case 18:
         case "end":
           return _context2.stop();
       }
@@ -401,6 +399,7 @@ function _iterateRule(object, rule, next) {
           return [_iterateRule(object, rules[0], ruleNext)];
 
         case 46:
+          // eslint-disable-next-line func-style
           any = /*#__PURE__*/_regenerator.default.mark(function any() {
             var _i, _len, subRule;
 
@@ -468,6 +467,7 @@ function _iterateRule(object, rule, next) {
           return _context5.abrupt("break", 59);
 
         case 55:
+          // eslint-disable-next-line func-style
           repeatNext = /*#__PURE__*/_regenerator.default.mark(function repeatNext(nextObject, index) {
             var repeatAction, nextIteration;
             return _regenerator.default.wrap(function repeatNext$(_context4) {
@@ -483,11 +483,11 @@ function _iterateRule(object, rule, next) {
                     repeatAction = condition ? condition(nextObject, index) : _rules.RuleRepeatAction.All;
 
                     if (index < countMin) {
-                      repeatAction = repeatAction & ~_rules.RuleRepeatAction.Fork;
+                      repeatAction &= ~_rules.RuleRepeatAction.Fork;
                     }
 
                     if (index >= countMax) {
-                      repeatAction = repeatAction & ~_rules.RuleRepeatAction.Next;
+                      repeatAction &= ~_rules.RuleRepeatAction.Next;
                     }
 
                     if (!((repeatAction & _rules.RuleRepeatAction.Fork) === 0)) {

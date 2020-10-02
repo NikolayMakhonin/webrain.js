@@ -82,55 +82,55 @@ function _checkIsOptimized(obj, optimized = null, scanned = new Set()) {
         actual: actualInfo,
         expected: expectedInfo
       };
+    }
+
+    if (Array.isArray(obj)) {
+      const actualArr = [];
+      const expectedArr = [];
+
+      for (let i = 0, len = obj.length; i < len; i++) {
+        const item = obj[i];
+
+        if (typeof item === 'function' || item != null && typeof item === 'object') {
+          const res = _checkIsOptimized(item, optimized, scanned);
+
+          if (res) {
+            hasError = true;
+            actualArr.push(res.actual);
+            expectedArr.push(res.expected);
+          }
+        }
+      }
+
+      if (hasError) {
+        return {
+          actual: actualArr,
+          expected: expectedArr
+        };
+      }
     } else {
-      if (Array.isArray(obj)) {
-        const actualArr = [];
-        const expectedArr = [];
+      const actualObj = {};
+      const expectedObj = {}; // eslint-disable-next-line guard-for-in
 
-        for (let i = 0, len = obj.length; i < len; i++) {
-          const item = obj[i];
+      for (const key in obj) {
+        const item = obj[key];
 
-          if (typeof item === 'function' || item != null && typeof item === 'object') {
-            const res = _checkIsOptimized(item, optimized, scanned);
+        if (typeof item === 'function' || item != null && typeof item === 'object') {
+          const res = _checkIsOptimized(item, optimized, scanned);
 
-            if (res) {
-              hasError = true;
-              actualArr.push(res.actual);
-              expectedArr.push(res.expected);
-            }
+          if (res) {
+            hasError = true;
+            actualObj[key] = res.actual;
+            expectedObj[key] = res.expected;
           }
         }
+      }
 
-        if (hasError) {
-          return {
-            actual: actualArr,
-            expected: expectedArr
-          };
-        }
-      } else {
-        const actualObj = {};
-        const expectedObj = {}; // tslint:disable-next-line:forin
-
-        for (const key in obj) {
-          const item = obj[key];
-
-          if (typeof item === 'function' || item != null && typeof item === 'object') {
-            const res = _checkIsOptimized(item, optimized, scanned);
-
-            if (res) {
-              hasError = true;
-              actualObj[key] = res.actual;
-              expectedObj[key] = res.expected;
-            }
-          }
-        }
-
-        if (hasError) {
-          return {
-            actual: actualObj,
-            expected: expectedObj
-          };
-        }
+      if (hasError) {
+        return {
+          actual: actualObj,
+          expected: expectedObj
+        };
       }
     }
   } else {

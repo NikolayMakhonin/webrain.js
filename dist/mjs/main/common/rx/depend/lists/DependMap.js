@@ -19,7 +19,7 @@ export class DependMap {
   // region depend methods
   dependAll() {
     return ALWAYS_CHANGE_VALUE;
-  } // noinspection JSUnusedLocalSymbols
+  } // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 
   dependKey(key) {

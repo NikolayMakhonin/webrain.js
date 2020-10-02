@@ -15,7 +15,7 @@ export function getFactorial(value) {
     let f = 1;
 
     for (let i = 1; i <= 20; i++) {
-      f = f * i;
+      f *= i;
       factorialTable[i] = f;
     }
   }
@@ -81,12 +81,13 @@ class PermutationOuelletLexico3 {
     this.maxIndex = getFactorial(this._sortedValues.length);
   }
 
-  ///  <summary>
-  ///  Return the permutation relative to the index received.
-  ///  Based on _sortedValues. Sort Index is 0 based and should be less than MaxIndex.
-  ///  </summary>
-  ///  <param name="sortIndex"></param>
-  ///  <returns>The result is written in property: Result</returns>
+  /**  <summary>
+  	* Return the permutation relative to the index received.
+  	* Based on _sortedValues. Sort Index is 0 based and should be less than MaxIndex.
+  	* </summary>
+  	* <param name="sortIndex"></param>
+  	* <returns>The result is written in property: Result</returns>
+  	*/
   getValuesForIndex(sortIndex) {
     const size = this._sortedValues.length;
 
@@ -127,12 +128,14 @@ class PermutationOuelletLexico3 {
       this._valueUsed[correctedResultItemIndex] = true;
     }
   } //  ************************************************************************
-  ///  <summary>
-  ///  Calc the index, relative to the permutation received
-  ///  as argument. Based on _sortedValues. Returned index is 0 based.
-  ///  </summary>
-  ///  <param name="values"></param>
-  ///  <returns></returns>
+
+  /** <summary>
+  	* Calc the index, relative to the permutation received
+  	* as argument. Based on _sortedValues. Returned index is 0 based.
+  	* </summary>
+  	* <param name="values"></param>
+  	* <returns></returns>
+  	*/
 
 
   getIndexOfValues(values) {
@@ -145,7 +148,7 @@ class PermutationOuelletLexico3 {
       const indexFactorial = getFactorial(size - (1 - index));
       const value = values[index];
       const indexCorrected = valuesLeft.indexOf(value);
-      valuesIndex = valuesIndex + indexCorrected * indexFactorial;
+      valuesIndex += indexCorrected * indexFactorial;
       valuesLeft.splice(indexCorrected, 1);
     }
 
@@ -214,7 +217,7 @@ class PermutationMixOuelletSaniSinghHuttunen {
         break;
       }
 
-      startIndex = startIndex + partCount;
+      startIndex += partCount;
     }
 
     return Promise.all(tasks);

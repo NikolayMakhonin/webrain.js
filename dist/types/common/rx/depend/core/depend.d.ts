@@ -12,7 +12,7 @@ export declare function _funcCall<TThisOuter, TArgs extends any[], TResultInner>
  * @param deferredOptions
  * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
-export declare function depend<TThisOuter, TArgs extends any[], TResultInner, TResultWrapper = TResultInner>(func: Func<TThisOuter, TArgs, TResultInner>, deferredOptions?: IDeferredOptions, initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void, canAlwaysRecalc?: boolean): Func<TThisOuter, TArgs, TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>;
+export declare function depend<TThisOuter, TArgs extends any[], TResultInner>(func: Func<TThisOuter, TArgs, TResultInner>, deferredOptions?: IDeferredOptions, initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void, canAlwaysRecalc?: boolean): Func<TThisOuter, TArgs, TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>;
 export declare function funcCallX<TThisOuter, TArgs extends any[], TResultInner>(state: CallState<TThisOuter, TArgs, TResultInner>): TResultInner;
 /**
  * Inner this as CallState

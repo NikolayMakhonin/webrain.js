@@ -1,5 +1,8 @@
+/* eslint-disable no-self-compare */
+
 /* tslint:disable:use-isnan */
-import '../../helpers/object-unique-id';
+import '../../helpers/object-unique-id'; // eslint-disable-next-line no-duplicate-imports
+
 import { getObjectUniqueId } from '../../helpers/object-unique-id'; // noinspection DuplicatedCode
 
 export function compareFast(o1, o2) {
@@ -149,7 +152,9 @@ export function compareStrict(o1, o2) {
 
     if (o1 > o2) {
       return 1;
-    } else if (o1 < o2) {
+    }
+
+    if (o1 < o2) {
       return -1;
     }
 

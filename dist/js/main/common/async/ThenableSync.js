@@ -228,18 +228,17 @@ var ThenableSync = /*#__PURE__*/function () {
             }
 
             if (isError) {
-              var result = resolveAsync(_value, null, null, !lastExpression, customResolveValue);
+              var _result = resolveAsync(_value, null, null, !lastExpression, customResolveValue);
 
-              if ((0, _async.isThenable)(result)) {
-                return result.then(reject, onrejected);
+              if ((0, _async.isThenable)(_result)) {
+                return _result.then(reject, onrejected);
               }
 
-              return reject(result);
-            } else {
-              var _result = resolveAsync(_value, null, onrejected, !lastExpression, customResolveValue);
-
-              return lastExpression || (0, _async.isThenable)(_result) ? _result : createResolved(_result, customResolveValue);
+              return reject(_result);
             }
+
+            var result = resolveAsync(_value, null, onrejected, !lastExpression, customResolveValue);
+            return lastExpression || (0, _async.isThenable)(result) ? result : createResolved(result, customResolveValue);
           }
 
         case ThenableSyncStatus.Rejected:
@@ -380,9 +379,10 @@ function _resolveAsync(input, onfulfilled, onrejected, dontThrowOnImmediateError
         onResult = function onResult(o, e) {
           if (isError || e) {
             reject(o);
-          } else {
-            resolve(o);
+            return;
           }
+
+          resolve(o);
         };
       }, customResolveValue);
     }

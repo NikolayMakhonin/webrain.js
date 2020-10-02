@@ -70,7 +70,7 @@ var _Mocha = require("../../../../../../../main/common/test/Mocha");
 
           case 21:
             if (!(i < 1000)) {
-              _context.next = 33;
+              _context.next = 34;
               break;
             }
 
@@ -89,7 +89,7 @@ var _Mocha = require("../../../../../../../main/common/test/Mocha");
               unbinders.push((0, _bind2.default)(binder).call(binder));
             }
 
-            return _context.abrupt("break", 30);
+            return _context.abrupt("break", 31);
 
           case 28:
             if (unbinders.length > 0) {
@@ -97,14 +97,17 @@ var _Mocha = require("../../../../../../../main/common/test/Mocha");
               unbind();
             }
 
-            return _context.abrupt("break", 30);
+            return _context.abrupt("break", 31);
 
           case 30:
+            throw new Error('Unexpected behavior');
+
+          case 31:
             i++;
             _context.next = 21;
             break;
 
-          case 33:
+          case 34:
           case "end":
             return _context.stop();
         }

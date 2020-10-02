@@ -29,8 +29,8 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_construct.default) return false; if (_construct.default.sham) return false; if (typeof Proxy === "function") return true; try { Date.prototype.toString.call((0, _construct.default)(Date, [], function () {})); return true; } catch (e) { return false; } }
 
 function behavior(base) {
-  return /*#__PURE__*/function (_base) {
-    (0, _inherits2.default)(Behavior, _base);
+  return /*#__PURE__*/function (_ref) {
+    (0, _inherits2.default)(Behavior, _ref);
 
     var _super = _createSuper(Behavior);
 
@@ -77,8 +77,7 @@ function behavior(base) {
           unsubscribe = null;
 
           try {
-            // eslint-disable-next-line no-shadow
-            // tslint:disable-next-line:no-shadowed-variable
+            // eslint-disable-next-line @typescript-eslint/no-shadow
             var _value = _this2.value,
                 unsubscribeValue = _this2.unsubscribeValue;
 

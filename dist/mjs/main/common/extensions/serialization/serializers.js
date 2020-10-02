@@ -109,9 +109,10 @@ export class SerializerVisitor {
     });
   }
 
-} // tslint:disable-next-line:no-shadowed-variable no-empty
+}
 
-const LOCKED = function LOCKED() {};
+function LOCKED() {// empty
+}
 
 export class DeSerializerVisitor {
   constructor(typeMeta, types, objects) {
@@ -248,7 +249,8 @@ export class DeSerializerVisitor {
 
     if (!serializer.deSerialize) {
       throw new Error(`Class (${typeToDebugString(type)}) serializer have no deSerialize method`);
-    }
+    } // eslint-disable-next-line new-cap
+
 
     let factory = options && options.valueFactory || meta.valueFactory || ((...args) => new type(...args));
 

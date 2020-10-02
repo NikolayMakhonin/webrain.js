@@ -59,5 +59,5 @@ var CalcStat = /*#__PURE__*/function () {
 exports.CalcStat = CalcStat;
 
 function round(value) {
-  return +value.toPrecision(3);
+  return Number(value.toPrecision(3));
 }

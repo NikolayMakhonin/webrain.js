@@ -190,7 +190,7 @@ var Random = /*#__PURE__*/function () {
     key: "nextArrayItems",
     value: function nextArrayItems(array, minCount, maxCount, maxCountRelative) {
       if (maxCountRelative) {
-        maxCount = array.length * maxCount;
+        maxCount *= array.length;
       }
 
       var count = this.nextInt(minCount, maxCount);
@@ -212,7 +212,7 @@ var Random = /*#__PURE__*/function () {
       });
 
       if (maxCountRelative) {
-        maxCount = array.length * maxCount;
+        maxCount *= array.length;
       }
 
       var count = this.nextInt(minCount, maxCount);

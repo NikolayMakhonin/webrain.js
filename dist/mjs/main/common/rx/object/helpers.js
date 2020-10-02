@@ -23,6 +23,9 @@ export function makeDependPropertySubscriber(name) {
           case CallStatusShort.CalculatedError:
             console.error(state.error);
             break;
+
+          default:
+            break;
         }
 
         dependUnsubscribe = state.subscribe(() => {
@@ -32,22 +35,27 @@ export function makeDependPropertySubscriber(name) {
               break;
 
             case CallStatusShort.CalculatedValue:
-              const oldValue = value;
-              const newValue = state.value;
-              value = newValue;
+              {
+                const oldValue = value;
+                const newValue = state.value;
+                value = newValue;
 
-              if (!webrainEquals(oldValue, newValue)) {
-                state._this.propertyChanged.emit({
-                  name,
-                  oldValue,
-                  newValue
-                });
+                if (!webrainEquals(oldValue, newValue)) {
+                  state._this.propertyChanged.emit({
+                    name,
+                    oldValue,
+                    newValue
+                  });
+                }
+
+                break;
               }
-
-              break;
 
             case CallStatusShort.CalculatedError:
               console.error(state.error);
+              break;
+
+            default:
               break;
           }
         });

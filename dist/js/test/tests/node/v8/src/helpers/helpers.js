@@ -107,55 +107,55 @@ function _checkIsOptimized(obj, optimized, scanned) {
         actual: actualInfo,
         expected: expectedInfo
       };
+    }
+
+    if ((0, _isArray.default)(obj)) {
+      var actualArr = [];
+      var expectedArr = [];
+
+      for (var i = 0, len = obj.length; i < len; i++) {
+        var item = obj[i];
+
+        if (typeof item === 'function' || item != null && typeof item === 'object') {
+          var _res = _checkIsOptimized(item, optimized, scanned);
+
+          if (_res) {
+            _hasError = true;
+            actualArr.push(_res.actual);
+            expectedArr.push(_res.expected);
+          }
+        }
+      }
+
+      if (_hasError) {
+        return {
+          actual: actualArr,
+          expected: expectedArr
+        };
+      }
     } else {
-      if ((0, _isArray.default)(obj)) {
-        var actualArr = [];
-        var expectedArr = [];
+      var actualObj = {};
+      var expectedObj = {}; // eslint-disable-next-line guard-for-in
 
-        for (var i = 0, len = obj.length; i < len; i++) {
-          var item = obj[i];
+      for (var _key in obj) {
+        var _item = obj[_key];
 
-          if (typeof item === 'function' || item != null && typeof item === 'object') {
-            var _res = _checkIsOptimized(item, optimized, scanned);
+        if (typeof _item === 'function' || _item != null && typeof _item === 'object') {
+          var _res2 = _checkIsOptimized(_item, optimized, scanned);
 
-            if (_res) {
-              _hasError = true;
-              actualArr.push(_res.actual);
-              expectedArr.push(_res.expected);
-            }
+          if (_res2) {
+            _hasError = true;
+            actualObj[_key] = _res2.actual;
+            expectedObj[_key] = _res2.expected;
           }
         }
+      }
 
-        if (_hasError) {
-          return {
-            actual: actualArr,
-            expected: expectedArr
-          };
-        }
-      } else {
-        var actualObj = {};
-        var expectedObj = {}; // tslint:disable-next-line:forin
-
-        for (var _key in obj) {
-          var _item = obj[_key];
-
-          if (typeof _item === 'function' || _item != null && typeof _item === 'object') {
-            var _res2 = _checkIsOptimized(_item, optimized, scanned);
-
-            if (_res2) {
-              _hasError = true;
-              actualObj[_key] = _res2.actual;
-              expectedObj[_key] = _res2.expected;
-            }
-          }
-        }
-
-        if (_hasError) {
-          return {
-            actual: actualObj,
-            expected: expectedObj
-          };
-        }
+      if (_hasError) {
+        return {
+          actual: actualObj,
+          expected: expectedObj
+        };
       }
     }
   } else {

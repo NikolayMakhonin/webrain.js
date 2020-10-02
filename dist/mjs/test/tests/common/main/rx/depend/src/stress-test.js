@@ -64,7 +64,7 @@ function getCallId(funcId) {
 
 function checkCallState(call, state, canBeNull) {
   if (state == null && canBeNull) {
-    return;
+    return null;
   }
 
   assert.ok(state);
@@ -359,7 +359,7 @@ function* runAsIterator(rnd, state, sumArgs, countDependencies, getNextCall, dis
   }
 
   return sum;
-} //endregion
+} // endregion
 
 
 let nextObjectId = 1;

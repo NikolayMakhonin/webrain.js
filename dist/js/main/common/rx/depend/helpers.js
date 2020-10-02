@@ -71,6 +71,9 @@ function dependWait(func, condition, timeout, isLazy) {
           case _contracts.CallStatusShort.Invalidated:
             funcState.getValue(false, true);
             break;
+
+          default:
+            break;
         }
       });
 

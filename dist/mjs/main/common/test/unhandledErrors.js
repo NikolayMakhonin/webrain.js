@@ -39,7 +39,8 @@ function interceptEval(callback) {
       throw ex;
     }
   };
-}
+} // eslint-disable-next-line no-new-func
+
 
 const isBrowser = new Function('try {return this===window;}catch(e){ return false;}');
 
@@ -60,6 +61,7 @@ export function unhandledErrors(callback) {
 }
 export function exit() {
   if (isNode()) {
+    // eslint-disable-next-line no-process-exit
     process.exit(1);
   } else {
     window.close();

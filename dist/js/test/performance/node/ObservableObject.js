@@ -90,6 +90,7 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_c
         object2 = _ref.object2,
         observableObject1 = _ref.observableObject1,
         observableObject2 = _ref.observableObject2;
+    // eslint-disable-next-line no-new-func
     var testFunc = (0, _bind.default)(_context = Function('o1', 'o2', 'v', "{\n\t\t\to1.prop = v\n\t\t\to1.prop2 = v\n\t\t\to2.prop = v\n\t\t\to2.prop2 = v\n\t\t\treturn o1.prop + o1.prop2 + o2.prop + o2.prop2\n\t\t} // " + Math.random())).call(_context, null, observableObject1, observableObject2);
     var value = -2000000000; // calcStat(1000, 10, time => {
 

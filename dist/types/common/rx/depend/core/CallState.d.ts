@@ -163,13 +163,13 @@ interface ICallStateProvider<TThisOuter, TArgs extends any[], TResultInner> {
     dependFunc: Func<TThisOuter, TArgs, TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>;
     isBindThis: boolean;
 }
+export declare const callStateHashTable: Map<number, TCallStateAny[]>;
 export declare function createCallStateProvider<TThisOuter, TArgs extends any[], TResultInner>(func: Func<unknown, TArgs, unknown>, funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>, initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void): ICallStateProvider<TThisOuter, TArgs, TResultInner>;
 export declare function invalidateCallState<TThisOuter, TArgs extends any[], TResultInner>(state: ICallState<TThisOuter, TArgs, TResultInner>): boolean;
 export declare function subscribeCallState<TThisOuter, TArgs extends any[], TResultInner>(callState: ICallState<TThisOuter, TArgs, TResultInner>, subscriber?: ISubscriber<ICallState<TThisOuter, TArgs, TResultInner>>): IUnsubscribe;
 export declare function getCallState<TThisOuter, TArgs extends any[], TResultInner>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, ICallState<TThisOuter, TArgs, TResultInner>>;
 export declare function getOrCreateCallState<TThisOuter, TArgs extends any[], TResultInner>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, ICallState<TThisOuter, TArgs, TResultInner>>;
 export declare function dependBindThis<TThis, TArgs extends any[], TResult>(_this: TThis, func: Func<TThis, TArgs, TResult>): Func<never, TArgs, TResult>;
-export declare const callStateHashTable: Map<number, TCallStateAny[]>;
 export declare function deleteCallState(callState: TCallStateAny): void;
 export declare const reduceCallStatesHeap: PairingHeap<TCallStateAny>;
 export declare function reduceCallStates(deleteSize: number, _minCallStateLifeTime: number): number;

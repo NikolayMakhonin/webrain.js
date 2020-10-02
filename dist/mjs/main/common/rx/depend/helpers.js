@@ -53,6 +53,9 @@ export function dependWait(func, condition, timeout, isLazy) {
           case CallStatusShort.Invalidated:
             funcState.getValue(false, true);
             break;
+
+          default:
+            break;
         }
       });
 

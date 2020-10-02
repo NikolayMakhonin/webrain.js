@@ -10,12 +10,12 @@ import { Path } from './path/builder';
 function createGetValue(calcSourcePath, getValue) {
   if (calcSourcePath == null) {
     return getValue;
-  } else {
-    const path = calcSourcePath.clone().append(o => getValue.call(o)).init();
-    return function () {
-      return path.get(this);
-    };
   }
+
+  const path = calcSourcePath.clone().append(o => getValue.call(o)).init();
+  return function () {
+    return path.get(this);
+  };
 }
 
 export class CalcObjectBuilder extends ConnectorBuilder {
@@ -61,6 +61,7 @@ export class CalcObjectBuilder extends ConnectorBuilder {
     const propClass = propertyClass(build);
     return super.readable(name, {
       factory() {
+        // eslint-disable-next-line new-cap
         return new propClass(this);
       }
 

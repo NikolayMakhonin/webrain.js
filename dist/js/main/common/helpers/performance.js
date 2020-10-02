@@ -16,7 +16,7 @@ if (typeof performance !== 'undefined' && performance.now) {
 
   exports.now = now = (0, _bind.default)(_context = performance.now).call(_context, performance);
 } else {
-  var start = process.hrtime();
+  var start = process.hrtime(); // eslint-disable-next-line @typescript-eslint/no-shadow
 
   exports.now = now = function now() {
     var end = process.hrtime(start);

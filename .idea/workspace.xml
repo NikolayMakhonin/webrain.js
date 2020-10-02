@@ -30,10 +30,132 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Removed tslint from project">
       <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/async.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/async.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/serialization/serializers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/serialization/serializers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/CalcStat.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/CalcStat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/performance.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/lists/PairingHeap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/lists/PairingHeap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/lists/helpers/compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/lists/helpers/compare.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/lists/helpers/set.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/lists/helpers/set.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/random/Random.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/random/Random.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependSet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/Property.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/Property.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/rules-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/builder/rules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/forEachRule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/forEachRule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/iterate-rule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/behavior.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/hasSubscribers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/hasSubscribers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/subject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/subject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/Assert.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/Assert.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/DeepCloneEqual.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/DeepCloneEqual.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/calc-mem-allocate.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/calc-mem-allocate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/calc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/calc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/permutations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/permutations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/randomTest.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/unhandledErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/unhandledErrors.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/main/common/time/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/time/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/.eslintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/ObservableObject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/performance/node/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/performance/node/map.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/async/src/TestThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/async/src/TestThenableSync.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/ObjectMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/ObjectMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/src/TestMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/extensions/merge/src/TestMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/lists/src/helpers/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/lists/src/helpers/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/bindings/Binder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/bindings/Binder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/bindings/stress.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/bindings/stress.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/base-tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/base-tests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/stress-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/stress-test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/src/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/src/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/test/DeepCloneEqual.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/test/DeepCloneEqual.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/node/main/rx/depend/v8/dependent-func.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/node/main/rx/depend/v8/dependent-func.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/node/v8/src/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/node/v8/src/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/async/ThenableSync.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/async/async.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/async/async.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/serialization/serializers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/serialization/serializers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/CalcStat.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/CalcStat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/performance.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/lists/PairingHeap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/lists/PairingHeap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/lists/helpers/compare.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/lists/helpers/compare.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/lists/helpers/set.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/lists/helpers/set.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/random/Random.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/random/Random.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deferred-calc/DeferredCalc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deferred-calc/DeferredCalc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependMap.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependSet.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/Property.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/Property.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/rules-subscribe.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/rules-subscribe.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/rules.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/builder/rules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/forEachRule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/forEachRule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/iterate-rule.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/behavior.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/hasSubscribers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/hasSubscribers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/subject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/subject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/Assert.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/Assert.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/DeepCloneEqual.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/DeepCloneEqual.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/calc-mem-allocate.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/calc-mem-allocate.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/calc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/calc.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/permutations.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/permutations.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/randomTest.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/unhandledErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/unhandledErrors.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/time/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/time/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/.eslintrc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObservableObject.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/ObservableObject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/map.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/map.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/performance/node/memoize.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/performance/node/memoize.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/async/src/TestThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/async/src/TestThenableSync.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/ObjectMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/ObjectMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/src/TestMerger.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/extensions/merge/src/TestMerger.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/lists/src/helpers/common.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/lists/src/helpers/common.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/bindings/Binder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/bindings/Binder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/bindings/stress.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/bindings/stress.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/base-tests.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/base-tests.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/stress-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/stress-test.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/path/builder/RuleBuilder.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/src/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/src/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/test/DeepCloneEqual.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/test/DeepCloneEqual.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/node/main/rx/depend/v8/dependent-func.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/node/main/rx/depend/v8/dependent-func.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/node/v8/src/helpers/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/node/v8/src/helpers/helpers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/helpers/helpers.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/helpers/typescript.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/helpers/typescript.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/core/CallState.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/core/CallState.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/core/depend.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/core/depend.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectBuilder.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/CalcObjectBuilder.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/builder/rules-subscribe.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/builder/rules-subscribe.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/forEachRule.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/object/properties/path/forEachRule.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/subjects/behavior.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/subjects/behavior.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tslint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/helpers/helpers.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -576,21 +698,7 @@
       <workItem from="1601521921362" duration="7482000" />
       <workItem from="1601530450424" duration="20969000" />
       <workItem from="1601561783134" duration="3234000" />
-      <workItem from="1601609589612" duration="10386000" />
-    </task>
-    <task id="LOCAL-00553" summary="Develop random test helpers">
-      <created>1600237673646</created>
-      <option name="number" value="00553" />
-      <option name="presentableId" value="LOCAL-00553" />
-      <option name="project" value="LOCAL" />
-      <updated>1600237673647</updated>
-    </task>
-    <task id="LOCAL-00554" summary="Develop random test helpers">
-      <created>1600240098914</created>
-      <option name="number" value="00554" />
-      <option name="presentableId" value="LOCAL-00554" />
-      <option name="project" value="LOCAL" />
-      <updated>1600240098914</updated>
+      <workItem from="1601609589612" duration="12601000" />
     </task>
     <task id="LOCAL-00555" summary="Develop random test helpers">
       <created>1600246341084</created>
@@ -921,7 +1029,21 @@
       <option name="project" value="LOCAL" />
       <updated>1601621237794</updated>
     </task>
-    <option name="localTasksCounter" value="602" />
+    <task id="LOCAL-00602" summary="&#10;Removed tslint from project">
+      <created>1601621878840</created>
+      <option name="number" value="00602" />
+      <option name="presentableId" value="LOCAL-00602" />
+      <option name="project" value="LOCAL" />
+      <updated>1601621878841</updated>
+    </task>
+    <task id="LOCAL-00603" summary="Removed tslint from project">
+      <created>1601621900964</created>
+      <option name="number" value="00603" />
+      <option name="presentableId" value="LOCAL-00603" />
+      <option name="project" value="LOCAL" />
+      <updated>1601621900964</updated>
+    </task>
+    <option name="localTasksCounter" value="604" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -982,8 +1104,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="v1.0.6-a" />
-    <MESSAGE value="v1.1.0-a Changed the merge interface: added preferCloneBase" />
     <MESSAGE value="v1.1.2-a Fix merge strings" />
     <MESSAGE value="Perf test: 150000 invalidates per sec in chrome" />
     <MESSAGE value="Fix RuleBuilder interface" />
@@ -1007,7 +1127,9 @@
     <MESSAGE value="Lint autofix: semi-style &amp; semi &amp; operator-linebreak &amp; no-mixed-spaces-and-tabs" />
     <MESSAGE value="Lint fixes" />
     <MESSAGE value="Lint fixes. Mocha tests OK." />
-    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes. Mocha tests OK." />
+    <MESSAGE value="&#10;Removed tslint from project" />
+    <MESSAGE value="Removed tslint from project" />
+    <option name="LAST_COMMIT_MESSAGE" value="Removed tslint from project" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1030,42 +1152,42 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="318" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.882@0.0.1920.882" timestamp="1600596853908" />
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1601609604071">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1601622754488">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601609604071" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601621234546">
+    <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601622754488" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1601622651855">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601621234546" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1601622651855" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="1009" height="582" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1601537988332" />
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1601611039939">
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1601621763510">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601611039939" />
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1601621763510" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601620469473">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601620469473" />
-    <state width="519" height="413" key="GridCell.Tab.0.bottom" timestamp="1601621043336">
+    <state width="519" height="192" key="GridCell.Tab.0.bottom" timestamp="1601622131458">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="519" height="413" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1601621043336" />
-    <state width="519" height="413" key="GridCell.Tab.0.center" timestamp="1601621043335">
+    <state width="519" height="192" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1601622131458" />
+    <state width="519" height="192" key="GridCell.Tab.0.center" timestamp="1601622131458">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="519" height="413" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1601621043335" />
-    <state width="519" height="413" key="GridCell.Tab.0.left" timestamp="1601621043335">
+    <state width="519" height="192" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1601622131458" />
+    <state width="519" height="192" key="GridCell.Tab.0.left" timestamp="1601622131457">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="519" height="413" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1601621043335" />
-    <state width="519" height="413" key="GridCell.Tab.0.right" timestamp="1601621043335">
+    <state width="519" height="192" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1601622131457" />
+    <state width="519" height="192" key="GridCell.Tab.0.right" timestamp="1601622131458">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="519" height="413" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1601621043335" />
+    <state width="519" height="192" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1601622131458" />
     <state width="514" height="292" key="GridCell.Tab.1.bottom" timestamp="1601561773132">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1142,10 +1264,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="722" y="331" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.882@0.0.1920.882" timestamp="1600076722588" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1601621728088">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1601621936263">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1601621728088" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1601621936263" />
     <state x="531" y="190" key="run.anything.popup" timestamp="1600668501151">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

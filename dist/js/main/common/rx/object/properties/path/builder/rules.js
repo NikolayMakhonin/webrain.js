@@ -75,6 +75,7 @@ var Rule = /*#__PURE__*/function () {
   (0, _createClass2.default)(Rule, [{
     key: "clone",
     value: function clone() {
+      // eslint-disable-next-line no-shadow
       var type = this.type,
           subType = this.subType,
           description = this.description,
@@ -148,9 +149,9 @@ var RuleNever = /*#__PURE__*/function (_Rule2) {
     key: "next",
     get: function get() {
       return null;
-    } // tslint:disable-next-line:no-empty
-    ,
-    set: function set(value) {}
+    },
+    set: function set(value) {// empty
+    }
   }]);
   return RuleNever;
 }(Rule);

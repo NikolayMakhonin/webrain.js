@@ -8,7 +8,7 @@ import { IReadableFieldOptions, IWritableFieldOptions } from '../ObservableObjec
 import { ConnectorBuilder } from './ConnectorBuilder';
 import { ValueKeys } from './contracts';
 import { Path } from './path/builder';
-export declare class CalcObjectBuilder<TObject extends ObservableClass, TConnectorSource = TObject, TCalcSource = TObject, TValueKeys extends string | number = ValueKeys> extends ConnectorBuilder<TObject, TConnectorSource> {
+export declare class CalcObjectBuilder<TObject extends ObservableClass, TConnectorSource = TObject, TCalcSource = TObject, TValueKeys extends string | number = ValueKeys> extends ConnectorBuilder<TObject, TConnectorSource, TValueKeys> {
     readonly calcSourcePath?: Path<TObject, TCalcSource>;
     constructor(object?: TObject, connectorSourcePath?: Path<TObject, TConnectorSource>, calcSourcePath?: Path<TObject, TCalcSource>);
     func<Name extends keyof TObject, TValue = TObject[Name] & FuncAny>(name: Name, func: TValue): this;

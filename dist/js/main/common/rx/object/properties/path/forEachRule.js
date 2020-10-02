@@ -9,15 +9,15 @@ var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 var _rules = require("./builder/contracts/rules");
 
-var repeatNext = function repeatNext(object, index, repeatRule, ruleNext, parent, key, keyType, resolveRuleSubscribe) {
+function repeatNext(object, index, repeatRule, ruleNext, parent, key, keyType, resolveRuleSubscribe) {
   var repeatAction = repeatRule.condition ? repeatRule.condition(object, index) : _rules.RuleRepeatAction.All;
 
   if (index < repeatRule.countMin) {
-    repeatAction = repeatAction & ~_rules.RuleRepeatAction.Fork;
+    repeatAction &= ~_rules.RuleRepeatAction.Fork;
   }
 
   if (index >= repeatRule.countMax) {
-    repeatAction = repeatAction & ~_rules.RuleRepeatAction.Next;
+    repeatAction &= ~_rules.RuleRepeatAction.Next;
   }
 
   if ((repeatAction & _rules.RuleRepeatAction.Fork) === 0) {
@@ -46,7 +46,7 @@ var repeatNext = function repeatNext(object, index, repeatRule, ruleNext, parent
   function repeatRuleNext(nextIterationObject) {
     repeatNext(nextIterationObject, index + 1, repeatRule, ruleNext, parent, key, keyType, resolveRuleSubscribe);
   }
-};
+}
 
 function forEachRule(rule, object, next, parent, key, keyType, resolveRuleSubscribe) {
   while (true) {
@@ -58,9 +58,7 @@ function forEachRule(rule, object, next, parent, key, keyType, resolveRuleSubscr
       return;
     }
 
-    var ruleNext = rule.next || next ? function (nextObject, nextParent, nextKey, nextKeyType) {
-      forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe);
-    } : null;
+    var ruleNext = rule.next || next ? _ruleNext : null;
 
     switch (rule.type) {
       case _rules.RuleType.Nothing:
@@ -104,28 +102,30 @@ function forEachRule(rule, object, next, parent, key, keyType, resolveRuleSubscr
         }
 
       case _rules.RuleType.Any:
-        var _ref2 = rule,
-            rules = _ref2.rules;
+        {
+          var _ref2 = rule,
+              rules = _ref2.rules;
 
-        if (!rules.length) {
-          return;
-        }
-
-        if (rules.length === 1) {
-          forEachRule(rules[0], object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
-        }
-
-        for (var _i = 0, _len = rules.length; _i < _len; _i++) {
-          var subRule = rules[_i];
-
-          if (!subRule) {
-            throw new Error("RuleType.Any rule=" + subRule);
+          if (!rules.length) {
+            return;
           }
 
-          forEachRule(subRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
-        }
+          if (rules.length === 1) {
+            forEachRule(rules[0], object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
+          }
 
-        return;
+          for (var _i = 0, _len = rules.length; _i < _len; _i++) {
+            var subRule = rules[_i];
+
+            if (!subRule) {
+              throw new Error("RuleType.Any rule=" + subRule);
+            }
+
+            forEachRule(subRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
+          }
+
+          return;
+        }
 
       case _rules.RuleType.Repeat:
         {
@@ -144,5 +144,9 @@ function forEachRule(rule, object, next, parent, key, keyType, resolveRuleSubscr
       default:
         throw new Error('Unknown RuleType: ' + rule.type);
     }
+  }
+
+  function _ruleNext(nextObject, nextParent, nextKey, nextKeyType) {
+    forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe);
   }
 }

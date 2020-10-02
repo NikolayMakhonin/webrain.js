@@ -573,58 +573,58 @@ function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerato
           compareMetrics: compareMetrics,
           func: func
         });
-      } else {
-        return testRunner(_this2, {
-          stopPredicate: stopPredicate,
-          func: function (_func3) {
-            var _marked6 = /*#__PURE__*/_regenerator.default.mark(func);
+      }
 
-            function func(_x) {
-              var _args8 = arguments;
-              return _regenerator.default.wrap(function func$(_context8) {
-                while (1) {
-                  switch (_context8.prev = _context8.next) {
-                    case 0:
-                      return _context8.delegateYield(_func3.apply(this, _args8), "t0", 1);
+      return testRunner(_this2, {
+        stopPredicate: stopPredicate,
+        func: function (_func3) {
+          var _marked6 = /*#__PURE__*/_regenerator.default.mark(func);
 
-                    case 1:
-                      return _context8.abrupt("return", _context8.t0);
-
-                    case 2:
-                    case "end":
-                      return _context8.stop();
-                  }
-                }
-              }, _marked6, this);
-            }
-
-            func.toString = function () {
-              return _func3.toString();
-            };
-
-            return func;
-          }( /*#__PURE__*/_regenerator.default.mark(function _callee2(testRunnerMetrics) {
-            var metrics;
-            return _regenerator.default.wrap(function _callee2$(_context9) {
+          function func(_x) {
+            var _args8 = arguments;
+            return _regenerator.default.wrap(function func$(_context8) {
               while (1) {
-                switch (_context9.prev = _context9.next) {
+                switch (_context8.prev = _context8.next) {
                   case 0:
-                    _context9.next = 2;
-                    return createMetrics(testRunnerMetrics);
+                    return _context8.delegateYield(_func3.apply(this, _args8), "t0", 1);
+
+                  case 1:
+                    return _context8.abrupt("return", _context8.t0);
 
                   case 2:
-                    metrics = _context9.sent;
-                    return _context9.abrupt("return", func.call(this, customSeed, metrics, metricsMin || {}));
-
-                  case 4:
                   case "end":
-                    return _context9.stop();
+                    return _context8.stop();
                 }
               }
-            }, _callee2, this);
-          }))
-        });
-      }
+            }, _marked6, this);
+          }
+
+          func.toString = function () {
+            return _func3.toString();
+          };
+
+          return func;
+        }( /*#__PURE__*/_regenerator.default.mark(function _callee2(testRunnerMetrics) {
+          var metrics;
+          return _regenerator.default.wrap(function _callee2$(_context9) {
+            while (1) {
+              switch (_context9.prev = _context9.next) {
+                case 0:
+                  _context9.next = 2;
+                  return createMetrics(testRunnerMetrics);
+
+                case 2:
+                  metrics = _context9.sent;
+                  return _context9.abrupt("return", func.call(this, customSeed, metrics, metricsMin || {}));
+
+                case 4:
+                case "end":
+                  return _context9.stop();
+              }
+            }
+          }, _callee2, this);
+        }))
+      });
     });
   };
 } // endregion

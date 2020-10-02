@@ -12,7 +12,7 @@ describe('common > test > DeepCloneEqual', function () {
   const objectOptions = {
     undefined: true,
     array: true,
-    function: true,
+    'function': true,
     map: true,
     arrayMap: true,
     objectMap: true,

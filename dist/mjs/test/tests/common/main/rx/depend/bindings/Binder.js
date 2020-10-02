@@ -57,6 +57,9 @@ describe('common > main > rx > depend > bindings > Binder', function () {
           }
 
           break;
+
+        default:
+          throw new Error('Unexpected behavior');
       }
     }
   });

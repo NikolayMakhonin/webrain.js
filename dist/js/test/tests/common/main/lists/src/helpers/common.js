@@ -40,12 +40,14 @@ exports.allValues = allValues;
 
 function indexOfNaN(array) {
   for (var i = 0, len = array.length; i < len; i++) {
-    var item = array[i];
+    var item = array[i]; // eslint-disable-next-line no-self-compare
 
     if (item !== item) {
       return i;
     }
   }
+
+  return -1;
 }
 
 var valueToObjectMap = new _map.default();

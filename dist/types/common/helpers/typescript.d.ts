@@ -9,7 +9,7 @@ export declare type Diff<T, U> = T extends U ? never : T;
 export declare type Filter<T, U> = T extends U ? T : never;
 export declare type Func<TThis, TArgs extends any[], TValue = void> = (this: TThis, ...args: TArgs) => TValue;
 export declare type FuncAny = Func<any, any[], any>;
-export declare type NotFunc<T> = T extends Function ? never : T;
+export declare type NotFunc<T> = T extends FuncAny ? never : T;
 export declare type ArgsOf<TFunc> = TFunc extends (...args: infer TArgs) => any ? TArgs : never;
 export declare type ResultOf<TFunc> = TFunc extends (...args: any[]) => infer TResult ? TResult : never;
 export declare type AsyncResultOf<TFunc> = AsyncValueOf<ResultOf<TFunc>>;

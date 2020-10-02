@@ -38,8 +38,7 @@ export function behavior(base) {
         unsubscribe = null;
 
         try {
-          // eslint-disable-next-line no-shadow
-          // tslint:disable-next-line:no-shadowed-variable
+          // eslint-disable-next-line @typescript-eslint/no-shadow
           const {
             value,
             unsubscribeValue

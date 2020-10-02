@@ -31,24 +31,22 @@ function forkToArray(ruleIterable) {
       } else {
         array.push(itemArray);
       }
+    } else if (item.type === RuleType.Never) {
+      never = true;
     } else {
-      if (item.type === RuleType.Never) {
-        never = true;
-      } else {
-        throw new Error('Unexpected rule type: ' + RuleType[item.type]);
-      }
+      throw new Error('Unexpected rule type: ' + RuleType[item.type]);
     }
   }
 
   if (array) {
     return array;
-  } else {
-    if (never) {
-      return RuleNever.instance;
-    }
-
-    return ARRAY_EMPTY;
   }
+
+  if (never) {
+    return RuleNever.instance;
+  }
+
+  return ARRAY_EMPTY;
 }
 
 const COMPRESS_FORKS_DISABLED = false;
@@ -65,12 +63,10 @@ function* iterateFork(fork) {
         if (!iteration.done) {
           if (isIterable(iteration.value)) {
             yield* iterateFork(iteration.value);
+          } else if (iteration.value.type === RuleType.Never) {
+            yield iteration.value;
           } else {
-            if (iteration.value.type === RuleType.Never) {
-              yield iteration.value;
-            } else {
-              yield compressForks(ruleIterable, iterator, iteration);
-            }
+            yield compressForks(ruleIterable, iterator, iteration);
           }
         } else {
           yield ARRAY_EMPTY;
@@ -103,10 +99,9 @@ export function* compressForks(ruleOrForkIterable, iterator, iteration) {
 
     yield array;
     return;
-  } else {
-    yield ruleOrFork;
   }
 
+  yield ruleOrFork;
   iteration = iterator.next();
   const nextIterable = iteration.value;
 
@@ -176,33 +171,36 @@ function* _iterateRule(object, rule, next) {
       }
 
     case RuleType.Any:
-      const {
-        rules
-      } = rule;
+      {
+        const {
+          rules
+        } = rule;
 
-      if (!rules.length) {
-        yield RuleNever.instance;
-        break; // throw new Error(`RuleType.Any rules.length=${rules.length}`)
-      }
-
-      if (rules.length === 1) {
-        yield [_iterateRule(object, rules[0], ruleNext)];
-      }
-
-      const any = function* () {
-        for (let i = 0, len = rules.length; i < len; i++) {
-          const subRule = rules[i];
-
-          if (!subRule) {
-            throw new Error(`RuleType.Any rule=${subRule}`);
-          }
-
-          yield _iterateRule(object, subRule, ruleNext);
+        if (!rules.length) {
+          yield RuleNever.instance;
+          break; // throw new Error(`RuleType.Any rules.length=${rules.length}`)
         }
-      };
 
-      yield any();
-      break;
+        if (rules.length === 1) {
+          yield [_iterateRule(object, rules[0], ruleNext)];
+        } // eslint-disable-next-line func-style
+
+
+        const any = function* () {
+          for (let i = 0, len = rules.length; i < len; i++) {
+            const subRule = rules[i];
+
+            if (!subRule) {
+              throw new Error(`RuleType.Any rule=${subRule}`);
+            }
+
+            yield _iterateRule(object, subRule, ruleNext);
+          }
+        };
+
+        yield any();
+        break;
+      }
 
     case RuleType.Repeat:
       {
@@ -223,17 +221,18 @@ function* _iterateRule(object, rule, next) {
           // == RuleType.Never
           yield RuleNever.instance;
           break;
-        }
+        } // eslint-disable-next-line func-style
+
 
         const repeatNext = function* (nextObject, index) {
           let repeatAction = condition ? condition(nextObject, index) : RuleRepeatAction.All;
 
           if (index < countMin) {
-            repeatAction = repeatAction & ~RuleRepeatAction.Fork;
+            repeatAction &= ~RuleRepeatAction.Fork;
           }
 
           if (index >= countMax) {
-            repeatAction = repeatAction & ~RuleRepeatAction.Next;
+            repeatAction &= ~RuleRepeatAction.Next;
           }
 
           if ((repeatAction & RuleRepeatAction.Fork) === 0) {

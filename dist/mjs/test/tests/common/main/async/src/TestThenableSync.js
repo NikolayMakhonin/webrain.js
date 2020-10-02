@@ -115,10 +115,10 @@ function createThenable(useExecutor) {
     assert.ok(resultResolve);
     assert.ok(resultReject);
     return [thenable, resultResolve, resultReject];
-  } else {
-    const thenable = new ThenableSync();
-    return [thenable, thenable.resolve.bind(thenable), thenable.reject.bind(thenable)];
   }
+
+  const thenable = new ThenableSync();
+  return [thenable, thenable.resolve.bind(thenable), thenable.reject.bind(thenable)];
 }
 
 function createValue(value, getValueType, addResolve, valueInfo) {
@@ -196,6 +196,9 @@ function createValue(value, getValueType, addResolve, valueInfo) {
           value = createIterator(value, true);
           break;
         }
+
+      default:
+        throw new Error('Unexpected behavior');
     }
   }
 
@@ -216,9 +219,9 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
     const onResult = (o, e) => {
       if (e) {
         return onrejected(o);
-      } else {
-        return onfulfilled(o);
       }
+
+      return onfulfilled(o);
     };
 
     const result = resolveValue(value, onResult, onResult);
@@ -263,15 +266,13 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
                 throw createThenValue(o);
               }, null);
             }
+          } else if (valueInfo.useReject) {
+            valueInfo.useReject = false;
+            calcValueInfo(valueInfo);
+            thenable = thenable.then(null, o => createThenValue(o));
           } else {
-            if (valueInfo.useReject) {
-              valueInfo.useReject = false;
-              calcValueInfo(valueInfo);
-              thenable = thenable.then(null, o => createThenValue(o));
-            } else {
-              calcValueInfo(valueInfo);
-              thenable = thenable.then(o => createThenValue(o), null);
-            }
+            calcValueInfo(valueInfo);
+            thenable = thenable.then(o => createThenValue(o), null);
           }
         }
 
@@ -293,15 +294,13 @@ function createThen(valueInfo, getValueType, addResolve, getThenType, getThenThr
                   throw createThenValue(o);
                 }, null);
               }
+            } else if (valueInfo.useReject) {
+              valueInfo.useReject = false;
+              calcValueInfo(valueInfo);
+              thenable = thenable.thenLast(null, o => createThenValue(o));
             } else {
-              if (valueInfo.useReject) {
-                valueInfo.useReject = false;
-                calcValueInfo(valueInfo);
-                thenable = thenable.thenLast(null, o => createThenValue(o));
-              } else {
-                calcValueInfo(valueInfo);
-                thenable = thenable.thenLast(o => createThenValue(o), null);
-              }
+              calcValueInfo(valueInfo);
+              thenable = thenable.thenLast(o => createThenValue(o), null);
             }
           }
         } catch (err) {

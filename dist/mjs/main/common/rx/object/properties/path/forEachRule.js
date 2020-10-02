@@ -1,15 +1,14 @@
-import { RuleRepeatAction } from './builder/contracts/rules';
-import { RuleType } from './builder/contracts/rules';
+import { RuleRepeatAction, RuleType } from './builder/contracts/rules';
 
-const repeatNext = function (object, index, repeatRule, ruleNext, parent, key, keyType, resolveRuleSubscribe) {
+function repeatNext(object, index, repeatRule, ruleNext, parent, key, keyType, resolveRuleSubscribe) {
   let repeatAction = repeatRule.condition ? repeatRule.condition(object, index) : RuleRepeatAction.All;
 
   if (index < repeatRule.countMin) {
-    repeatAction = repeatAction & ~RuleRepeatAction.Fork;
+    repeatAction &= ~RuleRepeatAction.Fork;
   }
 
   if (index >= repeatRule.countMax) {
-    repeatAction = repeatAction & ~RuleRepeatAction.Next;
+    repeatAction &= ~RuleRepeatAction.Next;
   }
 
   if ((repeatAction & RuleRepeatAction.Fork) === 0) {
@@ -38,7 +37,7 @@ const repeatNext = function (object, index, repeatRule, ruleNext, parent, key, k
   function repeatRuleNext(nextIterationObject) {
     repeatNext(nextIterationObject, index + 1, repeatRule, ruleNext, parent, key, keyType, resolveRuleSubscribe);
   }
-};
+}
 
 export function forEachRule(rule, object, next, parent, key, keyType, resolveRuleSubscribe) {
   while (true) {
@@ -50,9 +49,7 @@ export function forEachRule(rule, object, next, parent, key, keyType, resolveRul
       return;
     }
 
-    const ruleNext = rule.next || next ? (nextObject, nextParent, nextKey, nextKeyType) => {
-      forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe);
-    } : null;
+    const ruleNext = rule.next || next ? _ruleNext : null;
 
     switch (rule.type) {
       case RuleType.Nothing:
@@ -97,29 +94,31 @@ export function forEachRule(rule, object, next, parent, key, keyType, resolveRul
         }
 
       case RuleType.Any:
-        const {
-          rules
-        } = rule;
+        {
+          const {
+            rules
+          } = rule;
 
-        if (!rules.length) {
-          return;
-        }
-
-        if (rules.length === 1) {
-          forEachRule(rules[0], object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
-        }
-
-        for (let i = 0, len = rules.length; i < len; i++) {
-          const subRule = rules[i];
-
-          if (!subRule) {
-            throw new Error(`RuleType.Any rule=${subRule}`);
+          if (!rules.length) {
+            return;
           }
 
-          forEachRule(subRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
-        }
+          if (rules.length === 1) {
+            forEachRule(rules[0], object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
+          }
 
-        return;
+          for (let i = 0, len = rules.length; i < len; i++) {
+            const subRule = rules[i];
+
+            if (!subRule) {
+              throw new Error(`RuleType.Any rule=${subRule}`);
+            }
+
+            forEachRule(subRule, object, ruleNext, parent, key, keyType, resolveRuleSubscribe);
+          }
+
+          return;
+        }
 
       case RuleType.Repeat:
         {
@@ -139,5 +138,9 @@ export function forEachRule(rule, object, next, parent, key, keyType, resolveRul
       default:
         throw new Error('Unknown RuleType: ' + rule.type);
     }
+  }
+
+  function _ruleNext(nextObject, nextParent, nextKey, nextKeyType) {
+    forEachRule(rule.next, nextObject, next, nextParent, nextKey, nextKeyType, resolveRuleSubscribe);
   }
 }

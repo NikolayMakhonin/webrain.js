@@ -1,5 +1,6 @@
 export function equals(v1, v2) {
   return v1 === v2 // is NaN
+  // eslint-disable-next-line no-self-compare
   || v1 !== v1 && v2 !== v2;
 }
 export function isIterable(value) {
@@ -10,12 +11,14 @@ export function isIterator(value) {
 }
 export function typeToDebugString(type) {
   return type == null ? type + '' : type && type.name || type.toString();
-} // tslint:disable-next-line:no-empty no-shadowed-variable
+} // eslint-disable-next-line func-style
 
-export const EMPTY = function EMPTY() {};
+export const EMPTY = function EMPTY() {// empty
+};
 
 const allowCreateFunction = (() => {
   try {
+    // eslint-disable-next-line no-new-func
     const func = new Function('a', 'b', 'return a + b');
     return !!func;
   } catch (err) {
@@ -30,7 +33,8 @@ export function createFunction(alternativeFuncFactory, ...args) {
   let func = createFunctionCache[id];
 
   if (!func) {
-    createFunctionCache[id] = func = allowCreateFunction ? Function(...args) : alternativeFuncFactory();
+    createFunctionCache[id] = func = allowCreateFunction // eslint-disable-next-line no-new-func
+    ? Function(...args) : alternativeFuncFactory();
   }
 
   return func;

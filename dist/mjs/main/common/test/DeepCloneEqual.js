@@ -139,6 +139,9 @@ export class DeepCloneEqual {
           }
 
           return cloned;
+
+        default:
+          break;
       }
 
       if (isIterable(source) && !isIterable(cloned)) {
@@ -176,9 +179,9 @@ export class DeepCloneEqual {
       if (isPrimitive(o1) || isPrimitive(o2)) {
         if (equals(o1, o2) || (!options || !options.strictEqualFunctions) && typeof o1 === 'function' && typeof o2 === 'function' && o1.toString() === o2.toString()) {
           return true;
-        } else {
-          return false;
         }
+
+        return false;
       }
 
       if (nodeId == null) {
@@ -213,11 +216,11 @@ export class DeepCloneEqual {
           if (o1 === o2) {
             if (options.noCrossReferences) {
               return false;
-            } else {
-              cache1[id1] = nodeId;
-              cache2[id2] = nodeId;
-              return true;
             }
+
+            cache1[id1] = nodeId;
+            cache2[id2] = nodeId;
+            return true;
           }
 
           if (options.noCrossReferences && (cache1[id2] || cache2[id1])) {
@@ -246,9 +249,9 @@ export class DeepCloneEqual {
       } else if (o1 === o2) {
         if (options && options.noCrossReferences) {
           return false;
-        } else {
-          return true;
         }
+
+        return true;
       }
 
       if (customEqual) {
@@ -274,9 +277,9 @@ export class DeepCloneEqual {
       if (valueOf1 !== o1 || valueOf2 !== o2) {
         if (equals(valueOf1, valueOf2)) {
           return true;
-        } else {
-          return false;
         }
+
+        return false;
       }
 
       if (isIterable(o1)) {

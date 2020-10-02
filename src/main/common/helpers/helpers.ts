@@ -28,7 +28,8 @@ export function typeToDebugString(type) {
 		: (type && type.name || type.toString())
 }
 
-export function EMPTY(): any {
+// eslint-disable-next-line func-style
+export const EMPTY: any = function EMPTY() {
 	// empty
 }
 

@@ -4,7 +4,7 @@ export let now;
 if (typeof performance !== 'undefined' && performance.now) {
   now = performance.now.bind(performance);
 } else {
-  const start = process.hrtime();
+  const start = process.hrtime(); // eslint-disable-next-line @typescript-eslint/no-shadow
 
   now = function now() {
     const end = process.hrtime(start);

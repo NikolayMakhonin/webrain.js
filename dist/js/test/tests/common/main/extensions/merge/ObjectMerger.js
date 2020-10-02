@@ -183,19 +183,19 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
               if (_TestMerger.deepCloneEqual.equal(o.base, o.newer)) {
                 if (isObject(o.older)) {
                   return o.preferCloneBase ? _TestMerger.deepCloneEqual.clone(o.older) : _TestMerger.NONE;
-                } else {
-                  return _TestMerger.OLDER;
                 }
-              } else {
-                return o.preferCloneBase ? _TestMerger.deepCloneEqual.clone(o.newer) : _TestMerger.NONE;
+
+                return _TestMerger.OLDER;
               }
+
+              return o.preferCloneBase ? _TestMerger.deepCloneEqual.clone(o.newer) : _TestMerger.NONE;
             }
           } else if (isObject(o.older) && isObject(o.newer)) {
             if (_TestMerger.deepCloneEqual.equal(o.older, o.newer)) {
               return !o.preferCloneNewer ? _TestMerger.NEWER : o.preferCloneOlder ? _TestMerger.deepCloneEqual.clone(o.newer) : _TestMerger.OLDER;
-            } else {
-              return o.preferCloneOlder ? _TestMerger.deepCloneEqual.clone(o.newer) : _TestMerger.OLDER;
             }
+
+            return o.preferCloneOlder ? _TestMerger.deepCloneEqual.clone(o.newer) : _TestMerger.OLDER;
           }
 
           if (isObject(o.base) && isObject(o.older) && isObject(o.newer)) {
@@ -241,7 +241,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
     (0, _Mocha.it)('complex objects', function () {
       var complexObjectOptions = {
         undefined: true,
-        function: true,
+        'function': true,
         array: true,
         circular: true,
         circularClass: true,
@@ -791,17 +791,17 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
 
           if (_TestMerger.deepCloneEqual.equal(o.older, o.newer)) {
             return _TestMerger.NEWER;
-          } else {
-            return _TestMerger.OLDER;
           }
+
+          return _TestMerger.OLDER;
         },
         base: function base(o) {
           if (o.base && o.older && o.newer) {
             if (_TestMerger.deepCloneEqual.equal(o.base, o.newer)) {
               return _TestMerger.OLDER;
-            } else {
-              return _TestMerger.NEWER;
             }
+
+            return _TestMerger.NEWER;
           }
 
           return _TestMerger.BASE;
@@ -821,7 +821,7 @@ var assert = new _Assert.Assert(_TestMerger.deepCloneEqual);
 
       var obj = {
         undefined: void 0,
-        null: null,
+        'null': null,
         String: new String('String'),
         Number: new Number(1),
         Boolean: new Boolean(true),

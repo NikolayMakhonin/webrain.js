@@ -144,7 +144,8 @@ var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
 
       if (!path.canGet) {
         throw new Error('path.canGet == false');
-      }
+      } // eslint-disable-next-line func-style
+
 
       var getValue = function getValue() {
         return path.get(this);

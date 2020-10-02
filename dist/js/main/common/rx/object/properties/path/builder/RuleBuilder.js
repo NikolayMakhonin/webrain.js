@@ -348,9 +348,9 @@ var RuleBuilder = /*#__PURE__*/function () {
       var rule = new _rules2.RuleIf((0, _map.default)(exclusiveConditionRules).call(exclusiveConditionRules, function (o) {
         if ((0, _isArray.default)(o)) {
           return [o[0], o[1](_this2.clone(true)).ruleFirst];
-        } else {
-          return o(_this2.clone(true)).ruleFirst;
         }
+
+        return o(_this2.clone(true)).ruleFirst;
       }));
       return this.rule(rule);
     }

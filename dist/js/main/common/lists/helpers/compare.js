@@ -11,7 +11,10 @@ var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-st
 
 var _objectUniqueId = require("../../helpers/object-unique-id");
 
+/* eslint-disable no-self-compare */
+
 /* tslint:disable:use-isnan */
+// eslint-disable-next-line no-duplicate-imports
 // noinspection DuplicatedCode
 function compareFast(o1, o2) {
   if (o1 === o2) {
@@ -162,7 +165,9 @@ function compareStrict(o1, o2) {
 
     if (o1 > o2) {
       return 1;
-    } else if (o1 < o2) {
+    }
+
+    if (o1 < o2) {
       return -1;
     }
 

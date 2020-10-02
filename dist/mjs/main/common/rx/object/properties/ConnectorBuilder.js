@@ -92,7 +92,8 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
 
     if (!path.canGet) {
       throw new Error('path.canGet == false');
-    }
+    } // eslint-disable-next-line func-style
+
 
     let getValue = function () {
       return path.get(this);

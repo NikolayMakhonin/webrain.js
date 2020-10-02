@@ -138,19 +138,19 @@ describe('common > extensions > merge > ObjectMerger', function () {
               if (deepCloneEqual.equal(o.base, o.newer)) {
                 if (isObject(o.older)) {
                   return o.preferCloneBase ? deepCloneEqual.clone(o.older) : NONE;
-                } else {
-                  return OLDER;
                 }
-              } else {
-                return o.preferCloneBase ? deepCloneEqual.clone(o.newer) : NONE;
+
+                return OLDER;
               }
+
+              return o.preferCloneBase ? deepCloneEqual.clone(o.newer) : NONE;
             }
           } else if (isObject(o.older) && isObject(o.newer)) {
             if (deepCloneEqual.equal(o.older, o.newer)) {
               return !o.preferCloneNewer ? NEWER : o.preferCloneOlder ? deepCloneEqual.clone(o.newer) : OLDER;
-            } else {
-              return o.preferCloneOlder ? deepCloneEqual.clone(o.newer) : OLDER;
             }
+
+            return o.preferCloneOlder ? deepCloneEqual.clone(o.newer) : OLDER;
           }
 
           if (isObject(o.base) && isObject(o.older) && isObject(o.newer)) {
@@ -196,7 +196,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
     it('complex objects', function () {
       const complexObjectOptions = {
         undefined: true,
-        function: true,
+        'function': true,
         array: true,
         circular: true,
         circularClass: true,
@@ -730,17 +730,17 @@ describe('common > extensions > merge > ObjectMerger', function () {
 
           if (deepCloneEqual.equal(o.older, o.newer)) {
             return NEWER;
-          } else {
-            return OLDER;
           }
+
+          return OLDER;
         },
         base: o => {
           if (o.base && o.older && o.newer) {
             if (deepCloneEqual.equal(o.base, o.newer)) {
               return OLDER;
-            } else {
-              return NEWER;
             }
+
+            return NEWER;
           }
 
           return BASE;
@@ -760,7 +760,7 @@ describe('common > extensions > merge > ObjectMerger', function () {
 
       const obj = {
         undefined: void 0,
-        null: null,
+        'null': null,
         String: new String('String'),
         Number: new Number(1),
         Boolean: new Boolean(true),

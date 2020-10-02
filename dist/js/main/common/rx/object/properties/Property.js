@@ -161,7 +161,7 @@ var Property = /*#__PURE__*/function (_ObservableClass) {
       var _this3 = this;
 
       _deSerialize(serializedValue.value, function (o) {
-        return _this3.value = o;
+        _this3.value = o;
       });
     } // endregion
 

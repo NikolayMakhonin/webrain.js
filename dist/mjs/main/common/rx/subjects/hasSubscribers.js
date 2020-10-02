@@ -1,8 +1,7 @@
 import { BehaviorSubject } from './behavior';
 import { Subject } from './subject';
 
-// eslint-disable-next-line no-shadow
-// tslint:disable-next-line:no-shadowed-variable
+// eslint-disable-next-line @typescript-eslint/no-shadow
 function createHasSubscribersSubjectDefault(hasSubscribers) {
   const subject = new BehaviorSubject(hasSubscribers);
   subject.unsubscribeValue = null;
@@ -18,8 +17,7 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
 
       if (description) {
         subscriber.description = description;
-      } // eslint-disable-next-line no-shadow
-      // tslint:disable-next-line:no-shadowed-variable
+      } // eslint-disable-next-line @typescript-eslint/no-shadow
 
 
       const {
@@ -32,8 +30,7 @@ export function hasSubscribers(base, createHasSubscribersSubject = createHasSubs
       }
 
       return () => {
-        // eslint-disable-next-line no-shadow
-        // tslint:disable-next-line:no-shadowed-variable
+        // eslint-disable-next-line @typescript-eslint/no-shadow
         const {
           hasSubscribers
         } = this;
