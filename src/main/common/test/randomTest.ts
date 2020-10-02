@@ -287,7 +287,7 @@ export function searchBestErrorBuilder<TMetrics>({
 	onFound?: (reportMin: string) => ThenableOrIteratorOrValue<any>,
 	consoleOnlyBestErrors?: boolean,
 }): TSearchBestError<TMetrics> {
-	return function *<TContext>(
+	return function *_searchBestErrorBuilder<TContext>(
 		_this: TContext,
 		{
 			customSeed,
@@ -305,7 +305,7 @@ export function searchBestErrorBuilder<TMetrics>({
 		let interceptConsoleDisabled
 		const interceptConsoleDispose = customSeed == null
 			&& consoleOnlyBestErrors
-			&& interceptConsole(function () {
+			&& interceptConsole(function _consoleHandler() {
 				return !interceptConsoleDisabled
 			})
 
@@ -336,19 +336,22 @@ export function searchBestErrorBuilder<TMetrics>({
 					stopPredicate: testRunnerMetrics => {
 						const now = Date.now()
 						if (lastErrorIteration != null) {
-							testRunnerMetrics.iterationsFromLastError = testRunnerMetrics.iterationNumber - lastErrorIteration
+							testRunnerMetrics.iterationsFromLastError =
+								testRunnerMetrics.iterationNumber - lastErrorIteration
 						}
 						if (lastErrorTime != null) {
 							testRunnerMetrics.iterationsFromLastError = now - lastErrorTime
 						}
 						if (minErrorIteration != null) {
-							testRunnerMetrics.iterationsFromMinError = testRunnerMetrics.iterationNumber - minErrorIteration
+							testRunnerMetrics.iterationsFromMinError =
+								testRunnerMetrics.iterationNumber - minErrorIteration
 						}
 						if (minErrorTime != null) {
 							testRunnerMetrics.iterationsFromMinError = now - minErrorTime
 						}
 						if (equalErrorIteration != null) {
-							testRunnerMetrics.iterationsFromEqualError = testRunnerMetrics.iterationNumber - equalErrorIteration
+							testRunnerMetrics.iterationsFromEqualError =
+								testRunnerMetrics.iterationNumber - equalErrorIteration
 						}
 						if (equalErrorTime != null) {
 							testRunnerMetrics.iterationsFromEqualError = now - equalErrorTime

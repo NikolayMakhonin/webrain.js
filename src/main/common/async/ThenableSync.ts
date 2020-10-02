@@ -239,12 +239,16 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 					: createResolved(result as TResult1, customResolveValue)
 			}
 			case ThenableSyncStatus.Rejected:
-				if (!onrejected && !lastExpression && (!customResolveValue || customResolveValue === this._customResolveValue)) {
+				if (!onrejected && !lastExpression && (
+					!customResolveValue || customResolveValue === this._customResolveValue
+				)) {
 					return this as any
 				}
 				return reject(this._error)
 			default: {
-				if (!onfulfilled && !onrejected && (!customResolveValue || customResolveValue === this._customResolveValue)) {
+				if (!onfulfilled && !onrejected && (
+					!customResolveValue || customResolveValue === this._customResolveValue
+				)) {
 					return this as any
 				}
 

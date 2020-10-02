@@ -14,7 +14,7 @@ import {
 } from '../../../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules'
 import {IArrayTree, iterablesToArrays, treeToSequenceVariants} from '../../../../../../../../../../../main/common/test/Variants'
 
-// region helpres
+// region helpers
 
 // export interface IRuleBuildersBuilder<TObject = any, TValueKeys extends string | number = never>
 // 	extends IRuleBuilder<TObject, TValueKeys>
@@ -220,7 +220,9 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		return this.ruleFactory(function mapAny(b) { return b.mapAny() })
 	}
 
-	public mapKey<TKey, TValue = MapValueOf<TObject>>(key: ArrayOrValue<TKey>): IRuleBuildersBuilder<TValue, TValueKeys> {
+	public mapKey<TKey, TValue = MapValueOf<TObject>>(
+		key: ArrayOrValue<TKey>,
+	): IRuleBuildersBuilder<TValue, TValueKeys> {
 		const variants = iterablesToArrays(treeToSequenceVariants([key]))
 		return this.variants(...variants.map(args => bb => bb
 			.ruleFactory(function mapKey(b) { return b.mapKey(...args) })))
@@ -282,7 +284,9 @@ export class RuleBuildersBuilder<TObject = any, TValueKeys extends string | numb
 		TKeys extends keyof TObject | ANY,
 		TValue = ObjectValueOf<TObject, TKeys extends ANY ? any : TKeys>
 	>(...propertiesNames: Array<ArrayOrValue<TKeys>>): IRuleBuildersBuilder<TValue, TValueKeys>
-	public propertyNames<TValue>(...propertiesNames: Array<ArrayOrValue<string>>): IRuleBuildersBuilder<TValue, TValueKeys>
+	public propertyNames<TValue>(
+		...propertiesNames: Array<ArrayOrValue<string>>
+	): IRuleBuildersBuilder<TValue, TValueKeys>
 	public propertyNames<TValue>(...propertiesNames: string[]): IRuleBuildersBuilder<TValue, TValueKeys> {
 		const variants = iterablesToArrays(treeToSequenceVariants(propertiesNames))
 		return this.variants(...variants.map(args => bb => bb

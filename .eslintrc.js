@@ -5,7 +5,50 @@ module.exports = {
 		// 'plugin:@typescript-eslint/recommended-requiring-type-checking',
 	],
 	rules: {
-		'no-tabs': 'off',
+		'function-call-argument-newline': 'off',
+		'function-paren-newline'        : 'off',
+		'lines-around-comment'          : 'off',
+		'default-param-last'            : 'off',
+		'no-tabs'                       : 'off',
+		'newline-per-chained-call'      : ['off', {ignoreChainWithDepth: 2}],
+		'object-curly-newline'          : [
+			'warn',
+			{
+				ObjectExpression: {
+					consistent   : true,
+					minProperties: 6,
+				},
+				ObjectPattern: {
+					consistent   : true,
+					minProperties: 6,
+				},
+				ImportDeclaration: {
+					consistent   : true,
+					minProperties: 6,
+				},
+				ExportDeclaration: {
+					consistent   : true,
+					minProperties: 6,
+				},
+			},
+		],
+
+		'no-dupe-class-members'                   : 'off',
+		'@typescript-eslint/no-dupe-class-members': ['error'],
+
+		'no-redeclare'                   : 'off',
+		'@typescript-eslint/no-redeclare': 'off',
+
+		'no-unused-vars'                   : 'off',
+		'@typescript-eslint/no-unused-vars': [
+			'warn',
+			{
+				vars              : 'all',
+				args              : 'after-used',
+				ignoreRestSiblings: true,
+				caughtErrors      : 'all',
+			},
+		],
 	},
 
 	env: {

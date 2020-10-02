@@ -15,6 +15,7 @@ export function behavior<TBase>(base: TClass<TBase>): any {
 		public unsubscribeValue: T
 
 		constructor(value?: T) {
+			// eslint-disable-next-line constructor-super
 			super()
 			if (typeof value !== 'undefined') {
 				this.value = value

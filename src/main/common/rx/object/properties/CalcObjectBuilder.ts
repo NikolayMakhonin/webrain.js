@@ -25,7 +25,7 @@ function createGetValue<TObject, TCalcSource, TValue>(
 		.append(o => getValue.call(o) as TValue)
 		.init()
 
-	return function (this: TObject) {
+	return function _getValue(this: TObject) {
 		return path.get(this) as TValue
 	}
 }

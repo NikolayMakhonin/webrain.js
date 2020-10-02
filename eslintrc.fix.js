@@ -40,8 +40,9 @@ const rules = {
 			objectsInArrays: false,
 		},
 	],
+	'no-extra-semi'     : 'error',
 	'semi-style'        : ['error', 'first'],
-	semi                : ['error', 'never', {beforeStatementContinuationChars: 'never'}],
+	semi                : ['error', 'never', {beforeStatementContinuationChars: 'always'}],
 	'operator-linebreak': [
 		'error', 'before', {
 			overrides: {'=': 'after'},
@@ -57,6 +58,7 @@ const rules = {
 			functions: 'always-multiline',
 		},
 	],
+	quotes: ['error', 'single', {avoidEscape: true}],
 }
 
 const rulesOff = {}

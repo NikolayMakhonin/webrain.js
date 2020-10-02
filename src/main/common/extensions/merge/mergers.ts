@@ -772,6 +772,7 @@ export class MergerVisitor implements IMergerVisitor {
 					default:
 						throw new Error('Unknown mergeResult: ' + mergeResult)
 				}
+				// eslint-disable-next-line no-unreachable
 				throw new Error('Unreachable code')
 			default:
 				throw new Error('Unknown mergeResult: ' + mergeResult)
@@ -803,6 +804,7 @@ export class MergerVisitor implements IMergerVisitor {
 				throw new Error('Unknown mergeResult: ' + mergeResult)
 		}
 
+		// eslint-disable-next-line no-unreachable
 		throw new Error('Unreachable code')
 	}
 }

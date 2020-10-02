@@ -30,7 +30,7 @@ export function dependWait<
 		timeout = webrainOptions.timeouts.dependWait
 	}
 
-	return dependX(function () {
+	return dependX(function _dependWait() {
 		const state = this
 
 		const funcState = getOrCreateCallState(func).apply(state._this, arguments)
@@ -90,7 +90,7 @@ export function autoCalc<
 	func: Func<TThisOuter, TArgs, TResultInner>,
 	dontLogErrors?: boolean,
 ): Func<TThisOuter, TArgs, IUnsubscribe> {
-	return function () {
+	return function _autoCalc() {
 		return subscribeCallState(
 			getOrCreateCallState(func).apply(this, arguments),
 			dontLogErrors
@@ -131,7 +131,7 @@ export function dependWrapThis<
 	wrapThis: (_this: TThis) => TWrapThis,
 	func: Func<TWrapThis, TArgs, TResult>,
 ): (_this: TThis) => Func<never, TArgs, TResult> {
-	return function (_this: TThis) {
+	return function _dependWrapThis(_this: TThis) {
 		return dependBindThis(wrapThis(_this), func)
 	}
 }

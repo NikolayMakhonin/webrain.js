@@ -1505,6 +1505,7 @@ export function createCallStateProvider<
 	function createCallWithArgs(...args: TArgs): TCall<TArgs>
 	function createCallWithArgs(): TCall<TArgs> {
 		const args = arguments
+		// eslint-disable-next-line func-names
 		return function (_this, _func) {
 			return _func.apply(_this, args)
 		}

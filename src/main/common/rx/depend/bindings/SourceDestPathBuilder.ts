@@ -4,7 +4,15 @@ import {CallStatusShort} from '../../../rx/depend/core/contracts'
 import {depend} from '../../../rx/depend/core/depend'
 import {INextPathGetSet, Path, PathGetSet, pathGetSetBuild, TNextPath} from '../../object/properties/path/builder'
 import {Binder} from './Binder'
-import {IBinder, IDestBuilder, ISource, ISourceBuilder, ISourceDestBuilder, TDest, TDestFunc} from './contracts'
+import {
+	IBinder,
+	IDestBuilder,
+	ISource,
+	ISourceBuilder,
+	ISourceDestBuilder,
+	TDest,
+	TDestFunc,
+} from './contracts'
 import {sourceDestBuilder} from './SourceDestBuilder'
 
 class SourcePath<TValue> implements ISource<TValue> {

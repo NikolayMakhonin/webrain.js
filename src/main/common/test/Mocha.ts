@@ -12,7 +12,7 @@ export const xdescribe: (name, func: (this: {
 export function describe(name, func: (this: {
 	timeout(time: number),
 }) => any) {
-	return globalScope.describe.call(this, name, function () {
+	return globalScope.describe.call(this, name, function _describe() {
 		return func.call(this)
 	})
 }
@@ -26,7 +26,7 @@ export function it(name, func: (this: {
 	timeout(time: number),
 }) => any) {
 	return globalScope.it.call(this, name, isFuncWithoutParameters(func)
-		? function () {
+		? function _it() {
 			try {
 				const result = func.call(this)
 
@@ -48,7 +48,7 @@ export function it(name, func: (this: {
 				assert.assertNotHandledErrors()
 			}
 		}
-		: function (done) {
+		: function _itAsync(done) {
 			try {
 				return func.call(this, err => {
 					assert.assertNotHandledErrors()

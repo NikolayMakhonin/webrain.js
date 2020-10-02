@@ -37,7 +37,7 @@ export function searchBestErrorBuilderNode<TMetrics>({
 		},
 	})
 
-	return function *<TContext>(
+	return function *_searchBestErrorBuilderNode<TContext>(
 		_this: TContext,
 		{
 			customSeed,

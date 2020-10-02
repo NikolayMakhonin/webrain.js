@@ -1,6 +1,14 @@
 import {ValueKeyType} from './builder/contracts/common'
 import {IChangeItem, IRuleSubscribe} from './builder/contracts/rule-subscribe'
-import {IRuleAction, IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction, IRule, RuleType} from './builder/contracts/rules'
+import {
+	IRuleAction,
+	IRuleAny,
+	IRuleIf,
+	IRuleRepeat,
+	RuleRepeatAction,
+	IRule,
+	RuleType,
+} from './builder/contracts/rules'
 
 export type INextRuleIterable = (object: any) => IRuleIterable
 export type IRuleOrIterable = IRuleAction | IRuleIterable | INextRuleIterable

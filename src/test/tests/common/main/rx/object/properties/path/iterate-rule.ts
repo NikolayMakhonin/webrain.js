@@ -60,7 +60,11 @@ describe('common > main > rx > properties > builder > iterate-rule', function ()
 		return dest
 	}
 
-	function rulesIteratorToObject(ruleIterator: IRuleIterator, obj: any = {}, prevIsFork?: boolean): IUnsubscribeOrVoid {
+	function rulesIteratorToObject(
+		ruleIterator: IRuleIterator,
+		obj: any = {},
+		prevIsFork?: boolean,
+	): IUnsubscribeOrVoid {
 		let iteration
 		if (!ruleIterator || (iteration = ruleIterator.next()).done) {
 			obj._end = true
@@ -100,7 +104,8 @@ describe('common > main > rx > properties > builder > iterate-rule', function ()
 				const unsubscribe = rulesIteratorToObject(
 					getRuleIterable
 						? getRuleIterable(testObject)[Symbol.iterator]()
-						: null, newObj, isFork)
+						: null, newObj, isFork,
+				)
 				mergeObjects(obj, {[rule.description]: newObj})
 				return unsubscribe
 			},
@@ -225,8 +230,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function ()
 					b.any(
 						b => b.never(),
 						b => b.nothing(),
-					),
-				)
+					))
 				.p('a'),
 			'a',
 		)
@@ -530,8 +534,7 @@ describe('common > main > rx > properties > builder > iterate-rule', function ()
 							b => b.any(
 								b => b.p('a'),
 								b => b.p('b'),
-							),
-						),
+							)),
 					b => b.p('c'),
 				)
 				.p<any>('d'),

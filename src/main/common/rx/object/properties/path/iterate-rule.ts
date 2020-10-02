@@ -1,7 +1,16 @@
+/* eslint-disable func-names */
 import {isIterable} from '../../../../helpers/helpers'
 import {IUnsubscribe, IUnsubscribeOrVoid} from '../../../subjects/observable'
 import {IRuleSubscribe} from './builder/contracts/rule-subscribe'
-import {IRule, IRuleAction, IRuleAny, IRuleIf, IRuleRepeat, RuleRepeatAction, RuleType} from './builder/contracts/rules'
+import {
+	IRule,
+	IRuleAction,
+	IRuleAny,
+	IRuleIf,
+	IRuleRepeat,
+	RuleRepeatAction,
+	RuleType,
+} from './builder/contracts/rules'
 import {RuleNever} from './builder/rules'
 
 export type INextRuleIterable = (object: any) => IRuleIterable

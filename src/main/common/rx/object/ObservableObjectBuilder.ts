@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import {createFunction, missingSetter} from '../../helpers/helpers'
 import {webrainEquals} from '../../helpers/webrainOptions'
 import {depend} from '../../rx/depend/core/depend'

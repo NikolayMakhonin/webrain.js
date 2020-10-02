@@ -78,12 +78,16 @@ export class RuleBuilder<TObject = any, TValueKeys extends string | number = nev
 				(o: any) => hasDefaultProperty(o) ? RuleRepeatAction.Next : RuleRepeatAction.Fork,
 				b => this.valuePropertyDefaultName === VALUE_PROPERTY_DEFAULT
 					? b.func<TValue>(
-						createSubscribeObject<any, TValue>(SubscribeObjectType.ValueProperty, null, VALUE_PROPERTY_DEFAULT),
+						createSubscribeObject<any, TValue>(
+							SubscribeObjectType.ValueProperty, null, VALUE_PROPERTY_DEFAULT,
+						),
 						SubscribeObjectType.ValueProperty,
 						VALUE_PROPERTY_PREFIX,
 					)
 					: b.func<TValue>(
-						createSubscribeObject<any, TValue>(SubscribeObjectType.ValueProperty, null, this.valuePropertyDefaultName),
+						createSubscribeObject<any, TValue>(
+							SubscribeObjectType.ValueProperty, null, this.valuePropertyDefaultName,
+						),
 						SubscribeObjectType.ValueProperty,
 						VALUE_PROPERTY_PREFIX + this.valuePropertyDefaultName,
 					),

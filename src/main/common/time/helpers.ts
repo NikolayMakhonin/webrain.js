@@ -1,5 +1,6 @@
 import {Thenable} from '../async/async'
 
+// eslint-disable-next-line no-undef
 export const performanceNow = typeof performance !== 'undefined'
 	// eslint-disable-next-line no-undef
 	? (): number => performance.now()
@@ -9,7 +10,9 @@ export const performanceNow = typeof performance !== 'undefined'
 	}
 
 export function delay(timeMilliseconds): Thenable {
-	return new Promise(resolve => setTimeout(resolve, timeMilliseconds))
+	return new Promise(resolve => {
+		setTimeout(resolve, timeMilliseconds)
+	})
 }
 
 // region fast now

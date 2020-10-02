@@ -177,7 +177,11 @@ describe('common > main > rx > properties > builder > RuleBuilder', function () 
 		}
 	}
 
-	function testObject(properties: string | string[], subscribe: ISubscribeObject<any, string>, isValueObject: boolean) {
+	function testObject(
+		properties: string | string[],
+		subscribe: ISubscribeObject<any, string>,
+		isValueObject: boolean,
+	) {
 		const builder = new ObservableObjectBuilder()
 
 		if (properties !== ANY) {
@@ -246,7 +250,11 @@ describe('common > main > rx > properties > builder > RuleBuilder', function () 
 		)
 	}
 
-	function testArray(properties: string | string[], subscribe: ISubscribeObject<any, string>, isValueObject: boolean) {
+	function testArray(
+		properties: string | string[],
+		subscribe: ISubscribeObject<any, string>,
+		isValueObject: boolean,
+	) {
 		if (properties === ANY || properties.indexOf('length') >= 0) {
 			return
 		}
@@ -432,10 +440,18 @@ describe('common > main > rx > properties > builder > RuleBuilder', function () 
 			for (const objectType of expected.objectTypes) {
 				switch (objectType) {
 					case 'object':
-						testObject(expected.properties, rule.subscribe, rule.subType === SubscribeObjectType.ValueProperty)
+						testObject(
+							expected.properties,
+							rule.subscribe,
+							rule.subType === SubscribeObjectType.ValueProperty,
+						)
 						break
 					case 'array':
-						testArray(expected.properties, rule.subscribe, rule.subType === SubscribeObjectType.ValueProperty)
+						testArray(
+							expected.properties,
+							rule.subscribe,
+							rule.subType === SubscribeObjectType.ValueProperty,
+						)
 						break
 					case 'map':
 						testMap(expected.properties, rule.subscribe)

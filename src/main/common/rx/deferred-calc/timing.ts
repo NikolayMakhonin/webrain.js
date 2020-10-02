@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+
 export interface ITiming {
 	now(): number
 	setTimeout(handler: () => void, timeout: number): number

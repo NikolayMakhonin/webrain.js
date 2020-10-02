@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* tslint:disable:no-shadowed-variable */
 
 export let now

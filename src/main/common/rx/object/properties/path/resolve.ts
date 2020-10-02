@@ -33,7 +33,11 @@ export function resolvePath<TValue>(value: ThenableOrIteratorOrValue<TValue>): T
 
 		value = resolveAsync(
 			value as ThenableOrIteratorOrValue<HasDefaultOrValue<TValue>>,
-			null, null, null, customResolveValue)
+			null,
+			null,
+			null,
+			customResolveValue,
+		)
 
 		if (!_getValue) {
 			return value as ThenableOrValue<TValue>

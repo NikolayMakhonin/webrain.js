@@ -10,7 +10,11 @@ import {SubscribeObjectType} from './builder/rules-subscribe'
 import {forEachRule} from './forEachRule'
 import {resolveValueProperty} from './resolve'
 
-const dependForEachRule = depend(function<TObject, TValue> (this: TObject, rule: IRule, emitLastValue: boolean) {
+const dependForEachRule = depend(function dependForEachRule<TObject, TValue>(
+	this: TObject,
+	rule: IRule,
+	emitLastValue: boolean,
+) {
 	return resolveAsync(
 		new ThenableSync((resolve, reject) => {
 			let rejected = false

@@ -1,7 +1,9 @@
 import {OptimizationStatus} from '../contracts'
 import v8 from './runtime-adapter'
 
-export {v8}
+export {
+	v8,
+}
 
 export function getObjectOptimizationInfo(obj) {
 	const result = {

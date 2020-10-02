@@ -60,7 +60,7 @@ export function createPerceptronNaked(layerSize, layersCount, check = true) {
 	if (check) {
 		assert.strictEqual(
 			output.call(2, 5, 10).toPrecision(6),
-			(100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
+			(100 * ((layerSize - 1) * layerSize / 2) * (layerSize ** (layersCount - 1))).toPrecision(6),
 		)
 	}
 
@@ -175,14 +175,14 @@ export function createPerceptron(
 	if (check) {
 		assert.strictEqual(
 			__outputCall(output).toPrecision(6),
-			(callId * 100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
+			(callId * 100 * ((layerSize - 1) * layerSize / 2) * (layerSize ** (layersCount - 1))).toPrecision(6),
 		)
 
 		inputState.invalidate()
 
 		assert.strictEqual(
 			__outputCall(output).toPrecision(6),
-			(callId * 100 * ((layerSize - 1) * layerSize / 2) * Math.pow(layerSize, layersCount - 1)).toPrecision(6),
+			(callId * 100 * ((layerSize - 1) * layerSize / 2) * (layerSize ** (layersCount - 1))).toPrecision(6),
 		)
 	}
 
