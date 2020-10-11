@@ -1,5 +1,5 @@
 /* tslint:disable:no-circular-imports no-shadowed-variable */
-import {IteratorOrValue, ThenableIterator} from '../../../async/async'
+import {IteratorOrValue, registerStateProvider, ThenableIterator} from '../../../async/async'
 import {isIterator} from '../../../helpers/helpers'
 import {TCallStateAny} from './contracts'
 
@@ -14,6 +14,11 @@ export function getCurrentState() {
 export function setCurrentState(state: TCallStateAny) {
 	currentState = state
 }
+
+registerStateProvider({
+	getState: getCurrentState,
+	setState: setCurrentState,
+})
 
 // endregion
 

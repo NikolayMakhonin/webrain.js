@@ -1,7 +1,6 @@
 /* tslint:disable:no-circular-imports */
 import {equals, isIterator} from '../helpers/helpers'
 import {TCallStateAny} from '../rx/depend/core/contracts'
-import {getCurrentState, setCurrentState} from '../rx/depend/core/current-state'
 
 export type ThenableOrValue<T> = T | Thenable<T>
 
@@ -70,6 +69,73 @@ export enum ResolveResult {
 
 	ImmediateError = Immediate | Error,
 	DeferredError = Deferred | Error,
+}
+
+interface IStateProvider<TState> {
+	getState: () => TState,
+	setState: (state: TState) => void
+}
+
+class CombinedStateProvider implements IStateProvider<any> {
+	private _stateProviders: any[] = []
+	private _stateProvidersWereUsed: boolean = false
+
+	registerStateProvider<TState>(stateProvider: IStateProvider<TState>) {
+		if (this._stateProvidersWereUsed) {
+			throw new Error('You should add state provider only before using them')
+		}
+		if (this._stateProviders.indexOf(stateProvider) >= 0) {
+			throw new Error('stateProvider already registered')
+		}
+		this._stateProviders.push(stateProvider)
+	}
+
+	getState(): any {
+		this._stateProvidersWereUsed = true
+
+		const len = this._stateProviders.length
+		if (len === 0) {
+			return null
+		}
+		if (len === 1) {
+			return this._stateProviders[0].getState()
+		}
+
+		const states = []
+		for (let i = 0; i < len; i++) {
+			states[i] = this._stateProviders[i].getState()
+		}
+		return states
+	}
+
+	setState(state: any): void {
+		if (!this._stateProvidersWereUsed) {
+			throw new Error('Unexpected behavior')
+		}
+
+		const len = this._stateProviders.length
+		if (len === 0) {
+			throw new Error('Unexpected behavior')
+		}
+		if (len === 1) {
+			this._stateProviders[0].setState(state)
+			return
+		}
+
+		if (!Array.isArray(state) || state.length !== len) {
+			throw new Error('Unexpected behavior')
+		}
+
+		for (let i = 0; i < len; i++) {
+			this._stateProviders[i].setState(state[i])
+		}
+	}
+}
+
+export const stateProviderDefault = new CombinedStateProvider()
+
+export function registerStateProvider<TState>(stateProvider: IStateProvider<TState>) {
+	stateProviderDefault.registerStateProvider(stateProvider)
 }
 
 function resolveIterator<T>(
@@ -194,11 +260,11 @@ function _resolveValue<T>(
 	customResolveValue: TResolveAsyncValue<T>,
 	callState?: TCallStateAny,
 ): ResolveResult {
-	const prevCallState = getCurrentState()
+	const prevCallState = stateProviderDefault.getState()
 	if (callState == null) {
 		callState = prevCallState
 	} else {
-		setCurrentState(callState)
+		stateProviderDefault.setState(callState)
 	}
 
 	try {
@@ -273,7 +339,7 @@ function _resolveValue<T>(
 			return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate
 		}
 	} finally {
-		setCurrentState(prevCallState)
+		stateProviderDefault.setState(prevCallState)
 	}
 }
 

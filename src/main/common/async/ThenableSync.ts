@@ -1,10 +1,10 @@
-import {getCurrentState, setCurrentState} from '../rx/depend/core/current-state'
 import {
 	isAsync,
 	isThenable, IThenable,
 	ResolveResult,
 	resolveValue,
 	resolveValueFunc,
+	stateProviderDefault,
 	ThenableOrIteratorOrValue,
 	ThenableOrValue,
 	TOnFulfilled,
@@ -259,21 +259,21 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 					this._onrejected = _onrejected = []
 				}
 
-				const callState = getCurrentState()
+				const callState = stateProviderDefault.getState()
 
 				const rejected = onrejected
 					? (value): any => {
 						let isError
 
-						const prevState = getCurrentState()
+						const prevState = stateProviderDefault.getState()
 						try {
-							setCurrentState(callState)
+							stateProviderDefault.setState(callState)
 							value = onrejected(value)
 						} catch (err) {
 							isError = true
 							value = err
 						} finally {
-							setCurrentState(prevState)
+							stateProviderDefault.setState(prevState)
 						}
 
 						if (isError) {
@@ -295,15 +295,15 @@ export class ThenableSync<TValue = any> implements IThenable<TValue> {
 					? (value: any): any => {
 						let isError
 
-						const prevState = getCurrentState()
+						const prevState = stateProviderDefault.getState()
 						try {
-							setCurrentState(callState)
+							stateProviderDefault.setState(callState)
 							value = onfulfilled(value) as any
 						} catch (err) {
 							isError = true
 							value = err
 						} finally {
-							setCurrentState(prevState)
+							stateProviderDefault.setState(prevState)
 						}
 
 						if (isError) {
