@@ -201,9 +201,9 @@ export class DependSet<V>
 	// endregion
 }
 
-DependSet.prototype.dependAll = depend(DependSet.prototype.dependAll, null, null, true)
-DependSet.prototype.dependAnyValue = depend(DependSet.prototype.dependAnyValue, null, null, true)
-DependSet.prototype.dependValue = depend(DependSet.prototype.dependValue, null, null, true)
+DependSet.prototype.dependAll = depend(DependSet.prototype.dependAll, null, null, null, true)
+DependSet.prototype.dependAnyValue = depend(DependSet.prototype.dependAnyValue, null, null, null, true)
+DependSet.prototype.dependValue = depend(DependSet.prototype.dependValue, null, null, null, true)
 
 registerMergeable(DependSet)
 

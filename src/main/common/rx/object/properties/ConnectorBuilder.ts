@@ -295,7 +295,7 @@ export class ConnectorBuilder<
 			return path.get(this)
 		}
 		if (isDepend) {
-			getValue = depend(getValue, null, makeDependPropertySubscriber(name))
+			getValue = depend(getValue, null, null, makeDependPropertySubscriber(name))
 			if (isWait) {
 				getValue = dependWait(getValue, waitCondition as any, waitTimeout, isLazy)
 			} else if (isLazy) {

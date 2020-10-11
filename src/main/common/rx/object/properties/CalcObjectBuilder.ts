@@ -2,7 +2,7 @@ import {IteratorOrValue, ThenableOrIteratorOrValue} from '../../../async/async'
 import {FuncAny, NotFunc, TClass} from '../../../helpers/typescript'
 import {VALUE_PROPERTY_DEFAULT} from '../../../helpers/value-property'
 import {depend, dependX} from '../../../rx/depend/core/depend'
-import {CallState} from '../../depend/core/CallState'
+import {CallState, TCreateGetValueIds} from '../../depend/core/CallState'
 import {IDeferredOptions} from '../../depend/core/contracts'
 import {makeDependPropertySubscriber} from '../helpers'
 import {ObservableClass} from '../ObservableClass'
@@ -106,6 +106,7 @@ export class CalcObjectBuilder<
 			getValue: depend(
 				createGetValue(this.calcSourcePath, func),
 				deferredOptions,
+				null,
 				makeDependPropertySubscriber(name as any),
 			),
 		}) as any
@@ -123,6 +124,7 @@ export class CalcObjectBuilder<
 			getValue: dependX(
 				func,
 				deferredOptions,
+				null,
 				makeDependPropertySubscriber(name as any),
 			),
 		}) as any

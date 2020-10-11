@@ -714,8 +714,8 @@ function _stressTest({
 			: null
 
 		const dependFunc: TDependFunc = isDependX
-			? dependX(func as any, deferredOptions, initCallState as any) as any
-			: depend(func, deferredOptions, initCallState as any) as any
+			? dependX(func as any, deferredOptions, null, initCallState as any) as any
+			: depend(func, deferredOptions, null, initCallState as any) as any
 
 		dependFunc.func = func
 

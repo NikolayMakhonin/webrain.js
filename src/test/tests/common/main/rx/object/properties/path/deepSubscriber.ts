@@ -29,7 +29,7 @@ describe('common > main > rx > properties > deepSubscribe', function () {
 		const getValue = depend(function () {
 			visits.push(value)
 			return value
-		}, null, null, true)
+		}, null, null, null, true)
 
 		Object.defineProperty(InnerClass.prototype, VALUE_PROPERTY_DEFAULT, {
 			configurable: true,

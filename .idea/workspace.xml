@@ -30,14 +30,17 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Lint fixes is completed">
-      <change beforePath="$PROJECT_DIR$/.eslintignore" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/.eslintrc.js" afterDir="false" />
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/ThenableSync.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/async/async.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/async/async.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/current-state.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.eslint.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.eslint.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/deepSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/deepSubscriber.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -587,21 +590,7 @@
       <workItem from="1601908652734" duration="12174000" />
       <workItem from="1601984156131" duration="15000" />
       <workItem from="1602061863126" duration="1032000" />
-      <workItem from="1602432131863" duration="3996000" />
-    </task>
-    <task id="LOCAL-00561" summary="Develop random test helpers">
-      <created>1600325437742</created>
-      <option name="number" value="00561" />
-      <option name="presentableId" value="LOCAL-00561" />
-      <option name="project" value="LOCAL" />
-      <updated>1600325437742</updated>
-    </task>
-    <task id="LOCAL-00562" summary="Develop random test helpers">
-      <created>1600328272506</created>
-      <option name="number" value="00562" />
-      <option name="presentableId" value="LOCAL-00562" />
-      <option name="project" value="LOCAL" />
-      <updated>1600328272506</updated>
+      <workItem from="1602432131863" duration="5157000" />
     </task>
     <task id="LOCAL-00563" summary="1.2.2-a - Fix package.json. Removed unnecessary files from package.">
       <created>1600363156414</created>
@@ -932,7 +921,21 @@
       <option name="project" value="LOCAL" />
       <updated>1601646877334</updated>
     </task>
-    <option name="localTasksCounter" value="610" />
+    <task id="LOCAL-00610" summary="Lint fixes is completed">
+      <created>1602436238309</created>
+      <option name="number" value="00610" />
+      <option name="presentableId" value="LOCAL-00610" />
+      <option name="project" value="LOCAL" />
+      <updated>1602436238310</updated>
+    </task>
+    <task id="LOCAL-00611" summary="Prepare separated async module">
+      <created>1602436296578</created>
+      <option name="number" value="00611" />
+      <option name="presentableId" value="LOCAL-00611" />
+      <option name="project" value="LOCAL" />
+      <updated>1602436296578</updated>
+    </task>
+    <option name="localTasksCounter" value="612" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -993,7 +996,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="1.2.1-a&#10;* Change Random.nextArrayItems() signature&#10;* Added Random.nextArrayItemsUnique()" />
     <MESSAGE value="Improved depend stress test" />
     <MESSAGE value="Develop two way binding" />
     <MESSAGE value="Develop rendom test helpers" />
@@ -1018,7 +1020,8 @@
     <MESSAGE value="Lint autofix: comma-dangle" />
     <MESSAGE value="Lint fixes. Mocha tests OK" />
     <MESSAGE value="Lint fixes is completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Lint fixes is completed" />
+    <MESSAGE value="Prepare separated async module" />
+    <option name="LAST_COMMIT_MESSAGE" value="Prepare separated async module" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1045,10 +1048,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601644806011" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1602435969781">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1602436295813">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1602435969781" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1602436295813" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1061,22 +1064,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601646523461" />
-    <state width="767" height="384" key="GridCell.Tab.0.bottom" timestamp="1602435974291">
+    <state width="767" height="381" key="GridCell.Tab.0.bottom" timestamp="1602437295867">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="384" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602435974291" />
-    <state width="767" height="384" key="GridCell.Tab.0.center" timestamp="1602435974291">
+    <state width="767" height="381" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602437295867" />
+    <state width="767" height="381" key="GridCell.Tab.0.center" timestamp="1602437295867">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="384" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1602435974291" />
-    <state width="767" height="384" key="GridCell.Tab.0.left" timestamp="1602435974291">
+    <state width="767" height="381" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1602437295867" />
+    <state width="767" height="381" key="GridCell.Tab.0.left" timestamp="1602437295866">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="384" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1602435974291" />
-    <state width="767" height="384" key="GridCell.Tab.0.right" timestamp="1602435974291">
+    <state width="767" height="381" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1602437295866" />
+    <state width="767" height="381" key="GridCell.Tab.0.right" timestamp="1602437295867">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="384" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1602435974291" />
+    <state width="767" height="381" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1602437295867" />
     <state width="705" height="395" key="GridCell.Tab.1.bottom" timestamp="1601883564747">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1153,10 +1156,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="722" y="331" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.882@0.0.1920.882" timestamp="1600076722588" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1601975116413">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1602437290536">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1601975116413" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1602437290536" />
     <state x="531" y="190" key="run.anything.popup" timestamp="1600668501151">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

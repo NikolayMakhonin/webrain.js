@@ -2,7 +2,7 @@ import {isThenable, ThenableOrIterator, ThenableOrValue} from '../../../async/as
 import {ThenableSync} from '../../../async/ThenableSync'
 import {Func} from '../../../helpers/typescript'
 import {DeferredCalc, IDeferredCalcOptions} from '../../deferred-calc/DeferredCalc'
-import {CallState, makeDependentFunc} from './CallState'
+import {CallState, makeDependentFunc, TCreateGetValueIds} from './CallState'
 import {IDeferredOptions, TFuncCall} from './contracts'
 import {InternalError} from './helpers'
 
@@ -132,13 +132,14 @@ export function makeDeferredFunc<
 	func: Func<unknown, TArgs, unknown>,
 	funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>,
 	defaultOptions: IDeferredOptions,
+	createGetValueIds?: TCreateGetValueIds<TThisOuter, TArgs>,
 	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 ): Func<
 	TThisOuter,
 	TArgs,
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : ThenableOrValue<TResultInner>
 > {
-	return makeDependentFunc(func, null, state => {
+	return makeDependentFunc(func, null, createGetValueIds, state => {
 		_initDeferredCallState(state, funcCall, defaultOptions)
 		if (initCallState != null) {
 			initCallState(state as any)
@@ -171,6 +172,7 @@ export function depend<
 >(
 	func: Func<TThisOuter, TArgs, TResultInner>,
 	deferredOptions?: IDeferredOptions,
+	createGetValueIds?: TCreateGetValueIds<TThisOuter, TArgs>,
 	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 	canAlwaysRecalc?: boolean,
 ): Func<
@@ -182,8 +184,8 @@ export function depend<
 		throw new InternalError('canAlwaysRecalc should not be deferred')
 	}
 	return deferredOptions == null
-		? makeDependentFunc(func, _funcCall, initCallState, canAlwaysRecalc) as any
-		: makeDeferredFunc(func, _funcCall, deferredOptions, initCallState) as any
+		? makeDependentFunc(func, _funcCall, createGetValueIds, initCallState, canAlwaysRecalc) as any
+		: makeDeferredFunc(func, _funcCall, deferredOptions, createGetValueIds, initCallState) as any
 }
 
 export function funcCallX<
@@ -210,6 +212,7 @@ export function dependX<
 		TResultInner
 	>,
 	deferredOptions?: IDeferredOptions,
+	createGetValueIds?: TCreateGetValueIds<TThisOuter, TArgs>,
 	initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void,
 ): Func<
 	TThisOuter,
@@ -217,8 +220,8 @@ export function dependX<
 	TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner
 > {
 	return deferredOptions == null
-		? makeDependentFunc(func, funcCallX, initCallState, false) as any
-		: makeDeferredFunc(func, funcCallX, deferredOptions, initCallState) as any
+		? makeDependentFunc(func, funcCallX, createGetValueIds, initCallState, false) as any
+		: makeDeferredFunc(func, funcCallX, deferredOptions, createGetValueIds, initCallState) as any
 }
 
 // endregion

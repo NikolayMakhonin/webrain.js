@@ -69,7 +69,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 		Object.defineProperty(object, name, {
 			configurable: true,
 			enumerable  : !hidden,
-			get         : depend(getValue, null, null, true),
+			get         : depend(getValue, null, null, null, true),
 			// get: getValue,
 			set,
 		})
@@ -158,7 +158,7 @@ export class ObservableObjectBuilder<TObject extends ObservableClass> extends Ob
 			const attributes: any = {
 				configurable: true,
 				enumerable  : !hidden,
-				// get: depend(getValue, null, true),
+				// get: depend(getValue, null, null, null, true),
 				get         : getValue,
 				set         : update
 					? function (value) {
