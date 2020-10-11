@@ -26,7 +26,11 @@ module.exports = {
 		// },
 	},
 
-	plugins : ['@typescript-eslint', 'sonarjs', 'html'],
+	plugins : [
+		'@typescript-eslint',
+		'sonarjs',
+		'html',
+	],
 	settings: {
 		'html/indent'           : '+tab',
 		'html/report-bad-indent': 'error',

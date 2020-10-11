@@ -7,3 +7,4 @@ __sapper__
 src/assets/**/*
 static
 **/v8/**/runtime.js
+docs/**/*
