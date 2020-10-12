@@ -25,8 +25,6 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/he
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
-var _currentState = require("../rx/depend/core/current-state");
-
 var _async = require("./async");
 
 var _marked = /*#__PURE__*/_regenerator.default.mark(_resolveAsyncAll);
@@ -262,19 +260,22 @@ var ThenableSync = /*#__PURE__*/function () {
               this._onrejected = _onrejected = [];
             }
 
-            var callState = (0, _currentState.getCurrentState)();
+            var callState = _async.stateProviderDefault.getState();
+
             var rejected = onrejected ? function (value) {
               var isError;
-              var prevState = (0, _currentState.getCurrentState)();
+
+              var prevState = _async.stateProviderDefault.getState();
 
               try {
-                (0, _currentState.setCurrentState)(callState);
+                _async.stateProviderDefault.setState(callState);
+
                 value = onrejected(value);
               } catch (err) {
                 isError = true;
                 value = err;
               } finally {
-                (0, _currentState.setCurrentState)(prevState);
+                _async.stateProviderDefault.setState(prevState);
               }
 
               if (isError) {
@@ -296,16 +297,18 @@ var ThenableSync = /*#__PURE__*/function () {
 
             _onfulfilled.push(onfulfilled ? function (value) {
               var isError;
-              var prevState = (0, _currentState.getCurrentState)();
+
+              var prevState = _async.stateProviderDefault.getState();
 
               try {
-                (0, _currentState.setCurrentState)(callState);
+                _async.stateProviderDefault.setState(callState);
+
                 value = onfulfilled(value);
               } catch (err) {
                 isError = true;
                 value = err;
               } finally {
-                (0, _currentState.setCurrentState)(prevState);
+                _async.stateProviderDefault.setState(prevState);
               }
 
               if (isError) {

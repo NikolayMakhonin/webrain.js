@@ -49,7 +49,7 @@ function interceptConsole(handler) {
       type: type,
       console: orig_console
     };
-    return function () {
+    return function _consoleInterceptor() {
       var result = handler.apply(_this, arguments);
 
       if (result) {
@@ -94,7 +94,7 @@ function throwOnConsoleError(_this, throwPredicate, func) {
       switch (_context2.prev = _context2.next) {
         case 0:
           lastConsoleError = null;
-          dispose = interceptConsole(function () {
+          dispose = interceptConsole(function _consoleHandler() {
             if (throwPredicate.apply(this.type, arguments)) {
               var _context;
 

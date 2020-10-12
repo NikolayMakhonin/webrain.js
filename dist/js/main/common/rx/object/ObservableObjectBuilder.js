@@ -82,7 +82,7 @@ var ObservableObjectBuilder = /*#__PURE__*/function (_ObjectBuilder) {
       (0, _defineProperty.default)(object, name, {
         configurable: true,
         enumerable: !hidden,
-        get: (0, _depend.depend)(getValue, null, null, true),
+        get: (0, _depend.depend)(getValue, null, null, null, true),
         // get: getValue,
         set: set
       });
@@ -168,7 +168,7 @@ var ObservableObjectBuilder = /*#__PURE__*/function (_ObjectBuilder) {
         var attributes = {
           configurable: true,
           enumerable: !hidden,
-          // get: depend(getValue, null, true),
+          // get: depend(getValue, null, null, null, true),
           get: getValue,
           set: update ? function (value) {
             var newValue = update.call(this, value);

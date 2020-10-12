@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 function getGlobalScope() {
   if (typeof window !== 'undefined') {
     return window;

@@ -11,6 +11,7 @@ var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-j
 
 var _now = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/date/now"));
 
+/* eslint-disable no-undef */
 var timingDefault = {
   now: _now.default,
   setTimeout: typeof window === 'undefined' ? _setTimeout2.default : (0, _bind.default)(_setTimeout2.default).call(_setTimeout2.default, window),

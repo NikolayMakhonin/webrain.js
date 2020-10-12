@@ -38,6 +38,7 @@ function behavior(base) {
       var _this;
 
       (0, _classCallCheck2.default)(this, Behavior);
+      // eslint-disable-next-line constructor-super
       _this = _super.call(this);
 
       if (typeof value !== 'undefined') {

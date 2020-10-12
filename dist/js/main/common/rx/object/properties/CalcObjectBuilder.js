@@ -54,7 +54,7 @@ function createGetValue(calcSourcePath, getValue) {
   var path = calcSourcePath.clone().append(function (o) {
     return getValue.call(o);
   }).init();
-  return function () {
+  return function _getValue() {
     return path.get(this);
   };
 }
@@ -102,14 +102,14 @@ var CalcObjectBuilder = /*#__PURE__*/function (_ConnectorBuilder) {
     key: "calc",
     value: function calc(name, func, deferredOptions) {
       return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
-        getValue: (0, _depend.depend)(createGetValue(this.calcSourcePath, func), deferredOptions, (0, _helpers.makeDependPropertySubscriber)(name))
+        getValue: (0, _depend.depend)(createGetValue(this.calcSourcePath, func), deferredOptions, null, (0, _helpers.makeDependPropertySubscriber)(name))
       });
     }
   }, {
     key: "calcX",
     value: function calcX(name, func, deferredOptions) {
       return (0, _get2.default)((0, _getPrototypeOf2.default)(CalcObjectBuilder.prototype), "readable", this).call(this, name, {
-        getValue: (0, _depend.dependX)(func, deferredOptions, (0, _helpers.makeDependPropertySubscriber)(name))
+        getValue: (0, _depend.dependX)(func, deferredOptions, null, (0, _helpers.makeDependPropertySubscriber)(name))
       });
     }
   }, {

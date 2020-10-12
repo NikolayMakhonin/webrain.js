@@ -147,19 +147,19 @@ var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
       } // eslint-disable-next-line func-style
 
 
-      var getValue = function getValue() {
+      var getValue = function _getValueSumple() {
         return path.get(this);
       };
 
       if (isDepend) {
-        getValue = (0, _depend.depend)(getValue, null, (0, _helpers3.makeDependPropertySubscriber)(name));
+        getValue = (0, _depend.depend)(getValue, null, null, (0, _helpers3.makeDependPropertySubscriber)(name));
 
         if (isWait) {
           getValue = (0, _helpers2.dependWait)(getValue, waitCondition, waitTimeout, isLazy);
         } else if (isLazy) {
           var _getValue = getValue;
 
-          getValue = function getValue() {
+          getValue = function _getValueLazy() {
             var state = (0, _CallState.getOrCreateCallState)(_getValue).apply(this, arguments);
             return state.getValue(true);
           };
@@ -170,7 +170,7 @@ var ConnectorBuilder = /*#__PURE__*/function (_ObservableObjectBuil) {
         configurable: true,
         enumerable: !hidden,
         get: getValue,
-        set: !path.canSet ? _helpers.missingSetter : function (value) {
+        set: !path.canSet ? _helpers.missingSetter : function _connectSet(value) {
           return path.set(this, value);
         }
       });

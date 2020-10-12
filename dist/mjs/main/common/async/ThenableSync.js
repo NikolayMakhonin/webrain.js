@@ -1,5 +1,4 @@
-import { getCurrentState, setCurrentState } from '../rx/depend/core/current-state';
-import { isAsync, isThenable, ResolveResult, resolveValue, resolveValueFunc } from './async';
+import { isAsync, isThenable, ResolveResult, resolveValue, resolveValueFunc, stateProviderDefault } from './async';
 export let ThenableSyncStatus;
 
 (function (ThenableSyncStatus) {
@@ -224,19 +223,19 @@ export class ThenableSync {
             this._onrejected = _onrejected = [];
           }
 
-          const callState = getCurrentState();
+          const callState = stateProviderDefault.getState();
           const rejected = onrejected ? value => {
             let isError;
-            const prevState = getCurrentState();
+            const prevState = stateProviderDefault.getState();
 
             try {
-              setCurrentState(callState);
+              stateProviderDefault.setState(callState);
               value = onrejected(value);
             } catch (err) {
               isError = true;
               value = err;
             } finally {
-              setCurrentState(prevState);
+              stateProviderDefault.setState(prevState);
             }
 
             if (isError) {
@@ -260,16 +259,16 @@ export class ThenableSync {
 
           _onfulfilled.push(onfulfilled ? value => {
             let isError;
-            const prevState = getCurrentState();
+            const prevState = stateProviderDefault.getState();
 
             try {
-              setCurrentState(callState);
+              stateProviderDefault.setState(callState);
               value = onfulfilled(value);
             } catch (err) {
               isError = true;
               value = err;
             } finally {
-              setCurrentState(prevState);
+              stateProviderDefault.setState(prevState);
             }
 
             if (isError) {

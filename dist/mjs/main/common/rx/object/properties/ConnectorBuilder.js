@@ -1,3 +1,4 @@
+/* eslint-disable func-name-matching */
 import { missingSetter } from '../../../helpers/helpers';
 import { getOrCreateCallState } from '../../../rx/depend/core/CallState';
 import { depend } from '../../../rx/depend/core/depend';
@@ -95,19 +96,19 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
     } // eslint-disable-next-line func-style
 
 
-    let getValue = function () {
+    let getValue = function _getValueSumple() {
       return path.get(this);
     };
 
     if (isDepend) {
-      getValue = depend(getValue, null, makeDependPropertySubscriber(name));
+      getValue = depend(getValue, null, null, makeDependPropertySubscriber(name));
 
       if (isWait) {
         getValue = dependWait(getValue, waitCondition, waitTimeout, isLazy);
       } else if (isLazy) {
         const _getValue = getValue;
 
-        getValue = function () {
+        getValue = function _getValueLazy() {
           const state = getOrCreateCallState(_getValue).apply(this, arguments);
           return state.getValue(true);
         };
@@ -118,7 +119,7 @@ export class ConnectorBuilder extends ObservableObjectBuilder {
       configurable: true,
       enumerable: !hidden,
       get: getValue,
-      set: !path.canSet ? missingSetter : function (value) {
+      set: !path.canSet ? missingSetter : function _connectSet(value) {
         return path.set(this, value);
       }
     });

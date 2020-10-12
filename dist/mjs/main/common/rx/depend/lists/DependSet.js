@@ -158,9 +158,9 @@ export class DependSet {
 
 }
 DependSet.uuid = '0b5ba0da253c43a98944e34a82b61c06';
-DependSet.prototype.dependAll = depend(DependSet.prototype.dependAll, null, null, true);
-DependSet.prototype.dependAnyValue = depend(DependSet.prototype.dependAnyValue, null, null, true);
-DependSet.prototype.dependValue = depend(DependSet.prototype.dependValue, null, null, true);
+DependSet.prototype.dependAll = depend(DependSet.prototype.dependAll, null, null, null, true);
+DependSet.prototype.dependAnyValue = depend(DependSet.prototype.dependAnyValue, null, null, null, true);
+DependSet.prototype.dependValue = depend(DependSet.prototype.dependValue, null, null, null, true);
 registerMergeable(DependSet);
 registerSerializable(DependSet, {
   serializer: {

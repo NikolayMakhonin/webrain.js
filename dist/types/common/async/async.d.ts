@@ -30,5 +30,19 @@ export declare enum ResolveResult {
     ImmediateError = 5,
     DeferredError = 6
 }
+interface IStateProvider<TState> {
+    getState: () => TState;
+    setState: (state: TState) => void;
+}
+declare class CombinedStateProvider implements IStateProvider<any> {
+    private _stateProviders;
+    private _stateProvidersWereUsed;
+    registerStateProvider<TState>(stateProvider: IStateProvider<TState>): void;
+    getState(): any;
+    setState(state: any): void;
+}
+export declare const stateProviderDefault: CombinedStateProvider;
+export declare function registerStateProvider<TState>(stateProvider: IStateProvider<TState>): void;
 export declare function resolveValue<T>(value: ThenableOrIteratorOrValue<T>, onImmediate: (value: T, isError: boolean) => void, onDeferred: (value: T, isError: boolean) => void, customResolveValue?: TResolveAsyncValue<T>): ResolveResult;
 export declare function resolveValueFunc<T>(func: () => ThenableOrIteratorOrValue<T>, onImmediate: (value: T, isError: boolean) => void, onDeferred: (value: T, isError: boolean) => void, customResolveValue: TResolveAsyncValue<T>): ResolveResult;
+export {};

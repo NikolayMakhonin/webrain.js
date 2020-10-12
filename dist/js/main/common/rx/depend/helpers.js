@@ -37,7 +37,7 @@ function dependWait(func, condition, timeout, isLazy) {
     timeout = _webrainOptions.webrainOptions.timeouts.dependWait;
   }
 
-  return (0, _depend.dependX)(function () {
+  return (0, _depend.dependX)(function _dependWait() {
     var state = this;
     var funcState = (0, _CallState.getOrCreateCallState)(func).apply(state._this, arguments);
     var value = funcState.getValue(isLazy);
@@ -93,7 +93,7 @@ function dependWait(func, condition, timeout, isLazy) {
 }
 
 function autoCalc(func, dontLogErrors) {
-  return function () {
+  return function _autoCalc() {
     return (0, _CallState.subscribeCallState)((0, _CallState.getOrCreateCallState)(func).apply(this, arguments), dontLogErrors ? null : function (state) {
       if (state.statusShort === _contracts.CallStatusShort.CalculatedError) {
         console.error(state.error);
@@ -107,7 +107,7 @@ function autoCalcConnect(object, connectorFactory, func, dontLogErrors) {
 }
 
 function dependWrapThis(wrapThis, func) {
-  return function (_this) {
+  return function _dependWrapThis(_this) {
     return (0, _CallState.dependBindThis)(wrapThis(_this), func);
   };
 }

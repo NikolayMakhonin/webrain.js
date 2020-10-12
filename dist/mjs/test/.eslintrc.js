@@ -2,18 +2,26 @@
 module.exports = {
 	env: {
 		browser: false,
-		node   : false
+		node   : false,
 	},
 	rules: {
-		'no-empty-function': 'off',
-		'no-unused-vars'   : 'off',
-		'no-new-wrappers'  : 'off',
-		'no-sync'          : 'off',
-		'no-undefined'     : 'off',
-		'dot-notation'     : 'off',
-		'no-process-env'   : 'off',
+		'func-names'     : 'off',
+		'no-process-exit': 'off',
 
-		// new
+		'no-empty-function'         : 'off',
+		'no-unused-vars'            : 'off',
+		'no-new-wrappers'           : 'off',
+		'no-sync'                   : 'off',
+		'no-undefined'              : 'off',
+		'dot-notation'              : 'off',
+		'no-process-env'            : 'off',
+		'no-undef'                  : 'off',
+		'no-promise-executor-return': 'off',
+		'function-paren-newline'    : 'off',
+		'object-curly-newline'      : 'off',
+		'max-len'                   : 'off',
+		'array-element-newline'     : 'off',
+		'lines-around-comment'      : 'off',
 
 		'no-await-in-loop'            : 'off',
 		'func-style'                  : 'off',
@@ -39,17 +47,8 @@ module.exports = {
 
 		'no-shadow'                   : 'off',
 		'@typescript-eslint/no-shadow': 'off',
-
-		// '@typescript-eslint/no-unused-array'             : 'off',
-		// '@typescript-eslint/no-dead-store'               : 'off',
-		// '@typescript-eslint/no-invalid-await'            : 'off',
-		// '@typescript-eslint/no-array-delete'             : 'off',
-		// '@typescript-eslint/no-misleading-array-reverse' : 'off',
-		// '@typescript-eslint/no-useless-cast'             : 'off',
-		// '@typescript-eslint/no-identical-functions'      : 'off',
-		// '@typescript-eslint/no-use-of-empty-return-value': 'off',
 	},
 	globals: {
-		console: true
-	}
+		console: true,
+	},
 }

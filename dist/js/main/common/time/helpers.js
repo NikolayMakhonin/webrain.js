@@ -15,6 +15,7 @@ var _setTimeout2 = _interopRequireDefault(require("@babel/runtime-corejs3/core-j
 
 var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
 
+// eslint-disable-next-line no-undef
 var performanceNow = typeof performance !== 'undefined' // eslint-disable-next-line no-undef
 ? function () {
   return performance.now();
@@ -26,7 +27,7 @@ exports.performanceNow = performanceNow;
 
 function delay(timeMilliseconds) {
   return new _promise.default(function (resolve) {
-    return (0, _setTimeout2.default)(resolve, timeMilliseconds);
+    (0, _setTimeout2.default)(resolve, timeMilliseconds);
   });
 } // region fast now
 

@@ -1130,7 +1130,17 @@ export function deleteValueState(valueId, value) {
 } // endregion
 // region CallStateProviderState
 
-const valueIdsBuffer = new Int32Array(100); // interface ICallStateProviderState<
+let valueIdsBufferLength = 0;
+const valueIdsBuffer = new Int32Array(100);
+
+function pushValueId(valueId) {
+  if (valueId === 0) {
+    return false;
+  }
+
+  valueIdsBuffer[valueIdsBufferLength++] = valueId;
+  return true;
+} // interface ICallStateProviderState<
 // 	TThisOuter,
 // 	TArgs extends any[],
 // 	TResultInner,
@@ -1142,8 +1152,9 @@ const valueIdsBuffer = new Int32Array(100); // interface ICallStateProviderState
 // 	funcHash: number
 // }
 
+
 // let currentCallStateProviderState: ICallStateProviderState<any, any, any> = null
-function findCallState(callStates, countValueStates, _valueIdsBuffer) {
+function findCallState(callStates, _valueIdsBuffer, countValueStates) {
   for (let i = 0, len = callStates.length; i < len; i++) {
     const state = callStates[i];
     const valueIds = state.valueIds;
@@ -1167,39 +1178,56 @@ function findCallState(callStates, countValueStates, _valueIdsBuffer) {
 }
 
 export const callStateHashTable = new Map();
-let callStatesCount = 0; // tslint:disable-next-line:no-shadowed-variable
+let callStatesCount = 0;
+export const Object_Start = new String('[');
+export const Object_End = new String(']');
 
-export function createCallStateProvider(func, funcCall, initCallState) {
-  const funcId = nextValueId++;
-  const funcHash = nextHash(17, funcId); // noinspection DuplicatedCode
-
-  function _getCallState() {
-    // region getCallState
+function createGetValueIdsDefault(_getValueId, _pushValueId) {
+  return function _createGetValueIdsDefault() {
     const countArgs = arguments.length;
-    const countValueStates = countArgs + 2; // region calc hash
-
-    const _valueIdsBuffer = valueIdsBuffer;
-    _valueIdsBuffer[0] = funcId;
-    let hash = funcHash;
     {
-      const valueId = getValueId(this);
+      const valueId = _getValueId(this);
 
-      if (valueId === 0) {
-        return null;
+      if (!_pushValueId(valueId)) {
+        return false;
       }
-
-      _valueIdsBuffer[1] = valueId;
-      hash = nextHash(hash, valueId);
     }
 
     for (let i = 0; i < countArgs; i++) {
-      const valueId = getValueId(arguments[i]);
+      const valueId = _getValueId(arguments[i]);
 
-      if (valueId === 0) {
-        return null;
+      if (!_pushValueId(valueId)) {
+        return false;
       }
+    }
 
-      _valueIdsBuffer[i + 2] = valueId;
+    return true;
+  };
+} // tslint:disable-next-line:no-shadowed-variable
+
+
+export function createCallStateProvider(func, funcCall, createGetValueIds, initCallState) {
+  const funcId = nextValueId++;
+  const funcHash = nextHash(17, funcId);
+  const getValueIds = (createGetValueIds || createGetValueIdsDefault)(getValueId, pushValueId);
+  const getOrCreateValueIds = (createGetValueIds || createGetValueIdsDefault)(getOrCreateValueId, pushValueId); // noinspection DuplicatedCode
+
+  function _getCallState() {
+    // region getCallState
+    // region calc hash
+    const _valueIdsBuffer = valueIdsBuffer;
+    _valueIdsBuffer[0] = funcId;
+    valueIdsBufferLength = 1;
+    let hash = funcHash;
+
+    if (!getValueIds.apply(this, arguments)) {
+      return null;
+    }
+
+    const countValueStates = valueIdsBufferLength;
+
+    for (let i = 1; i < countValueStates; i++) {
+      const valueId = _valueIdsBuffer[i];
       hash = nextHash(hash, valueId);
     } // endregion
 
@@ -1208,7 +1236,7 @@ export function createCallStateProvider(func, funcCall, initCallState) {
     const callStates = callStateHashTable.get(hash);
 
     if (callStates != null) {
-      callState = findCallState(callStates, countValueStates, _valueIdsBuffer);
+      callState = findCallState(callStates, _valueIdsBuffer, countValueStates);
     } // endregion
 
 
@@ -1216,7 +1244,8 @@ export function createCallStateProvider(func, funcCall, initCallState) {
   }
 
   function createCallWithArgs() {
-    const args = arguments;
+    const args = arguments; // eslint-disable-next-line func-names
+
     return function (_this, _func) {
       return _func.apply(_this, args);
     };
@@ -1225,21 +1254,17 @@ export function createCallStateProvider(func, funcCall, initCallState) {
 
   function _getOrCreateCallState() {
     // region getCallState
-    const countArgs = arguments.length;
-    const countValueStates = countArgs + 2; // region calc hash
+    const countArgs = arguments.length; // region calc hash
 
     const _valueIdsBuffer = valueIdsBuffer;
     _valueIdsBuffer[0] = funcId;
+    valueIdsBufferLength = 1;
     let hash = funcHash;
-    {
-      const valueId = getOrCreateValueId(this);
-      _valueIdsBuffer[1] = valueId;
-      hash = nextHash(hash, valueId);
-    }
+    getOrCreateValueIds.apply(this, arguments);
+    const countValueStates = valueIdsBufferLength;
 
-    for (let i = 0; i < countArgs; i++) {
-      const valueId = getOrCreateValueId(arguments[i]);
-      _valueIdsBuffer[i + 2] = valueId;
+    for (let i = 1; i < countValueStates; i++) {
+      const valueId = _valueIdsBuffer[i];
       hash = nextHash(hash, valueId);
     } // endregion
 
@@ -1248,7 +1273,7 @@ export function createCallStateProvider(func, funcCall, initCallState) {
     let callStates = callStateHashTable.get(hash);
 
     if (callStates != null) {
-      callState = findCallState(callStates, countValueStates, _valueIdsBuffer);
+      callState = findCallState(callStates, _valueIdsBuffer, countValueStates);
     } // endregion
 
 
@@ -1574,14 +1599,14 @@ export function createDependentFunc(func, callStateProvider, canAlwaysRecalc) {
  * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
 
-export function makeDependentFunc(func, funcCall, initCallState, canAlwaysRecalc) {
+export function makeDependentFunc(func, funcCall, createGetValueIds, initCallState, canAlwaysRecalc) {
   let callStateProvider = callStateProviderMap.get(func);
 
   if (callStateProvider != null) {
     return callStateProvider.dependFunc;
   }
 
-  callStateProvider = createCallStateProvider(func, funcCall, initCallState);
+  callStateProvider = createCallStateProvider(func, funcCall, createGetValueIds, initCallState);
   callStateProviderMap.set(func, callStateProvider);
   const dependFunc = createDependentFunc(func, callStateProvider, canAlwaysRecalc);
   callStateProvider.dependFunc = dependFunc;

@@ -160,8 +160,8 @@ function _initDeferredCallState(state, funcCall, deferredOptions) {
 /** Inner this as CallState */
 
 
-function makeDeferredFunc(func, funcCall, defaultOptions, initCallState) {
-  return (0, _CallState.makeDependentFunc)(func, null, function (state) {
+function makeDeferredFunc(func, funcCall, defaultOptions, createGetValueIds, initCallState) {
+  return (0, _CallState.makeDependentFunc)(func, null, createGetValueIds, function (state) {
     _initDeferredCallState(state, funcCall, defaultOptions);
 
     if (initCallState != null) {
@@ -183,12 +183,12 @@ function _funcCall(state) {
  */
 
 
-function depend(func, deferredOptions, initCallState, canAlwaysRecalc) {
+function depend(func, deferredOptions, createGetValueIds, initCallState, canAlwaysRecalc) {
   if (canAlwaysRecalc && deferredOptions != null) {
     throw new _helpers.InternalError('canAlwaysRecalc should not be deferred');
   }
 
-  return deferredOptions == null ? (0, _CallState.makeDependentFunc)(func, _funcCall, initCallState, canAlwaysRecalc) : makeDeferredFunc(func, _funcCall, deferredOptions, initCallState);
+  return deferredOptions == null ? (0, _CallState.makeDependentFunc)(func, _funcCall, createGetValueIds, initCallState, canAlwaysRecalc) : makeDeferredFunc(func, _funcCall, deferredOptions, createGetValueIds, initCallState);
 }
 
 function funcCallX(state) {
@@ -201,8 +201,8 @@ function funcCallX(state) {
  */
 
 
-function dependX(func, deferredOptions, initCallState) {
-  return deferredOptions == null ? (0, _CallState.makeDependentFunc)(func, funcCallX, initCallState, false) : makeDeferredFunc(func, funcCallX, deferredOptions, initCallState);
+function dependX(func, deferredOptions, createGetValueIds, initCallState) {
+  return deferredOptions == null ? (0, _CallState.makeDependentFunc)(func, funcCallX, createGetValueIds, initCallState, false) : makeDeferredFunc(func, funcCallX, deferredOptions, createGetValueIds, initCallState);
 } // endregion
 // region dependLazy
 // export function dependLazy<

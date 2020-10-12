@@ -13,7 +13,7 @@ function createGetValue(calcSourcePath, getValue) {
   }
 
   const path = calcSourcePath.clone().append(o => getValue.call(o)).init();
-  return function () {
+  return function _getValue() {
     return path.get(this);
   };
 }
@@ -47,13 +47,13 @@ export class CalcObjectBuilder extends ConnectorBuilder {
 
   calc(name, func, deferredOptions) {
     return super.readable(name, {
-      getValue: depend(createGetValue(this.calcSourcePath, func), deferredOptions, makeDependPropertySubscriber(name))
+      getValue: depend(createGetValue(this.calcSourcePath, func), deferredOptions, null, makeDependPropertySubscriber(name))
     });
   }
 
   calcX(name, func, deferredOptions) {
     return super.readable(name, {
-      getValue: dependX(func, deferredOptions, makeDependPropertySubscriber(name))
+      getValue: dependX(func, deferredOptions, null, makeDependPropertySubscriber(name))
     });
   }
 

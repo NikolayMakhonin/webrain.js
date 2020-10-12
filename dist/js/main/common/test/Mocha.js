@@ -19,7 +19,7 @@ var xdescribe = _helpers.globalScope.xdescribe;
 exports.xdescribe = xdescribe;
 
 function describe(name, func) {
-  return _helpers.globalScope.describe.call(this, name, function () {
+  return _helpers.globalScope.describe.call(this, name, function _describe() {
     return func.call(this);
   });
 }
@@ -31,7 +31,7 @@ function isFuncWithoutParameters(func) {
 }
 
 function it(name, func) {
-  return _helpers.globalScope.it.call(this, name, isFuncWithoutParameters(func) ? function () {
+  return _helpers.globalScope.it.call(this, name, isFuncWithoutParameters(func) ? function _it() {
     try {
       var result = func.call(this);
 
@@ -53,7 +53,7 @@ function it(name, func) {
     } finally {
       _Assert.assert.assertNotHandledErrors();
     }
-  } : function (done) {
+  } : function _itAsync(done) {
     try {
       return func.call(this, function (err) {
         _Assert.assert.assertNotHandledErrors();

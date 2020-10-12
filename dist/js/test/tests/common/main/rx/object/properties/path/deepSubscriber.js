@@ -69,7 +69,7 @@ var _helpers = require("../../../../../../../../main/common/time/helpers");
             getValue = (0, _depend.depend)(function () {
               visits.push(value);
               return value;
-            }, null, null, true);
+            }, null, null, null, true);
             (0, _defineProperty.default)(InnerClass.prototype, _valueProperty.VALUE_PROPERTY_DEFAULT, {
               configurable: true,
               enumerable: true,

@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import { isIterable } from '../../../../helpers/helpers';
 import { RuleRepeatAction, RuleType } from './builder/contracts/rules';
 import { RuleNever } from './builder/rules';

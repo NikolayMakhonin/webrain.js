@@ -3,7 +3,7 @@ import { globalScope } from './helpers';
 export const xit = globalScope.xit;
 export const xdescribe = globalScope.xdescribe;
 export function describe(name, func) {
-  return globalScope.describe.call(this, name, function () {
+  return globalScope.describe.call(this, name, function _describe() {
     return func.call(this);
   });
 }
@@ -14,7 +14,7 @@ function isFuncWithoutParameters(func) {
 }
 
 export function it(name, func) {
-  return globalScope.it.call(this, name, isFuncWithoutParameters(func) ? function () {
+  return globalScope.it.call(this, name, isFuncWithoutParameters(func) ? function _it() {
     try {
       const result = func.call(this);
 
@@ -33,7 +33,7 @@ export function it(name, func) {
     } finally {
       assert.assertNotHandledErrors();
     }
-  } : function (done) {
+  } : function _itAsync(done) {
     try {
       return func.call(this, err => {
         assert.assertNotHandledErrors();

@@ -731,7 +731,7 @@ function _stressTest(_ref4) {
       minTimeBetweenCalc: rnd.nextBoolean() ? rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100) : void 0,
       autoInvalidateInterval: rnd.nextBoolean(0.2) ? rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100) : void 0
     } : null;
-    var dependFunc = isDependX ? (0, _depend.dependX)(func, deferredOptions, initCallState) : (0, _depend.depend)(func, deferredOptions, initCallState);
+    var dependFunc = isDependX ? (0, _depend.dependX)(func, deferredOptions, null, initCallState) : (0, _depend.depend)(func, deferredOptions, null, initCallState);
     dependFunc.func = func;
     return dependFunc;
   }

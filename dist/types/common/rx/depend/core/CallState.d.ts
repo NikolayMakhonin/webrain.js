@@ -164,7 +164,10 @@ interface ICallStateProvider<TThisOuter, TArgs extends any[], TResultInner> {
     isBindThis: boolean;
 }
 export declare const callStateHashTable: Map<number, TCallStateAny[]>;
-export declare function createCallStateProvider<TThisOuter, TArgs extends any[], TResultInner>(func: Func<unknown, TArgs, unknown>, funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>, initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void): ICallStateProvider<TThisOuter, TArgs, TResultInner>;
+export declare const Object_Start: String;
+export declare const Object_End: String;
+export declare type TCreateGetValueIds<TThisOuter, TArgs extends any[]> = (getValueId: (value: any) => number, pushValueId: (valueId: number) => boolean) => Func<TThisOuter, TArgs, boolean>;
+export declare function createCallStateProvider<TThisOuter, TArgs extends any[], TResultInner>(func: Func<unknown, TArgs, unknown>, funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>, createGetValueIds: TCreateGetValueIds<TThisOuter, TArgs>, initCallState: (state: CallState<TThisOuter, TArgs, TResultInner>) => void): ICallStateProvider<TThisOuter, TArgs, TResultInner>;
 export declare function invalidateCallState<TThisOuter, TArgs extends any[], TResultInner>(state: ICallState<TThisOuter, TArgs, TResultInner>): boolean;
 export declare function subscribeCallState<TThisOuter, TArgs extends any[], TResultInner>(callState: ICallState<TThisOuter, TArgs, TResultInner>, subscriber?: ISubscriber<ICallState<TThisOuter, TArgs, TResultInner>>): IUnsubscribe;
 export declare function getCallState<TThisOuter, TArgs extends any[], TResultInner>(func: Func<TThisOuter, TArgs, TResultInner>): Func<TThisOuter, TArgs, ICallState<TThisOuter, TArgs, TResultInner>>;
@@ -177,5 +180,5 @@ export declare function createDependentFunc<TThisOuter, TArgs extends any[], TRe
 /**
  * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
-export declare function makeDependentFunc<TThisOuter, TArgs extends any[], TResultInner>(func: Func<unknown, TArgs, unknown>, funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>, initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void, canAlwaysRecalc?: boolean): Func<TThisOuter, TArgs, TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>;
+export declare function makeDependentFunc<TThisOuter, TArgs extends any[], TResultInner>(func: Func<unknown, TArgs, unknown>, funcCall: TFuncCall<TThisOuter, TArgs, TResultInner>, createGetValueIds?: TCreateGetValueIds<TThisOuter, TArgs>, initCallState?: (state: CallState<TThisOuter, TArgs, TResultInner>) => void, canAlwaysRecalc?: boolean): Func<TThisOuter, TArgs, TResultInner extends ThenableOrIterator<infer V> ? ThenableOrValue<V> : TResultInner>;
 export {};

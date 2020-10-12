@@ -38,7 +38,7 @@ exports.deleteCallState = deleteCallState;
 exports.reduceCallStates = reduceCallStates;
 exports.createDependentFunc = createDependentFunc;
 exports.makeDependentFunc = makeDependentFunc;
-exports.reduceCallStatesHeap = exports.callStateHashTable = exports.valueToIdMap = exports.valueIdToStateMap = exports.CallState = exports.subscriberLinkPool = exports.NO_CHANGE_VALUE = exports.ALWAYS_CHANGE_VALUE = exports.Mask_Update = exports.Mask_Update_Invalidate = exports.Update_Calculated_Error = exports.Update_Calculated_Value = exports.Update_Calculating_Async = exports.Update_Calculating = exports.Update_Check_Async = exports.Update_Check = exports.Update_Invalidated_Recalc = exports.Update_Invalidating_Recalc = exports.Update_Recalc = exports.Update_Invalidated = exports.Update_Invalidating = exports.Flag_InternalError = exports.Flag_HasError = exports.Flag_HasValue = exports.Mask_Calculate = exports.Flag_Calculated = exports.Flag_Async = exports.Flag_Calculating = exports.Flag_Check = exports.Flag_Parent_Recalc = exports.Mask_Parent_Invalidate = exports.Flag_Parent_Invalidated = exports.Flag_Parent_Invalidating = exports.Flag_Recalc = exports.Mask_Invalidate = exports.Flag_Invalidated = exports.Flag_Invalidating = exports.Flag_None = void 0;
+exports.reduceCallStatesHeap = exports.Object_End = exports.Object_Start = exports.callStateHashTable = exports.valueToIdMap = exports.valueIdToStateMap = exports.CallState = exports.subscriberLinkPool = exports.NO_CHANGE_VALUE = exports.ALWAYS_CHANGE_VALUE = exports.Mask_Update = exports.Mask_Update_Invalidate = exports.Update_Calculated_Error = exports.Update_Calculated_Value = exports.Update_Calculating_Async = exports.Update_Calculating = exports.Update_Check_Async = exports.Update_Check = exports.Update_Invalidated_Recalc = exports.Update_Invalidating_Recalc = exports.Update_Recalc = exports.Update_Invalidated = exports.Update_Invalidating = exports.Flag_InternalError = exports.Flag_HasError = exports.Flag_HasValue = exports.Mask_Calculate = exports.Flag_Calculated = exports.Flag_Async = exports.Flag_Calculating = exports.Flag_Check = exports.Flag_Parent_Recalc = exports.Mask_Parent_Invalidate = exports.Flag_Parent_Invalidated = exports.Flag_Parent_Invalidating = exports.Flag_Recalc = exports.Mask_Invalidate = exports.Flag_Invalidated = exports.Flag_Invalidating = exports.Flag_None = void 0;
 
 var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
 
@@ -585,15 +585,16 @@ var CallState = /*#__PURE__*/function () {
 
       try {
         (0, _currentState.setCurrentState)(this);
-        var value = this.funcCall(this);
 
-        if (!(0, _async.isAsync)(value)) {
-          this._updateCalculatedValue(value);
+        var _value = this.funcCall(this);
+
+        if (!(0, _async.isAsync)(_value)) {
+          this._updateCalculatedValue(_value);
 
           return this.value;
         }
 
-        if ((0, _async.isThenable)(value) && !(value instanceof _ThenableSync.ThenableSync)) {
+        if ((0, _async.isThenable)(_value) && !(_value instanceof _ThenableSync.ThenableSync)) {
           this._internalError('You should use iterator or ThenableSync instead Promise for async functions');
         }
 
@@ -603,7 +604,7 @@ var CallState = /*#__PURE__*/function () {
         // )
         // New method (more functionality)
 
-        value = (0, _ThenableSync.resolveAsync)(value, function (val) {
+        _value = (0, _ThenableSync.resolveAsync)(_value, function (val) {
           if ((_this3.status & Flag_Async) !== 0) {
             _this3._parentCallState = null;
           }
@@ -621,11 +622,11 @@ var CallState = /*#__PURE__*/function () {
           throw error;
         });
 
-        if ((0, _async.isThenable)(value)) {
-          this._updateCalculatingAsync(value);
+        if ((0, _async.isThenable)(_value)) {
+          this._updateCalculatingAsync(_value);
         }
 
-        return value;
+        return _value;
       } catch (error) {
         if (!_isAsync || error instanceof _helpers3.InternalError) {
           this._updateCalculatedError(error);
@@ -1307,7 +1308,17 @@ function deleteValueState(valueId, value) {
 // region CallStateProviderState
 
 
-var valueIdsBuffer = new Int32Array(100); // interface ICallStateProviderState<
+var valueIdsBufferLength = 0;
+var valueIdsBuffer = new Int32Array(100);
+
+function pushValueId(valueId) {
+  if (valueId === 0) {
+    return false;
+  }
+
+  valueIdsBuffer[valueIdsBufferLength++] = valueId;
+  return true;
+} // interface ICallStateProviderState<
 // 	TThisOuter,
 // 	TArgs extends any[],
 // 	TResultInner,
@@ -1319,8 +1330,9 @@ var valueIdsBuffer = new Int32Array(100); // interface ICallStateProviderState<
 // 	funcHash: number
 // }
 
+
 // let currentCallStateProviderState: ICallStateProviderState<any, any, any> = null
-function findCallState(callStates, countValueStates, _valueIdsBuffer) {
+function findCallState(callStates, _valueIdsBuffer, countValueStates) {
   for (var i = 0, len = callStates.length; i < len; i++) {
     var _state2 = callStates[i];
     var valueIds = _state2.valueIds;
@@ -1345,40 +1357,59 @@ function findCallState(callStates, countValueStates, _valueIdsBuffer) {
 
 var callStateHashTable = new _map.default();
 exports.callStateHashTable = callStateHashTable;
-var callStatesCount = 0; // tslint:disable-next-line:no-shadowed-variable
+var callStatesCount = 0;
+var Object_Start = new String('[');
+exports.Object_Start = Object_Start;
+var Object_End = new String(']');
+exports.Object_End = Object_End;
 
-function createCallStateProvider(func, funcCall, initCallState) {
-  var funcId = nextValueId++;
-  var funcHash = (0, _helpers.nextHash)(17, funcId); // noinspection DuplicatedCode
-
-  function _getCallState() {
-    // region getCallState
+function createGetValueIdsDefault(_getValueId, _pushValueId) {
+  return function _createGetValueIdsDefault() {
     var countArgs = arguments.length;
-    var countValueStates = countArgs + 2; // region calc hash
-
-    var _valueIdsBuffer = valueIdsBuffer;
-    _valueIdsBuffer[0] = funcId;
-    var hash = funcHash;
     {
-      var valueId = getValueId(this);
+      var _valueId = _getValueId(this);
 
-      if (valueId === 0) {
-        return null;
+      if (!_pushValueId(_valueId)) {
+        return false;
       }
-
-      _valueIdsBuffer[1] = valueId;
-      hash = (0, _helpers.nextHash)(hash, valueId);
     }
 
     for (var i = 0; i < countArgs; i++) {
-      var _valueId = getValueId(arguments[i]);
+      var _valueId2 = _getValueId(arguments[i]);
 
-      if (_valueId === 0) {
-        return null;
+      if (!_pushValueId(_valueId2)) {
+        return false;
       }
+    }
 
-      _valueIdsBuffer[i + 2] = _valueId;
-      hash = (0, _helpers.nextHash)(hash, _valueId);
+    return true;
+  };
+} // tslint:disable-next-line:no-shadowed-variable
+
+
+function createCallStateProvider(func, funcCall, createGetValueIds, initCallState) {
+  var funcId = nextValueId++;
+  var funcHash = (0, _helpers.nextHash)(17, funcId);
+  var getValueIds = (createGetValueIds || createGetValueIdsDefault)(getValueId, pushValueId);
+  var getOrCreateValueIds = (createGetValueIds || createGetValueIdsDefault)(getOrCreateValueId, pushValueId); // noinspection DuplicatedCode
+
+  function _getCallState() {
+    // region getCallState
+    // region calc hash
+    var _valueIdsBuffer = valueIdsBuffer;
+    _valueIdsBuffer[0] = funcId;
+    valueIdsBufferLength = 1;
+    var hash = funcHash;
+
+    if (!getValueIds.apply(this, arguments)) {
+      return null;
+    }
+
+    var countValueStates = valueIdsBufferLength;
+
+    for (var i = 1; i < countValueStates; i++) {
+      var _valueId3 = _valueIdsBuffer[i];
+      hash = (0, _helpers.nextHash)(hash, _valueId3);
     } // endregion
 
 
@@ -1386,7 +1417,7 @@ function createCallStateProvider(func, funcCall, initCallState) {
     var callStates = callStateHashTable.get(hash);
 
     if (callStates != null) {
-      callState = findCallState(callStates, countValueStates, _valueIdsBuffer);
+      callState = findCallState(callStates, _valueIdsBuffer, countValueStates);
     } // endregion
 
 
@@ -1394,7 +1425,8 @@ function createCallStateProvider(func, funcCall, initCallState) {
   }
 
   function createCallWithArgs() {
-    var args = arguments;
+    var args = arguments; // eslint-disable-next-line func-names
+
     return function (_this, _func) {
       return _func.apply(_this, args);
     };
@@ -1403,23 +1435,18 @@ function createCallStateProvider(func, funcCall, initCallState) {
 
   function _getOrCreateCallState() {
     // region getCallState
-    var countArgs = arguments.length;
-    var countValueStates = countArgs + 2; // region calc hash
+    var countArgs = arguments.length; // region calc hash
 
     var _valueIdsBuffer = valueIdsBuffer;
     _valueIdsBuffer[0] = funcId;
+    valueIdsBufferLength = 1;
     var hash = funcHash;
-    {
-      var valueId = getOrCreateValueId(this);
-      _valueIdsBuffer[1] = valueId;
-      hash = (0, _helpers.nextHash)(hash, valueId);
-    }
+    getOrCreateValueIds.apply(this, arguments);
+    var countValueStates = valueIdsBufferLength;
 
-    for (var i = 0; i < countArgs; i++) {
-      var _valueId2 = getOrCreateValueId(arguments[i]);
-
-      _valueIdsBuffer[i + 2] = _valueId2;
-      hash = (0, _helpers.nextHash)(hash, _valueId2);
+    for (var i = 1; i < countValueStates; i++) {
+      var _valueId4 = _valueIdsBuffer[i];
+      hash = (0, _helpers.nextHash)(hash, _valueId4);
     } // endregion
 
 
@@ -1427,7 +1454,7 @@ function createCallStateProvider(func, funcCall, initCallState) {
     var callStates = callStateHashTable.get(hash);
 
     if (callStates != null) {
-      callState = findCallState(callStates, countValueStates, _valueIdsBuffer);
+      callState = findCallState(callStates, _valueIdsBuffer, countValueStates);
     } // endregion
 
 
@@ -1588,11 +1615,11 @@ function deleteCallState(callState) {
   var hash = 17;
 
   for (var i = 0, len = valueIds.length; i < len; i++) {
-    var valueId = valueIds[i];
-    hash = (0, _helpers.nextHash)(hash, valueId);
+    var _valueId5 = valueIds[i];
+    hash = (0, _helpers.nextHash)(hash, _valueId5);
 
     if (i > 0) {
-      var valueState = getValueState(valueId);
+      var valueState = getValueState(_valueId5);
 
       if (valueState != null) {
         var usageCount = valueState.usageCount;
@@ -1600,7 +1627,7 @@ function deleteCallState(callState) {
         if (usageCount <= 0) {
           throw new _helpers3.InternalError('usageCount <= 0');
         } else if (usageCount === 1 && i > 0) {
-          deleteValueState(valueId, valueState.value);
+          deleteValueState(_valueId5, valueState.value);
         } else {
           valueState.usageCount--;
         }
@@ -1752,14 +1779,14 @@ function createDependentFunc(func, callStateProvider, canAlwaysRecalc) {
  */
 
 
-function makeDependentFunc(func, funcCall, initCallState, canAlwaysRecalc) {
+function makeDependentFunc(func, funcCall, createGetValueIds, initCallState, canAlwaysRecalc) {
   var callStateProvider = callStateProviderMap.get(func);
 
   if (callStateProvider != null) {
     return callStateProvider.dependFunc;
   }
 
-  callStateProvider = createCallStateProvider(func, funcCall, initCallState);
+  callStateProvider = createCallStateProvider(func, funcCall, createGetValueIds, initCallState);
   callStateProviderMap.set(func, callStateProvider);
   var dependFunc = createDependentFunc(func, callStateProvider, canAlwaysRecalc);
   callStateProvider.dependFunc = dependFunc;

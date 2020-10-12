@@ -360,10 +360,10 @@ function testRunner(_this, _ref3) {
 function searchBestErrorBuilder(_ref4) {
   var onFound = _ref4.onFound,
       consoleOnlyBestErrors = _ref4.consoleOnlyBestErrors;
-  return /*#__PURE__*/_regenerator.default.mark(function _callee(_this, _ref5) {
+  return /*#__PURE__*/_regenerator.default.mark(function _searchBestErrorBuilder(_this, _ref5) {
     var customSeed, metricsMin, _stopPredicate, createMetrics, compareMetrics, _func2, interceptConsoleDisabled, interceptConsoleDispose, interceptConsoleDisable, seedMin, errorMin, _reportMin, lastErrorIteration, lastErrorTime, minErrorIteration, minErrorTime, equalErrorIteration, equalErrorTime, _searchBestErrorMetrics;
 
-    return _regenerator.default.wrap(function _callee$(_context6) {
+    return _regenerator.default.wrap(function _searchBestErrorBuilder$(_context6) {
       while (1) {
         switch (_context6.prev = _context6.next) {
           case 0:
@@ -378,7 +378,7 @@ function searchBestErrorBuilder(_ref4) {
             };
 
             customSeed = _ref5.customSeed, metricsMin = _ref5.metricsMin, _stopPredicate = _ref5.stopPredicate, createMetrics = _ref5.createMetrics, compareMetrics = _ref5.compareMetrics, _func2 = _ref5.func;
-            interceptConsoleDispose = customSeed == null && consoleOnlyBestErrors && (0, _interceptConsole.interceptConsole)(function () {
+            interceptConsoleDispose = customSeed == null && consoleOnlyBestErrors && (0, _interceptConsole.interceptConsole)(function _consoleHandler() {
               return !interceptConsoleDisabled;
             });
             _context6.prev = 3;
@@ -520,7 +520,7 @@ function searchBestErrorBuilder(_ref4) {
             return _context6.stop();
         }
       }
-    }, _callee, null, [[3,, 13, 16]]);
+    }, _searchBestErrorBuilder, null, [[3,, 13, 16]]);
   });
 } // endregion
 
@@ -604,9 +604,9 @@ function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerato
           };
 
           return func;
-        }( /*#__PURE__*/_regenerator.default.mark(function _callee2(testRunnerMetrics) {
+        }( /*#__PURE__*/_regenerator.default.mark(function _callee(testRunnerMetrics) {
           var metrics;
-          return _regenerator.default.wrap(function _callee2$(_context9) {
+          return _regenerator.default.wrap(function _callee$(_context9) {
             while (1) {
               switch (_context9.prev = _context9.next) {
                 case 0:
@@ -622,7 +622,7 @@ function randomTestBuilder(createMetrics, optionsPatternBuilder, optionsGenerato
                   return _context9.stop();
               }
             }
-          }, _callee2, this);
+          }, _callee, this);
         }))
       });
     });

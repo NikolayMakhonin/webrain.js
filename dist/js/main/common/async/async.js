@@ -1,15 +1,24 @@
 "use strict";
 
+var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
 exports.__esModule = true;
 exports.isThenable = isThenable;
 exports.isAsync = isAsync;
+exports.registerStateProvider = registerStateProvider;
 exports.resolveValue = resolveValue;
 exports.resolveValueFunc = resolveValueFunc;
-exports.ResolveResult = void 0;
+exports.stateProviderDefault = exports.ResolveResult = void 0;
+
+var _isArray = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/array/is-array"));
+
+var _indexOf = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/index-of"));
+
+var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/createClass"));
 
 var _helpers = require("../helpers/helpers");
-
-var _currentState = require("../rx/depend/core/current-state");
 
 /* tslint:disable:no-circular-imports */
 function isThenable(value) {
@@ -31,6 +40,88 @@ exports.ResolveResult = ResolveResult;
   ResolveResult[ResolveResult["ImmediateError"] = 5] = "ImmediateError";
   ResolveResult[ResolveResult["DeferredError"] = 6] = "DeferredError";
 })(ResolveResult || (exports.ResolveResult = ResolveResult = {}));
+
+var CombinedStateProvider = /*#__PURE__*/function () {
+  function CombinedStateProvider() {
+    (0, _classCallCheck2.default)(this, CombinedStateProvider);
+    this._stateProviders = [];
+    this._stateProvidersWereUsed = false;
+  }
+
+  (0, _createClass2.default)(CombinedStateProvider, [{
+    key: "registerStateProvider",
+    value: function registerStateProvider(stateProvider) {
+      var _context;
+
+      if (this._stateProvidersWereUsed) {
+        throw new Error('You should add state provider only before using them');
+      }
+
+      if ((0, _indexOf.default)(_context = this._stateProviders).call(_context, stateProvider) >= 0) {
+        throw new Error('stateProvider already registered');
+      }
+
+      this._stateProviders.push(stateProvider);
+    }
+  }, {
+    key: "getState",
+    value: function getState() {
+      this._stateProvidersWereUsed = true;
+      var len = this._stateProviders.length;
+
+      if (len === 0) {
+        return null;
+      }
+
+      if (len === 1) {
+        return this._stateProviders[0].getState();
+      }
+
+      var states = [];
+
+      for (var i = 0; i < len; i++) {
+        states[i] = this._stateProviders[i].getState();
+      }
+
+      return states;
+    }
+  }, {
+    key: "setState",
+    value: function setState(state) {
+      if (!this._stateProvidersWereUsed) {
+        throw new Error('Unexpected behavior');
+      }
+
+      var len = this._stateProviders.length;
+
+      if (len === 0) {
+        throw new Error('Unexpected behavior');
+      }
+
+      if (len === 1) {
+        this._stateProviders[0].setState(state);
+
+        return;
+      }
+
+      if (!(0, _isArray.default)(state) || state.length !== len) {
+        throw new Error('Unexpected behavior');
+      }
+
+      for (var i = 0; i < len; i++) {
+        this._stateProviders[i].setState(state[i]);
+      }
+    }
+  }]);
+  return CombinedStateProvider;
+}();
+
+var stateProviderDefault = new CombinedStateProvider();
+exports.stateProviderDefault = stateProviderDefault;
+
+function registerStateProvider(stateProvider) {
+  stateProviderDefault.registerStateProvider(stateProvider);
+}
 
 function resolveIterator(iterator, isError, onImmediate, onDeferred, customResolveValue) {
   if (!(0, _helpers.isIterator)(iterator)) {
@@ -125,12 +216,12 @@ function resolveThenable(thenable, isError, onImmediate, onDeferred) {
 }
 
 function _resolveValue(value, isError, onImmediate, onDeferred, customResolveValue, callState) {
-  var prevCallState = (0, _currentState.getCurrentState)();
+  var prevCallState = stateProviderDefault.getState();
 
   if (callState == null) {
     callState = prevCallState;
   } else {
-    (0, _currentState.setCurrentState)(callState);
+    stateProviderDefault.setState(callState);
   }
 
   try {
@@ -191,7 +282,7 @@ function _resolveValue(value, isError, onImmediate, onDeferred, customResolveVal
       return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
     }
   } finally {
-    (0, _currentState.setCurrentState)(prevCallState);
+    stateProviderDefault.setState(prevCallState);
   }
 }
 

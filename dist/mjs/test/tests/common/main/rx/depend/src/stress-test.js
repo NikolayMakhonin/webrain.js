@@ -576,7 +576,7 @@ function _stressTest({
       minTimeBetweenCalc: rnd.nextBoolean() ? rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100) : void 0,
       autoInvalidateInterval: rnd.nextBoolean(0.2) ? rnd.nextBoolean() ? 0 : rnd.nextInt(1, 100) : void 0
     } : null;
-    const dependFunc = isDependX ? dependX(func, deferredOptions, initCallState) : depend(func, deferredOptions, initCallState);
+    const dependFunc = isDependX ? dependX(func, deferredOptions, null, initCallState) : depend(func, deferredOptions, null, initCallState);
     dependFunc.func = func;
     return dependFunc;
   }

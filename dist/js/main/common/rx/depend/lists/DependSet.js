@@ -228,9 +228,9 @@ var DependSet = /*#__PURE__*/function () {
 
 exports.DependSet = DependSet;
 DependSet.uuid = '0b5ba0da253c43a98944e34a82b61c06';
-DependSet.prototype.dependAll = (0, _facade.depend)(DependSet.prototype.dependAll, null, null, true);
-DependSet.prototype.dependAnyValue = (0, _facade.depend)(DependSet.prototype.dependAnyValue, null, null, true);
-DependSet.prototype.dependValue = (0, _facade.depend)(DependSet.prototype.dependValue, null, null, true);
+DependSet.prototype.dependAll = (0, _facade.depend)(DependSet.prototype.dependAll, null, null, null, true);
+DependSet.prototype.dependAnyValue = (0, _facade.depend)(DependSet.prototype.dependAnyValue, null, null, null, true);
+DependSet.prototype.dependValue = (0, _facade.depend)(DependSet.prototype.dependValue, null, null, null, true);
 (0, _mergers.registerMergeable)(DependSet);
 (0, _serializers.registerSerializable)(DependSet, {
   serializer: {

@@ -253,11 +253,11 @@ var DependMap = /*#__PURE__*/function () {
 
 exports.DependMap = DependMap;
 DependMap.uuid = 'd97c26caddd84a4d9748fd0f345f75fd';
-DependMap.prototype.dependAll = (0, _facade.depend)(DependMap.prototype.dependAll, null, null, true);
-DependMap.prototype.dependAnyKey = (0, _facade.depend)(DependMap.prototype.dependAnyKey, null, null, true);
-DependMap.prototype.dependAnyValue = (0, _facade.depend)(DependMap.prototype.dependAnyValue, null, null, true);
-DependMap.prototype.dependKey = (0, _facade.depend)(DependMap.prototype.dependKey, null, null, true);
-DependMap.prototype.dependValue = (0, _facade.depend)(DependMap.prototype.dependValue, null, null, true);
+DependMap.prototype.dependAll = (0, _facade.depend)(DependMap.prototype.dependAll, null, null, null, true);
+DependMap.prototype.dependAnyKey = (0, _facade.depend)(DependMap.prototype.dependAnyKey, null, null, null, true);
+DependMap.prototype.dependAnyValue = (0, _facade.depend)(DependMap.prototype.dependAnyValue, null, null, null, true);
+DependMap.prototype.dependKey = (0, _facade.depend)(DependMap.prototype.dependKey, null, null, null, true);
+DependMap.prototype.dependValue = (0, _facade.depend)(DependMap.prototype.dependValue, null, null, null, true);
 (0, _mergers.registerMergeable)(DependMap);
 (0, _serializers.registerSerializable)(DependMap, {
   serializer: {

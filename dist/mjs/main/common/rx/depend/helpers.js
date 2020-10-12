@@ -19,7 +19,7 @@ export function dependWait(func, condition, timeout, isLazy) {
     timeout = webrainOptions.timeouts.dependWait;
   }
 
-  return dependX(function () {
+  return dependX(function _dependWait() {
     const state = this;
     const funcState = getOrCreateCallState(func).apply(state._this, arguments);
     const value = funcState.getValue(isLazy);
@@ -74,7 +74,7 @@ export function dependWait(func, condition, timeout, isLazy) {
   });
 }
 export function autoCalc(func, dontLogErrors) {
-  return function () {
+  return function _autoCalc() {
     return subscribeCallState(getOrCreateCallState(func).apply(this, arguments), dontLogErrors ? null : state => {
       if (state.statusShort === CallStatusShort.CalculatedError) {
         console.error(state.error);
@@ -86,7 +86,7 @@ export function autoCalcConnect(object, connectorFactory, func, dontLogErrors) {
   return autoCalc(dependBindThis(createConnector(object, connectorFactory), func), dontLogErrors);
 }
 export function dependWrapThis(wrapThis, func) {
-  return function (_this) {
+  return function _dependWrapThis(_this) {
     return dependBindThis(wrapThis(_this), func);
   };
 }

@@ -13,6 +13,8 @@ exports.forceLazy = forceLazy;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regenerator"));
 
+var _async = require("../../../async/async");
+
 var _helpers = require("../../../helpers/helpers");
 
 var _marked = /*#__PURE__*/_regenerator.default.mark(_withModeAsync);
@@ -26,9 +28,13 @@ function getCurrentState() {
 
 function setCurrentState(state) {
   currentState = state;
-} // endregion
-// region forceLazy
+}
 
+(0, _async.registerStateProvider)({
+  getState: getCurrentState,
+  setState: setCurrentState
+}); // endregion
+// region forceLazy
 
 var _forceLazy = null;
 

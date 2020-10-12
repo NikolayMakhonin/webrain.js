@@ -178,11 +178,11 @@ export class DependMap {
 
 }
 DependMap.uuid = 'd97c26caddd84a4d9748fd0f345f75fd';
-DependMap.prototype.dependAll = depend(DependMap.prototype.dependAll, null, null, true);
-DependMap.prototype.dependAnyKey = depend(DependMap.prototype.dependAnyKey, null, null, true);
-DependMap.prototype.dependAnyValue = depend(DependMap.prototype.dependAnyValue, null, null, true);
-DependMap.prototype.dependKey = depend(DependMap.prototype.dependKey, null, null, true);
-DependMap.prototype.dependValue = depend(DependMap.prototype.dependValue, null, null, true);
+DependMap.prototype.dependAll = depend(DependMap.prototype.dependAll, null, null, null, true);
+DependMap.prototype.dependAnyKey = depend(DependMap.prototype.dependAnyKey, null, null, null, true);
+DependMap.prototype.dependAnyValue = depend(DependMap.prototype.dependAnyValue, null, null, null, true);
+DependMap.prototype.dependKey = depend(DependMap.prototype.dependKey, null, null, null, true);
+DependMap.prototype.dependValue = depend(DependMap.prototype.dependValue, null, null, null, true);
 registerMergeable(DependMap);
 registerSerializable(DependMap, {
   serializer: {

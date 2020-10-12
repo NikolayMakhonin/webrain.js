@@ -1,4 +1,5 @@
 /* tslint:disable:no-circular-imports no-shadowed-variable */
+import { registerStateProvider } from '../../../async/async';
 import { isIterator } from '../../../helpers/helpers';
 // region currentState
 let currentState = null;
@@ -7,7 +8,11 @@ export function getCurrentState() {
 }
 export function setCurrentState(state) {
   currentState = state;
-} // endregion
+}
+registerStateProvider({
+  getState: getCurrentState,
+  setState: setCurrentState
+}); // endregion
 // region forceLazy
 
 let _forceLazy = null;

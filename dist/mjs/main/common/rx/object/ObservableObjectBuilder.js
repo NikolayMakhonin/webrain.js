@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import { createFunction, missingSetter } from '../../helpers/helpers';
 import { webrainEquals } from '../../helpers/webrainOptions';
 import { depend } from '../../rx/depend/core/depend';
@@ -42,7 +43,7 @@ export class ObservableObjectBuilder extends ObjectBuilder {
     Object.defineProperty(object, name, {
       configurable: true,
       enumerable: !hidden,
-      get: depend(getValue, null, null, true),
+      get: depend(getValue, null, null, null, true),
       // get: getValue,
       set
     });
@@ -123,7 +124,7 @@ export class ObservableObjectBuilder extends ObjectBuilder {
       const attributes = {
         configurable: true,
         enumerable: !hidden,
-        // get: depend(getValue, null, true),
+        // get: depend(getValue, null, null, null, true),
         get: getValue,
         set: update ? function (value) {
           const newValue = update.call(this, value);

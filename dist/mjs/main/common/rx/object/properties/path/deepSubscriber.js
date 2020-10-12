@@ -6,7 +6,7 @@ import { RuleBuilder } from './builder/RuleBuilder';
 import { SubscribeObjectType } from './builder/rules-subscribe';
 import { forEachRule } from './forEachRule';
 import { resolveValueProperty } from './resolve';
-const dependForEachRule = depend(function (rule, emitLastValue) {
+const dependForEachRule = depend(function dependForEachRule(rule, emitLastValue) {
   return resolveAsync(new ThenableSync((resolve, reject) => {
     let rejected = false;
     let lastValue;

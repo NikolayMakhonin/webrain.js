@@ -3,6 +3,7 @@
 exports.__esModule = true;
 exports.globalScope = void 0;
 
+/* eslint-disable no-undef */
 function getGlobalScope() {
   if (typeof window !== 'undefined') {
     return window;

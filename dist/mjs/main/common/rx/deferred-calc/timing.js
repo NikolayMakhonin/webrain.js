@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 export const timingDefault = {
   now: Date.now,
   setTimeout: typeof window === 'undefined' ? setTimeout : setTimeout.bind(window),

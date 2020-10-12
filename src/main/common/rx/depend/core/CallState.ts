@@ -1383,8 +1383,14 @@ export function deleteValueState(valueId: number, value: any): void {
 
 let valueIdsBufferLength = 0
 const valueIdsBuffer: Int32Array = new Int32Array(100)
-function pushValueId(valueId: number) {
+function pushValueId(valueId: number): boolean {
+	if (valueId === 0) {
+		return false
+	}
+
 	valueIdsBuffer[valueIdsBufferLength++] = valueId
+
+	return true
 }
 
 // interface ICallStateProviderState<
@@ -1454,31 +1460,31 @@ export const Object_End = new String(']')
 
 export type TCreateGetValueIds<TThisOuter, TArgs extends any[]> = (
 	getValueId: (value: any) => number,
-	pushValueId: (valueId: number) => void,
+	pushValueId: (valueId: number) => boolean,
 )
-	=> Func<TThisOuter, TArgs, void>
+	=> Func<TThisOuter, TArgs, boolean>
 
 function createGetValueIdsDefault<TThisOuter, TArgs extends any[]>(
 	_getValueId: (value: any) => number,
-	_pushValueId: (valueId: number) => void,
-): Func<TThisOuter, TArgs, void> {
+	_pushValueId: (valueId: number) => boolean,
+): Func<TThisOuter, TArgs, boolean> {
 	return function _createGetValueIdsDefault() {
 		const countArgs = arguments.length
 		{
 			const valueId = _getValueId(this)
-			if (valueId === 0) {
-				return
+			if (!_pushValueId(valueId)) {
+				return false
 			}
-			_pushValueId(valueId)
 		}
 
 		for (let i = 0; i < countArgs; i++) {
 			const valueId = _getValueId(arguments[i])
-			if (valueId === 0) {
-				return
+			if (!_pushValueId(valueId)) {
+				return false
 			}
-			_pushValueId(valueId)
 		}
+
+		return true
 	}
 }
 
@@ -1514,7 +1520,9 @@ export function createCallStateProvider<
 		valueIdsBufferLength = 1
 		let hash = funcHash
 
-		getValueIds.apply(this, arguments)
+		if (!getValueIds.apply(this, arguments)) {
+			return null
+		}
 
 		const countValueStates = valueIdsBufferLength
 

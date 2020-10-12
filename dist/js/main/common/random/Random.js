@@ -24,7 +24,7 @@ var _uuid = require("./uuid");
 
 // from here: https://stackoverflow.com/a/47593316/5221762
 function mulberry32(seed) {
-  return function () {
+  return function _mulberry32() {
     var t = seed += 0x6D2B79F5;
     t = (0, _imul.default)(t ^ t >>> 15, t | 1);
     t ^= t + (0, _imul.default)(t ^ t >>> 7, t | 61);

@@ -47,9 +47,9 @@ function searchBestErrorBuilderNode(_ref) {
       }, onFound);
     })
   });
-  return /*#__PURE__*/_regenerator.default.mark(function _callee(_this, _ref2) {
+  return /*#__PURE__*/_regenerator.default.mark(function _searchBestErrorBuilderNode(_this, _ref2) {
     var customSeed, metricsMin, stopPredicate, createMetrics, compareMetrics, func;
-    return _regenerator.default.wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _searchBestErrorBuilderNode$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
@@ -86,6 +86,6 @@ function searchBestErrorBuilderNode(_ref) {
             return _context2.stop();
         }
       }
-    }, _callee);
+    }, _searchBestErrorBuilderNode);
   });
 } // endregion

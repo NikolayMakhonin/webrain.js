@@ -1,6 +1,6 @@
 /* tslint:disable:no-shadowed-variable */
 import { RuleRepeatAction } from '../../../../../../../../../../../main/common/rx/object/properties/path/builder/contracts/rules';
-import { iterablesToArrays, treeToSequenceVariants } from '../../../../../../../../../../../main/common/test/Variants'; // region helpres
+import { iterablesToArrays, treeToSequenceVariants } from '../../../../../../../../../../../main/common/test/Variants'; // region helpers
 // export interface IRuleBuildersBuilder<TObject = any, TValueKeys extends string | number = never>
 // 	extends IRuleBuilder<TObject, TValueKeys>
 // {

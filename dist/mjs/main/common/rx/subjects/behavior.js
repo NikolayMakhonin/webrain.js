@@ -3,6 +3,7 @@ import { Subject } from './subject';
 export function behavior(base) {
   return class Behavior extends base {
     constructor(value) {
+      // eslint-disable-next-line constructor-super
       super();
 
       if (typeof value !== 'undefined') {

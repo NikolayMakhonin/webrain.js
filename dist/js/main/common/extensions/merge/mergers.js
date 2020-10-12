@@ -741,7 +741,8 @@ var MergerVisitor = /*#__PURE__*/function () {
 
             default:
               throw new Error('Unknown mergeResult: ' + mergeResult);
-          }
+          } // eslint-disable-next-line no-unreachable
+
 
           throw new Error('Unreachable code');
 
@@ -779,7 +780,8 @@ var MergerVisitor = /*#__PURE__*/function () {
 
         default:
           throw new Error('Unknown mergeResult: ' + mergeResult);
-      }
+      } // eslint-disable-next-line no-unreachable
+
 
       throw new Error('Unreachable code');
     }

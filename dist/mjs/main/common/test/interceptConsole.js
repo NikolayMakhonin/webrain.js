@@ -39,7 +39,7 @@ export function interceptConsole(handler) {
       type,
       console: orig_console
     };
-    return function () {
+    return function _consoleInterceptor() {
       const result = handler.apply(_this, arguments);
 
       if (result) {
@@ -77,7 +77,7 @@ function objectToString(o) {
 let lastConsoleError = null;
 export function* throwOnConsoleError(_this, throwPredicate, func) {
   lastConsoleError = null;
-  const dispose = interceptConsole(function () {
+  const dispose = interceptConsole(function _consoleHandler() {
     if (throwPredicate.apply(this.type, arguments)) {
       const error = new Error(`console.${this.type}(${Array.from(arguments).map(o => objectToString(o)).join('\r\n')})`);
       lastConsoleError = error;

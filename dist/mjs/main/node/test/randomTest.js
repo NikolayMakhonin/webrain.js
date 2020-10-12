@@ -22,7 +22,7 @@ export function searchBestErrorBuilderNode({
     }
 
   });
-  return function* (_this, {
+  return function* _searchBestErrorBuilderNode(_this, {
     customSeed,
     metricsMin,
     stopPredicate,

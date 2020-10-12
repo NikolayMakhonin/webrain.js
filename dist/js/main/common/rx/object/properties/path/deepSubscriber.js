@@ -19,7 +19,7 @@ var _forEachRule = require("./forEachRule");
 
 var _resolve = require("./resolve");
 
-var dependForEachRule = (0, _depend.depend)(function (rule, emitLastValue) {
+var dependForEachRule = (0, _depend.depend)(function dependForEachRule(rule, emitLastValue) {
   var _this = this;
 
   return (0, _ThenableSync.resolveAsync)(new _ThenableSync.ThenableSync(function (resolve, reject) {

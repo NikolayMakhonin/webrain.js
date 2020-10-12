@@ -719,7 +719,8 @@ export class MergerVisitor {
 
           default:
             throw new Error('Unknown mergeResult: ' + mergeResult);
-        }
+        } // eslint-disable-next-line no-unreachable
+
 
         throw new Error('Unreachable code');
 
@@ -757,7 +758,8 @@ export class MergerVisitor {
 
       default:
         throw new Error('Unknown mergeResult: ' + mergeResult);
-    }
+    } // eslint-disable-next-line no-unreachable
+
 
     throw new Error('Unreachable code');
   }

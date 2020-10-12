@@ -1,6 +1,5 @@
 /* tslint:disable:no-circular-imports */
 import { equals, isIterator } from '../helpers/helpers';
-import { getCurrentState, setCurrentState } from '../rx/depend/core/current-state';
 export function isThenable(value) {
   return value != null && typeof value === 'object' && typeof value.then === 'function';
 }
@@ -17,6 +16,78 @@ export let ResolveResult;
   ResolveResult[ResolveResult["ImmediateError"] = 5] = "ImmediateError";
   ResolveResult[ResolveResult["DeferredError"] = 6] = "DeferredError";
 })(ResolveResult || (ResolveResult = {}));
+
+class CombinedStateProvider {
+  constructor() {
+    this._stateProviders = [];
+    this._stateProvidersWereUsed = false;
+  }
+
+  registerStateProvider(stateProvider) {
+    if (this._stateProvidersWereUsed) {
+      throw new Error('You should add state provider only before using them');
+    }
+
+    if (this._stateProviders.indexOf(stateProvider) >= 0) {
+      throw new Error('stateProvider already registered');
+    }
+
+    this._stateProviders.push(stateProvider);
+  }
+
+  getState() {
+    this._stateProvidersWereUsed = true;
+    const len = this._stateProviders.length;
+
+    if (len === 0) {
+      return null;
+    }
+
+    if (len === 1) {
+      return this._stateProviders[0].getState();
+    }
+
+    const states = [];
+
+    for (let i = 0; i < len; i++) {
+      states[i] = this._stateProviders[i].getState();
+    }
+
+    return states;
+  }
+
+  setState(state) {
+    if (!this._stateProvidersWereUsed) {
+      throw new Error('Unexpected behavior');
+    }
+
+    const len = this._stateProviders.length;
+
+    if (len === 0) {
+      throw new Error('Unexpected behavior');
+    }
+
+    if (len === 1) {
+      this._stateProviders[0].setState(state);
+
+      return;
+    }
+
+    if (!Array.isArray(state) || state.length !== len) {
+      throw new Error('Unexpected behavior');
+    }
+
+    for (let i = 0; i < len; i++) {
+      this._stateProviders[i].setState(state[i]);
+    }
+  }
+
+}
+
+export const stateProviderDefault = new CombinedStateProvider();
+export function registerStateProvider(stateProvider) {
+  stateProviderDefault.registerStateProvider(stateProvider);
+}
 
 function resolveIterator(iterator, isError, onImmediate, onDeferred, customResolveValue) {
   if (!isIterator(iterator)) {
@@ -111,12 +182,12 @@ function resolveThenable(thenable, isError, onImmediate, onDeferred) {
 }
 
 function _resolveValue(value, isError, onImmediate, onDeferred, customResolveValue, callState) {
-  const prevCallState = getCurrentState();
+  const prevCallState = stateProviderDefault.getState();
 
   if (callState == null) {
     callState = prevCallState;
   } else {
-    setCurrentState(callState);
+    stateProviderDefault.setState(callState);
   }
 
   try {
@@ -177,7 +248,7 @@ function _resolveValue(value, isError, onImmediate, onDeferred, customResolveVal
       return isError ? ResolveResult.ImmediateError : ResolveResult.Immediate;
     }
   } finally {
-    setCurrentState(prevCallState);
+    stateProviderDefault.setState(prevCallState);
   }
 }
 

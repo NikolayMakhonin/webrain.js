@@ -164,7 +164,7 @@ export function searchBestErrorBuilder({
   onFound,
   consoleOnlyBestErrors
 }) {
-  return function* (_this, {
+  return function* _searchBestErrorBuilder(_this, {
     customSeed,
     metricsMin,
     stopPredicate,
@@ -173,7 +173,7 @@ export function searchBestErrorBuilder({
     func
   }) {
     let interceptConsoleDisabled;
-    const interceptConsoleDispose = customSeed == null && consoleOnlyBestErrors && interceptConsole(function () {
+    const interceptConsoleDispose = customSeed == null && consoleOnlyBestErrors && interceptConsole(function _consoleHandler() {
       return !interceptConsoleDisabled;
     });
 

@@ -135,8 +135,8 @@ export function _initDeferredCallState(state, funcCall, deferredOptions) {
 }
 /** Inner this as CallState */
 
-export function makeDeferredFunc(func, funcCall, defaultOptions, initCallState) {
-  return makeDependentFunc(func, null, state => {
+export function makeDeferredFunc(func, funcCall, defaultOptions, createGetValueIds, initCallState) {
+  return makeDependentFunc(func, null, createGetValueIds, state => {
     _initDeferredCallState(state, funcCall, defaultOptions);
 
     if (initCallState != null) {
@@ -156,12 +156,12 @@ export function _funcCall(state) {
  * @param canAlwaysRecalc sync, no deferred, without dependencies
  */
 
-export function depend(func, deferredOptions, initCallState, canAlwaysRecalc) {
+export function depend(func, deferredOptions, createGetValueIds, initCallState, canAlwaysRecalc) {
   if (canAlwaysRecalc && deferredOptions != null) {
     throw new InternalError('canAlwaysRecalc should not be deferred');
   }
 
-  return deferredOptions == null ? makeDependentFunc(func, _funcCall, initCallState, canAlwaysRecalc) : makeDeferredFunc(func, _funcCall, deferredOptions, initCallState);
+  return deferredOptions == null ? makeDependentFunc(func, _funcCall, createGetValueIds, initCallState, canAlwaysRecalc) : makeDeferredFunc(func, _funcCall, deferredOptions, createGetValueIds, initCallState);
 }
 export function funcCallX(state) {
   return state.callWithArgs(state, state.func);
@@ -172,8 +172,8 @@ export function funcCallX(state) {
  * @param deferredOptions
  */
 
-export function dependX(func, deferredOptions, initCallState) {
-  return deferredOptions == null ? makeDependentFunc(func, funcCallX, initCallState, false) : makeDeferredFunc(func, funcCallX, deferredOptions, initCallState);
+export function dependX(func, deferredOptions, createGetValueIds, initCallState) {
+  return deferredOptions == null ? makeDependentFunc(func, funcCallX, createGetValueIds, initCallState, false) : makeDeferredFunc(func, funcCallX, deferredOptions, createGetValueIds, initCallState);
 } // endregion
 // region dependLazy
 // export function dependLazy<
