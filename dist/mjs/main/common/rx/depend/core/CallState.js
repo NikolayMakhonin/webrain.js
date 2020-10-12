@@ -1131,7 +1131,7 @@ export function deleteValueState(valueId, value) {
 // region CallStateProviderState
 
 let valueIdsBufferLength = 0;
-const valueIdsBuffer = new Int32Array(100);
+const valueIdsBuffer = [0];
 
 function pushValueId(valueId) {
   if (valueId === 0) {
@@ -1215,18 +1215,18 @@ export function createCallStateProvider(func, funcCall, createGetValueIds, initC
   function _getCallState() {
     // region getCallState
     // region calc hash
-    const _valueIdsBuffer = valueIdsBuffer;
-    _valueIdsBuffer[0] = funcId;
-    valueIdsBufferLength = 1;
+    const valueIdsBufferStart = valueIdsBufferLength;
+    pushValueId(funcId);
     let hash = funcHash;
 
     if (!getValueIds.apply(this, arguments)) {
+      valueIdsBufferLength = valueIdsBufferStart;
       return null;
     }
 
-    const countValueStates = valueIdsBufferLength;
+    const _valueIdsBuffer = valueIdsBuffer;
 
-    for (let i = 1; i < countValueStates; i++) {
+    for (let i = valueIdsBufferStart + 1; i < valueIdsBufferLength; i++) {
       const valueId = _valueIdsBuffer[i];
       hash = nextHash(hash, valueId);
     } // endregion
@@ -1236,10 +1236,11 @@ export function createCallStateProvider(func, funcCall, createGetValueIds, initC
     const callStates = callStateHashTable.get(hash);
 
     if (callStates != null) {
-      callState = findCallState(callStates, _valueIdsBuffer, countValueStates);
+      callState = findCallState(callStates, _valueIdsBuffer, valueIdsBufferLength - valueIdsBufferStart);
     } // endregion
 
 
+    valueIdsBufferLength = valueIdsBufferStart;
     return callState;
   }
 
@@ -1254,20 +1255,19 @@ export function createCallStateProvider(func, funcCall, createGetValueIds, initC
 
   function _getOrCreateCallState() {
     // region getCallState
-    const countArgs = arguments.length; // region calc hash
-
-    const _valueIdsBuffer = valueIdsBuffer;
-    _valueIdsBuffer[0] = funcId;
-    valueIdsBufferLength = 1;
+    // region calc hash
+    const valueIdsBufferStart = valueIdsBufferLength;
+    pushValueId(funcId);
     let hash = funcHash;
     getOrCreateValueIds.apply(this, arguments);
-    const countValueStates = valueIdsBufferLength;
+    const _valueIdsBuffer = valueIdsBuffer;
 
-    for (let i = 1; i < countValueStates; i++) {
+    for (let i = valueIdsBufferStart + 1; i < valueIdsBufferLength; i++) {
       const valueId = _valueIdsBuffer[i];
       hash = nextHash(hash, valueId);
-    } // endregion
+    }
 
+    const countValueStates = valueIdsBufferLength - valueIdsBufferStart; // endregion
 
     let callState;
     let callStates = callStateHashTable.get(hash);
@@ -1278,6 +1278,7 @@ export function createCallStateProvider(func, funcCall, createGetValueIds, initC
 
 
     if (callState != null) {
+      valueIdsBufferLength = valueIdsBufferStart;
       return callState;
     } // const valueIdsClone: Int32Array = _valueIdsBuffer.slice(0, countValueStates)
 
@@ -1285,16 +1286,17 @@ export function createCallStateProvider(func, funcCall, createGetValueIds, initC
     const valueIdsClone = new Int32Array(countValueStates);
 
     for (let i = 0; i < countValueStates; i++) {
-      valueIdsClone[i] = _valueIdsBuffer[i];
+      valueIdsClone[i] = _valueIdsBuffer[valueIdsBufferStart + i];
     }
 
     for (let i = 0; i < countValueStates; i++) {
       if (i > 0) {
-        const valueState = getValueState(_valueIdsBuffer[i]);
+        const valueState = getValueState(_valueIdsBuffer[valueIdsBufferStart + i]);
         valueState.usageCount++;
       }
     }
 
+    valueIdsBufferLength = valueIdsBufferStart;
     callState = new CallState(func, this, createCallWithArgs.apply(null, arguments), funcCall, valueIdsClone);
     callStatesCount++;
 

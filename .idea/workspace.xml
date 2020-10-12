@@ -30,72 +30,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Added custom calc depend func args valueIds">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="v1.4.2-a">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/ThenableSync.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/async/async.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/async/async.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/extensions/merge/mergers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/helpers/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/helpers/performance.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/random/Random.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/random/Random.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/deferred-calc/timing.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/deferred-calc/timing.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/CallState.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/current-state.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/current-state.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/depend.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/core/depend.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependMap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/depend/lists/DependSet.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/deepSubscriber.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/object/properties/path/deepSubscriber.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/rx/subjects/behavior.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/Mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/Mocha.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/interceptConsole.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/interceptConsole.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/randomTest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/test/unhandledErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/test/unhandledErrors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/common/time/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/common/time/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/main/node/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/main/node/test/randomTest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/stress-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/depend/src/stress-test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/path/deepSubscriber.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/js/test/tests/common/main/rx/object/properties/path/deepSubscriber.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/async/ThenableSync.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/async/ThenableSync.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/async/async.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/async/async.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/extensions/merge/mergers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/helpers/performance.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/helpers/performance.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/random/Random.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/random/Random.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/deferred-calc/timing.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/deferred-calc/timing.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/CallState.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/current-state.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/current-state.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/depend.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/core/depend.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependMap.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependMap.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependSet.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/depend/lists/DependSet.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/ObservableObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/CalcObjectBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/ConnectorBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/deepSubscriber.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/deepSubscriber.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/iterate-rule.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/object/properties/path/iterate-rule.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/behavior.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/rx/subjects/behavior.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/Mocha.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/Mocha.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/interceptConsole.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/interceptConsole.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/randomTest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/test/unhandledErrors.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/test/unhandledErrors.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/common/time/helpers.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/common/time/helpers.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/main/node/test/randomTest.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/main/node/test/randomTest.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/perceptron.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/perceptron.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/stress-test.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/depend/src/stress-test.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/path/builder/helpers/src/RuleBuildersBuilder.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/path/deepSubscriber.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/mjs/test/tests/common/main/rx/object/properties/path/deepSubscriber.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/async/async.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/async/async.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/core/CallState.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/core/CallState.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/types/common/rx/depend/core/depend.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/dist/types/common/rx/depend/core/depend.d.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
     </list>
@@ -169,12 +108,12 @@
     <property name="ts.external.directory.path" value="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\after" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\bindings2" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\bindings" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\node\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
     </key>
     <key name="es6.move.members.recent.items">
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\contracts.ts" />
@@ -183,12 +122,12 @@
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\core\helpers.ts" />
       <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\src\perceptron.ts" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\node\test" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\src" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\docs\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend" />
-      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\object\properties\path" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\node_modules\after" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\main\common\rx\depend\bindings2" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\test" />
+      <recent name="L:\Work\_GIT\GitHub\NodeJs\modules\webrain\src\test\tests\common\main\rx\depend\bindings" />
     </key>
   </component>
   <component name="RunManager" selected="Mocha.Watch">
@@ -649,14 +588,7 @@
       <workItem from="1602061863126" duration="1032000" />
       <workItem from="1602432131863" duration="5535000" />
       <workItem from="1602505687739" duration="2939000" />
-      <workItem from="1602512815714" duration="761000" />
-    </task>
-    <task id="LOCAL-00565" summary="Develop random test helpers">
-      <created>1600588454392</created>
-      <option name="number" value="00565" />
-      <option name="presentableId" value="LOCAL-00565" />
-      <option name="project" value="LOCAL" />
-      <updated>1600588454392</updated>
+      <workItem from="1602512815714" duration="3288000" />
     </task>
     <task id="LOCAL-00566" summary="Develop random test helpers">
       <created>1600602194636</created>
@@ -994,7 +926,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602506334065</updated>
     </task>
-    <option name="localTasksCounter" value="614" />
+    <task id="LOCAL-00614" summary="v1.4.2-a">
+      <created>1602513631185</created>
+      <option name="number" value="00614" />
+      <option name="presentableId" value="LOCAL-00614" />
+      <option name="project" value="LOCAL" />
+      <updated>1602513631185</updated>
+    </task>
+    <option name="localTasksCounter" value="615" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1055,7 +994,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Develop two way binding" />
     <MESSAGE value="Develop rendom test helpers" />
     <MESSAGE value="1.2.2-a - Fix package.json. Removed unnecessary files from package." />
     <MESSAGE value="Develop random test helpers" />
@@ -1080,7 +1018,8 @@
     <MESSAGE value="Lint fixes is completed" />
     <MESSAGE value="Prepare separated async module" />
     <MESSAGE value="Added custom calc depend func args valueIds" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added custom calc depend func args valueIds" />
+    <MESSAGE value="v1.4.2-a" />
+    <option name="LAST_COMMIT_MESSAGE" value="v1.4.2-a" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1107,86 +1046,86 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1602508305375" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1602513309507">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1602516016289">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1602513309507" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1602516016289" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state width="1009" height="582" key="DebuggerActiveHint/0.0.1920.882@0.0.1920.882" timestamp="1601537988332" />
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1602513308448">
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog" timestamp="1602516014448">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1602513308448" />
+    <state x="0" y="4" width="1917" height="875" key="DiffContextDialog/0.0.1920.882@0.0.1920.882" timestamp="1602516014448" />
     <state x="1059" y="106" key="FileChooserDialogImpl" timestamp="1601646523461">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601646523461" />
-    <state width="625" height="454" key="GridCell.Tab.0.bottom" timestamp="1602513324149">
+    <state width="625" height="223" key="GridCell.Tab.0.bottom" timestamp="1602516105215">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602513324149" />
-    <state width="625" height="454" key="GridCell.Tab.0.center" timestamp="1602513324147">
+    <state width="625" height="223" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602516105215" />
+    <state width="625" height="223" key="GridCell.Tab.0.center" timestamp="1602516105215">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1602513324147" />
-    <state width="625" height="454" key="GridCell.Tab.0.left" timestamp="1602513324146">
+    <state width="625" height="223" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1602516105215" />
+    <state width="625" height="223" key="GridCell.Tab.0.left" timestamp="1602516105214">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1602513324146" />
-    <state width="625" height="454" key="GridCell.Tab.0.right" timestamp="1602513324148">
+    <state width="625" height="223" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1602516105214" />
+    <state width="625" height="223" key="GridCell.Tab.0.right" timestamp="1602516105215">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1602513324148" />
-    <state width="625" height="454" key="GridCell.Tab.1.bottom" timestamp="1602513312632">
+    <state width="625" height="223" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1602516105215" />
+    <state width="625" height="223" key="GridCell.Tab.1.bottom" timestamp="1602516124045">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602513312632" />
-    <state width="625" height="454" key="GridCell.Tab.1.center" timestamp="1602513312631">
+    <state width="625" height="223" key="GridCell.Tab.1.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602516124045" />
+    <state width="625" height="223" key="GridCell.Tab.1.center" timestamp="1602516124045">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1602513312631" />
-    <state width="625" height="454" key="GridCell.Tab.1.left" timestamp="1602513312631">
+    <state width="625" height="223" key="GridCell.Tab.1.center/0.0.1920.882@0.0.1920.882" timestamp="1602516124045" />
+    <state width="625" height="223" key="GridCell.Tab.1.left" timestamp="1602516124045">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1602513312631" />
-    <state width="625" height="454" key="GridCell.Tab.1.right" timestamp="1602513312632">
+    <state width="625" height="223" key="GridCell.Tab.1.left/0.0.1920.882@0.0.1920.882" timestamp="1602516124045" />
+    <state width="625" height="223" key="GridCell.Tab.1.right" timestamp="1602516124045">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1602513312632" />
-    <state width="625" height="454" key="GridCell.Tab.2.bottom" timestamp="1602513312633">
+    <state width="625" height="223" key="GridCell.Tab.1.right/0.0.1920.882@0.0.1920.882" timestamp="1602516124045" />
+    <state width="625" height="223" key="GridCell.Tab.2.bottom" timestamp="1602516105037">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602513312633" />
-    <state width="625" height="454" key="GridCell.Tab.2.center" timestamp="1602513312632">
+    <state width="625" height="223" key="GridCell.Tab.2.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602516105037" />
+    <state width="625" height="223" key="GridCell.Tab.2.center" timestamp="1602516105036">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1602513312632" />
-    <state width="625" height="454" key="GridCell.Tab.2.left" timestamp="1602513312632">
+    <state width="625" height="223" key="GridCell.Tab.2.center/0.0.1920.882@0.0.1920.882" timestamp="1602516105036" />
+    <state width="625" height="223" key="GridCell.Tab.2.left" timestamp="1602516105036">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1602513312632" />
-    <state width="625" height="454" key="GridCell.Tab.2.right" timestamp="1602513312633">
+    <state width="625" height="223" key="GridCell.Tab.2.left/0.0.1920.882@0.0.1920.882" timestamp="1602516105036" />
+    <state width="625" height="223" key="GridCell.Tab.2.right" timestamp="1602516105036">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1602513312633" />
-    <state width="625" height="454" key="GridCell.Tab.3.bottom" timestamp="1602513312634">
+    <state width="625" height="223" key="GridCell.Tab.2.right/0.0.1920.882@0.0.1920.882" timestamp="1602516105036" />
+    <state width="625" height="223" key="GridCell.Tab.3.bottom" timestamp="1602516105037">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602513312634" />
-    <state width="625" height="454" key="GridCell.Tab.3.center" timestamp="1602513312633">
+    <state width="625" height="223" key="GridCell.Tab.3.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602516105037" />
+    <state width="625" height="223" key="GridCell.Tab.3.center" timestamp="1602516105037">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1602513312633" />
-    <state width="625" height="454" key="GridCell.Tab.3.left" timestamp="1602513312633">
+    <state width="625" height="223" key="GridCell.Tab.3.center/0.0.1920.882@0.0.1920.882" timestamp="1602516105037" />
+    <state width="625" height="223" key="GridCell.Tab.3.left" timestamp="1602516105037">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1602513312633" />
-    <state width="625" height="454" key="GridCell.Tab.3.right" timestamp="1602513312633">
+    <state width="625" height="223" key="GridCell.Tab.3.left/0.0.1920.882@0.0.1920.882" timestamp="1602516105037" />
+    <state width="625" height="223" key="GridCell.Tab.3.right" timestamp="1602516105037">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="625" height="454" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1602513312633" />
+    <state width="625" height="223" key="GridCell.Tab.3.right/0.0.1920.882@0.0.1920.882" timestamp="1602516105037" />
     <state x="183" y="66" key="MergeDialog" timestamp="1600625796829">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1392,20 +1331,22 @@
           <option name="timeStamp" value="1771" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
-          <line>134</line>
-          <option name="timeStamp" value="1772" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="javascript">
-          <url>file://$PROJECT_DIR$/src/main/common/async/async.ts</url>
-          <line>137</line>
-          <option name="timeStamp" value="1773" />
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
+          <line>1544</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1775" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
-          <line>1983</line>
+          <line>1564</line>
           <properties lambdaOrdinal="-1" />
-          <option name="timeStamp" value="1774" />
+          <option name="timeStamp" value="1777" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts</url>
+          <line>1527</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="1778" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>

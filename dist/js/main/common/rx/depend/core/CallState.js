@@ -1309,7 +1309,7 @@ function deleteValueState(valueId, value) {
 
 
 var valueIdsBufferLength = 0;
-var valueIdsBuffer = new Int32Array(100);
+var valueIdsBuffer = [0];
 
 function pushValueId(valueId) {
   if (valueId === 0) {
@@ -1396,18 +1396,18 @@ function createCallStateProvider(func, funcCall, createGetValueIds, initCallStat
   function _getCallState() {
     // region getCallState
     // region calc hash
-    var _valueIdsBuffer = valueIdsBuffer;
-    _valueIdsBuffer[0] = funcId;
-    valueIdsBufferLength = 1;
+    var valueIdsBufferStart = valueIdsBufferLength;
+    pushValueId(funcId);
     var hash = funcHash;
 
     if (!getValueIds.apply(this, arguments)) {
+      valueIdsBufferLength = valueIdsBufferStart;
       return null;
     }
 
-    var countValueStates = valueIdsBufferLength;
+    var _valueIdsBuffer = valueIdsBuffer;
 
-    for (var i = 1; i < countValueStates; i++) {
+    for (var i = valueIdsBufferStart + 1; i < valueIdsBufferLength; i++) {
       var _valueId3 = _valueIdsBuffer[i];
       hash = (0, _helpers.nextHash)(hash, _valueId3);
     } // endregion
@@ -1417,10 +1417,11 @@ function createCallStateProvider(func, funcCall, createGetValueIds, initCallStat
     var callStates = callStateHashTable.get(hash);
 
     if (callStates != null) {
-      callState = findCallState(callStates, _valueIdsBuffer, countValueStates);
+      callState = findCallState(callStates, _valueIdsBuffer, valueIdsBufferLength - valueIdsBufferStart);
     } // endregion
 
 
+    valueIdsBufferLength = valueIdsBufferStart;
     return callState;
   }
 
@@ -1435,20 +1436,19 @@ function createCallStateProvider(func, funcCall, createGetValueIds, initCallStat
 
   function _getOrCreateCallState() {
     // region getCallState
-    var countArgs = arguments.length; // region calc hash
-
-    var _valueIdsBuffer = valueIdsBuffer;
-    _valueIdsBuffer[0] = funcId;
-    valueIdsBufferLength = 1;
+    // region calc hash
+    var valueIdsBufferStart = valueIdsBufferLength;
+    pushValueId(funcId);
     var hash = funcHash;
     getOrCreateValueIds.apply(this, arguments);
-    var countValueStates = valueIdsBufferLength;
+    var _valueIdsBuffer = valueIdsBuffer;
 
-    for (var i = 1; i < countValueStates; i++) {
+    for (var i = valueIdsBufferStart + 1; i < valueIdsBufferLength; i++) {
       var _valueId4 = _valueIdsBuffer[i];
       hash = (0, _helpers.nextHash)(hash, _valueId4);
-    } // endregion
+    }
 
+    var countValueStates = valueIdsBufferLength - valueIdsBufferStart; // endregion
 
     var callState;
     var callStates = callStateHashTable.get(hash);
@@ -1459,6 +1459,7 @@ function createCallStateProvider(func, funcCall, createGetValueIds, initCallStat
 
 
     if (callState != null) {
+      valueIdsBufferLength = valueIdsBufferStart;
       return callState;
     } // const valueIdsClone: Int32Array = _valueIdsBuffer.slice(0, countValueStates)
 
@@ -1466,16 +1467,17 @@ function createCallStateProvider(func, funcCall, createGetValueIds, initCallStat
     var valueIdsClone = new Int32Array(countValueStates);
 
     for (var _i = 0; _i < countValueStates; _i++) {
-      valueIdsClone[_i] = _valueIdsBuffer[_i];
+      valueIdsClone[_i] = _valueIdsBuffer[valueIdsBufferStart + _i];
     }
 
     for (var _i2 = 0; _i2 < countValueStates; _i2++) {
       if (_i2 > 0) {
-        var valueState = getValueState(_valueIdsBuffer[_i2]);
+        var valueState = getValueState(_valueIdsBuffer[valueIdsBufferStart + _i2]);
         valueState.usageCount++;
       }
     }
 
+    valueIdsBufferLength = valueIdsBufferStart;
     callState = new CallState(func, this, createCallWithArgs.apply(null, arguments), funcCall, valueIdsClone);
     callStatesCount++;
 
