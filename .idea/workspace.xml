@@ -30,17 +30,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="">
+    <list default="true" id="69b2ee16-521b-4efd-b473-8e19e3df4d09" name="Default Changelist" comment="Added custom calc depend func args valueIds">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HISTORY.md" beforeDir="false" afterPath="$PROJECT_DIR$/HISTORY.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/common/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/index.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/CallState.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/core/depend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependMap.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/depend/lists/DependSet.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/ObservableObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/CalcObjectBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/common/rx/object/properties/ConnectorBuilder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/depend/src/stress-test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/deepSubscriber.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/tests/common/main/rx/object/properties/path/deepSubscriber.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -468,11 +463,11 @@
       <item itemvalue="Mocha.common &gt; main &gt; rx &gt; depend &gt; stress.all" />
       <item itemvalue="Mocha.common &gt; main &gt; test &gt; randomTest" />
       <item itemvalue="Mocha.common &gt; main &gt; helpers &gt; ThenableSync" />
+      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap.base" />
       <item itemvalue="Node.js.mocha" />
       <item itemvalue="Node.js.dependent-func.js" />
       <item itemvalue="npm.lint:es:fix" />
       <item itemvalue="npm.Coverage Mocha Report" />
-      <item itemvalue="Mocha.common &gt; main &gt; lists &gt; DependMap.base" />
     </list>
     <recent_temporary>
       <list>
@@ -590,14 +585,8 @@
       <workItem from="1601908652734" duration="12174000" />
       <workItem from="1601984156131" duration="15000" />
       <workItem from="1602061863126" duration="1032000" />
-      <workItem from="1602432131863" duration="5157000" />
-    </task>
-    <task id="LOCAL-00563" summary="1.2.2-a - Fix package.json. Removed unnecessary files from package.">
-      <created>1600363156414</created>
-      <option name="number" value="00563" />
-      <option name="presentableId" value="LOCAL-00563" />
-      <option name="project" value="LOCAL" />
-      <updated>1600363156414</updated>
+      <workItem from="1602432131863" duration="5535000" />
+      <workItem from="1602505687739" duration="628000" />
     </task>
     <task id="LOCAL-00564" summary="1.2.2-a - Fix package.json. Removed unnecessary files from package.">
       <created>1600363588343</created>
@@ -935,7 +924,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602436296578</updated>
     </task>
-    <option name="localTasksCounter" value="612" />
+    <task id="LOCAL-00612" summary="Added custom calc depend func args valueIds">
+      <created>1602437631408</created>
+      <option name="number" value="00612" />
+      <option name="presentableId" value="LOCAL-00612" />
+      <option name="project" value="LOCAL" />
+      <updated>1602437631408</updated>
+    </task>
+    <option name="localTasksCounter" value="613" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -996,7 +992,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Improved depend stress test" />
     <MESSAGE value="Develop two way binding" />
     <MESSAGE value="Develop rendom test helpers" />
     <MESSAGE value="1.2.2-a - Fix package.json. Removed unnecessary files from package." />
@@ -1021,7 +1016,8 @@
     <MESSAGE value="Lint fixes. Mocha tests OK" />
     <MESSAGE value="Lint fixes is completed" />
     <MESSAGE value="Prepare separated async module" />
-    <option name="LAST_COMMIT_MESSAGE" value="Prepare separated async module" />
+    <MESSAGE value="Added custom calc depend func args valueIds" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added custom calc depend func args valueIds" />
   </component>
   <component name="WindowStateProjectService">
     <state x="612" y="18" key="#TypeScript" timestamp="1599721259508">
@@ -1048,10 +1044,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="651" y="254" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.882@0.0.1920.882" timestamp="1601644806011" />
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1602436295813">
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2" timestamp="1602505860488">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1602436295813" />
+    <state x="-2" y="0" width="1918" height="882" key="CommitChangelistDialog2/0.0.1920.882@0.0.1920.882" timestamp="1602505860488" />
     <state width="1009" height="582" key="DebuggerActiveHint" timestamp="1601537988332">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1064,22 +1060,22 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="1059" y="106" key="FileChooserDialogImpl/0.0.1920.882@0.0.1920.882" timestamp="1601646523461" />
-    <state width="767" height="381" key="GridCell.Tab.0.bottom" timestamp="1602437295867">
+    <state width="778" height="379" key="GridCell.Tab.0.bottom" timestamp="1602505729916">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="381" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602437295867" />
-    <state width="767" height="381" key="GridCell.Tab.0.center" timestamp="1602437295867">
+    <state width="778" height="379" key="GridCell.Tab.0.bottom/0.0.1920.882@0.0.1920.882" timestamp="1602505729916" />
+    <state width="778" height="379" key="GridCell.Tab.0.center" timestamp="1602505729916">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="381" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1602437295867" />
-    <state width="767" height="381" key="GridCell.Tab.0.left" timestamp="1602437295866">
+    <state width="778" height="379" key="GridCell.Tab.0.center/0.0.1920.882@0.0.1920.882" timestamp="1602505729916" />
+    <state width="778" height="379" key="GridCell.Tab.0.left" timestamp="1602505729916">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="381" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1602437295866" />
-    <state width="767" height="381" key="GridCell.Tab.0.right" timestamp="1602437295867">
+    <state width="778" height="379" key="GridCell.Tab.0.left/0.0.1920.882@0.0.1920.882" timestamp="1602505729916" />
+    <state width="778" height="379" key="GridCell.Tab.0.right" timestamp="1602505729916">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state width="767" height="381" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1602437295867" />
+    <state width="778" height="379" key="GridCell.Tab.0.right/0.0.1920.882@0.0.1920.882" timestamp="1602505729916" />
     <state width="705" height="395" key="GridCell.Tab.1.bottom" timestamp="1601883564747">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
@@ -1156,10 +1152,10 @@
       <screen x="0" y="0" width="1920" height="882" />
     </state>
     <state x="722" y="331" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.882@0.0.1920.882" timestamp="1600076722588" />
-    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1602437290536">
+    <state x="2" y="1" width="1908" height="878" key="find.popup" timestamp="1602437664151">
       <screen x="0" y="0" width="1920" height="882" />
     </state>
-    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1602437290536" />
+    <state x="2" y="1" width="1908" height="878" key="find.popup/0.0.1920.882@0.0.1920.882" timestamp="1602437664151" />
     <state x="531" y="190" key="run.anything.popup" timestamp="1600668501151">
       <screen x="0" y="0" width="1920" height="882" />
     </state>

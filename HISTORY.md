@@ -1,3 +1,8 @@
+1.4.0-a / 2020-10-12
+===================
+
+Added custom calc depend func args valueIds
+
 1.3.1-a / 2020-10-02
 ===================
 

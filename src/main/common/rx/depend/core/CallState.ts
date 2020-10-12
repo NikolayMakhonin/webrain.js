@@ -1449,6 +1449,9 @@ function findCallState<
 export const callStateHashTable = new Map<number, TCallStateAny[]>()
 let callStatesCount = 0
 
+export const Object_Start = new String('[')
+export const Object_End = new String(']')
+
 export type TCreateGetValueIds<TThisOuter, TArgs extends any[]> = (
 	getValueId: (value: any) => number,
 	pushValueId: (valueId: number) => void,
