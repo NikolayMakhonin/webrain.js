@@ -8,8 +8,6 @@ exports.arrayShuffle = arrayShuffle;
 exports.getRandomFunc = getRandomFunc;
 exports.Random = void 0;
 
-var _values = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/object/values"));
-
 var _padStart = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/pad-start"));
 
 var _slice = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/slice"));
@@ -21,6 +19,8 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpe
 var _imul = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/math/imul"));
 
 var _uuid = require("./uuid");
+
+var _enum = require("../helpers/enum");
 
 // from here: https://stackoverflow.com/a/47593316/5221762
 function mulberry32(seed) {
@@ -182,14 +182,27 @@ var Random = /*#__PURE__*/function () {
       return item;
     }
   }, {
+    key: "nextArray",
+    value: function nextArray(minCount, maxCount, createItem) {
+      var result = [];
+      var count = this.nextInt(minCount, maxCount);
+
+      for (var i = 0; i < count; i++) {
+        var item = createItem(this);
+        result.push(item);
+      }
+
+      return result;
+    }
+  }, {
     key: "nextArrayItem",
     value: function nextArrayItem(array) {
       return array[this.nextInt(array.length)];
     }
   }, {
     key: "nextArrayItems",
-    value: function nextArrayItems(array, minCount, maxCount, maxCountRelative) {
-      if (maxCountRelative) {
+    value: function nextArrayItems(array, minCount, maxCount, maxCountIsRelative) {
+      if (maxCountIsRelative) {
         maxCount *= array.length;
       }
 
@@ -228,7 +241,24 @@ var Random = /*#__PURE__*/function () {
   }, {
     key: "nextEnum",
     value: function nextEnum(enumType) {
-      return this.nextArrayItem((0, _values.default)(enumType));
+      return this.nextArrayItem((0, _enum.getEnumValues)(enumType));
+    }
+  }, {
+    key: "nextEnums",
+    value: function nextEnums(enumType) {
+      return this.nextArrayItems((0, _enum.getEnumValues)(enumType), 0, 1, true);
+    }
+  }, {
+    key: "nextEnumFlags",
+    value: function nextEnumFlags(enumType) {
+      var enums = this.nextEnums(enumType);
+      var flags = 0;
+
+      for (var i = 0, len = enums.length; i < len; i++) {
+        flags |= enums[i];
+      }
+
+      return flags;
     }
   }, {
     key: "nextUuid",

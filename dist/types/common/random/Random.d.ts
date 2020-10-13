@@ -1,3 +1,4 @@
+import { EnumType } from "../helpers/enum";
 /** Usage:
     * 1) arrayShuffle(array, () => Math.random())
     * 2) arrayShuffle(array, () => rnd.next())
@@ -20,13 +21,14 @@ export declare class Random {
     nextTime(from: Date | number, toExclusive: Date | number): number;
     nextDate(from: Date | number, toExclusive: Date | number): Date;
     pullArrayItem<T>(array: T[]): T;
+    nextArray<T>(minCount: number, maxCount: number, createItem: (rnd: Random) => T): T[];
     nextArrayItem<T>(array: T[]): T;
     static arrayShuffle: typeof arrayShuffle;
-    nextArrayItems<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[];
+    nextArrayItems<T>(array: T[], minCount: number, maxCount: number, maxCountIsRelative?: boolean): T[];
     nextArrayItemsUnique<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[];
     nextColor(): string;
-    nextEnum<TValue extends string, TEnum extends {
-        [key: string]: TValue;
-    }>(enumType: TEnum): TValue;
+    nextEnum<TEnum extends string | number>(enumType: EnumType<TEnum>): TEnum;
+    nextEnums<TEnum extends string | number>(enumType: EnumType<TEnum>): TEnum[];
+    nextEnumFlags<TEnum extends number>(enumType: EnumType<TEnum>): TEnum;
     nextUuid(): string;
 }

@@ -135,14 +135,24 @@ export class Random {
 		return item
 	}
 
+	public nextArray<T>(minCount: number, maxCount: number, createItem: (rnd: Random) => T): T[] {
+		const result: T[] = []
+		const count = this.nextInt(minCount, maxCount)
+		for (let i = 0; i < count; i++) {
+			const item = createItem(this)
+			result.push(item)
+		}
+		return result
+	}
+
 	public nextArrayItem<T>(array: T[]): T {
 		return array[this.nextInt(array.length)]
 	}
 
 	public static arrayShuffle = arrayShuffle
 
-	public nextArrayItems<T>(array: T[], minCount: number, maxCount: number, maxCountRelative?: boolean): T[] {
-		if (maxCountRelative) {
+	public nextArrayItems<T>(array: T[], minCount: number, maxCount: number, maxCountIsRelative?: boolean): T[] {
+		if (maxCountIsRelative) {
 			maxCount *= array.length
 		}
 		const count = this.nextInt(minCount, maxCount)
@@ -168,6 +178,19 @@ export class Random {
 
 	public nextEnum<TEnum extends string|number>(enumType: EnumType<TEnum>): TEnum {
 		return this.nextArrayItem(getEnumValues(enumType))
+	}
+
+	public nextEnums<TEnum extends string|number>(enumType: EnumType<TEnum>): TEnum[] {
+		return this.nextArrayItems(getEnumValues(enumType), 0, 1, true)
+	}
+
+	public nextEnumFlags<TEnum extends number>(enumType: EnumType<TEnum>): TEnum {
+		const enums = this.nextEnums(enumType)
+		let flags = 0
+		for (let i = 0, len = enums.length; i < len; i++) {
+			flags |= enums[i]
+		}
+		return flags as TEnum
 	}
 
 	public nextUuid(): string {

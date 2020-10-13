@@ -1,6 +1,6 @@
 {
   "name": "webrain",
-  "version": "1.4.3-a",
+  "version": "1.4.4-a",
   "description": "NodeJS cross-platform and cross-browser business logic framework - Brain of your web applications.",
   "author": "Nikolay Makhonin",
   "homepage": "https://github.com/NikolayMakhonin/webrain.js",

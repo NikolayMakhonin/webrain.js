@@ -1,5 +1,6 @@
 // from here: https://stackoverflow.com/a/47593316/5221762
 import { uuid } from './uuid';
+import { getEnumValues } from "../helpers/enum";
 
 function mulberry32(seed) {
   return function _mulberry32() {
@@ -129,12 +130,24 @@ export class Random {
     return item;
   }
 
+  nextArray(minCount, maxCount, createItem) {
+    const result = [];
+    const count = this.nextInt(minCount, maxCount);
+
+    for (let i = 0; i < count; i++) {
+      const item = createItem(this);
+      result.push(item);
+    }
+
+    return result;
+  }
+
   nextArrayItem(array) {
     return array[this.nextInt(array.length)];
   }
 
-  nextArrayItems(array, minCount, maxCount, maxCountRelative) {
-    if (maxCountRelative) {
+  nextArrayItems(array, minCount, maxCount, maxCountIsRelative) {
+    if (maxCountIsRelative) {
       maxCount *= array.length;
     }
 
@@ -164,7 +177,22 @@ export class Random {
   }
 
   nextEnum(enumType) {
-    return this.nextArrayItem(Object.values(enumType));
+    return this.nextArrayItem(getEnumValues(enumType));
+  }
+
+  nextEnums(enumType) {
+    return this.nextArrayItems(getEnumValues(enumType), 0, 1, true);
+  }
+
+  nextEnumFlags(enumType) {
+    const enums = this.nextEnums(enumType);
+    let flags = 0;
+
+    for (let i = 0, len = enums.length; i < len; i++) {
+      flags |= enums[i];
+    }
+
+    return flags;
   }
 
   nextUuid() {
