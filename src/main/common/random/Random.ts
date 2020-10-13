@@ -1,6 +1,6 @@
 // from here: https://stackoverflow.com/a/47593316/5221762
 import {uuid} from './uuid'
-import {EnumType, getEnumValues} from "../helpers/enum";
+import {EnumType, getEnumValues} from '../helpers/enum'
 
 function mulberry32(seed: number): () => number {
 	return function _mulberry32() {
