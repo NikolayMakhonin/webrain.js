@@ -251,7 +251,7 @@ var Random = /*#__PURE__*/function () {
   }, {
     key: "nextEnumFlags",
     value: function nextEnumFlags(enumType) {
-      var enums = this.nextEnums(enumType);
+      var enums = this.nextArrayItems((0, _enum.getEnumFlags)(enumType), 0, 1, true);
       var flags = 0;
 
       for (var i = 0, len = enums.length; i < len; i++) {

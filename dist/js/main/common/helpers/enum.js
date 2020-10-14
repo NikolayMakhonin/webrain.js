@@ -4,7 +4,9 @@ var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequ
 
 exports.__esModule = true;
 exports.forEachEnum = forEachEnum;
+exports.forEachEnumFlags = forEachEnumFlags;
 exports.getEnumValues = getEnumValues;
+exports.getEnumFlags = getEnumFlags;
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/map"));
 
@@ -20,6 +22,24 @@ function forEachEnum(enumType, callback) {
   }
 }
 
+function forEachEnumFlags(enumType, callback) {
+  var flag = 1;
+
+  while (true) {
+    var _name = enumType[flag];
+
+    if (_name == null) {
+      break;
+    }
+
+    if (callback(flag, _name)) {
+      return;
+    }
+
+    flag <<= 1;
+  }
+}
+
 var enumValuesCache = new _map.default();
 
 function getEnumValues(enumType) {
@@ -28,6 +48,21 @@ function getEnumValues(enumType) {
   if (values == null) {
     values = [];
     forEachEnum(enumType, function (value) {
+      values.push(value);
+    });
+  }
+
+  return values;
+}
+
+var enumFlagsCache = new _map.default();
+
+function getEnumFlags(enumType) {
+  var values = enumFlagsCache.get(enumType);
+
+  if (values == null) {
+    values = [];
+    forEachEnumFlags(enumType, function (value) {
       values.push(value);
     });
   }

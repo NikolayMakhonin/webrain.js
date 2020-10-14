@@ -1,6 +1,6 @@
 // from here: https://stackoverflow.com/a/47593316/5221762
 import { uuid } from './uuid';
-import { getEnumValues } from "../helpers/enum";
+import { getEnumFlags, getEnumValues } from '../helpers/enum';
 
 function mulberry32(seed) {
   return function _mulberry32() {
@@ -185,7 +185,7 @@ export class Random {
   }
 
   nextEnumFlags(enumType) {
-    const enums = this.nextEnums(enumType);
+    const enums = this.nextArrayItems(getEnumFlags(enumType), 0, 1, true);
     let flags = 0;
 
     for (let i = 0, len = enums.length; i < len; i++) {

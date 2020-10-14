@@ -38,7 +38,8 @@ export { Path } from './rx/object/properties/path/builder';
 export { autoCalcConnect, autoCalc, dependWait, dependWrapThis } from './rx/depend/helpers'; // export {createConnector} from './rx/object/properties/helpers'
 
 export { ObjectPool } from './lists/ObjectPool';
-export { Object_Start, Object_End } from './rx/depend/core/CallState'; // region Interfaces
+export { Object_Start, Object_End } from './rx/depend/core/CallState';
+export { forEachEnum, forEachEnumFlags, getEnumValues, getEnumFlags } from './helpers/enum'; // region Interfaces
 // endregion
 // endregion
 // region test

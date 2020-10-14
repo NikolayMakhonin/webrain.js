@@ -1,6 +1,6 @@
 // from here: https://stackoverflow.com/a/47593316/5221762
 import {uuid} from './uuid'
-import {EnumType, getEnumValues} from '../helpers/enum'
+import {EnumType, getEnumFlags, getEnumValues} from '../helpers/enum'
 
 function mulberry32(seed: number): () => number {
 	return function _mulberry32() {
@@ -185,7 +185,7 @@ export class Random {
 	}
 
 	public nextEnumFlags<TEnum extends number>(enumType: EnumType<TEnum>): TEnum {
-		const enums = this.nextEnums(enumType)
+		const enums = this.nextArrayItems(getEnumFlags(enumType), 0, 1, true)
 		let flags = 0
 		for (let i = 0, len = enums.length; i < len; i++) {
 			flags |= enums[i]

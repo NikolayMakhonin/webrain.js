@@ -9,6 +9,23 @@ export function forEachEnum(enumType, callback) {
     }
   }
 }
+export function forEachEnumFlags(enumType, callback) {
+  let flag = 1;
+
+  while (true) {
+    const name = enumType[flag];
+
+    if (name == null) {
+      break;
+    }
+
+    if (callback(flag, name)) {
+      return;
+    }
+
+    flag <<= 1;
+  }
+}
 const enumValuesCache = new Map();
 export function getEnumValues(enumType) {
   let values = enumValuesCache.get(enumType);
@@ -16,6 +33,19 @@ export function getEnumValues(enumType) {
   if (values == null) {
     values = [];
     forEachEnum(enumType, value => {
+      values.push(value);
+    });
+  }
+
+  return values;
+}
+const enumFlagsCache = new Map();
+export function getEnumFlags(enumType) {
+  let values = enumFlagsCache.get(enumType);
+
+  if (values == null) {
+    values = [];
+    forEachEnumFlags(enumType, value => {
       values.push(value);
     });
   }

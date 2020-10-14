@@ -45,6 +45,7 @@ export {autoCalcConnect, autoCalc, dependWait, dependWrapThis} from './rx/depend
 // export {createConnector} from './rx/object/properties/helpers'
 export {ObjectPool} from './lists/ObjectPool'
 export {Object_Start, Object_End} from './rx/depend/core/CallState'
+export {forEachEnum, forEachEnumFlags, getEnumValues, getEnumFlags} from './helpers/enum'
 
 // region Interfaces
 
@@ -101,6 +102,10 @@ import {
 	OptionalNested as _OptionalNested,
 } from './helpers/typescript'
 import {IRuleBuilder as _IRuleBuilder} from './rx/object/properties/path/builder/contracts/IRuleBuilder'
+import {
+	EnumOf as _EnumOf,
+	EnumType as _EnumType,
+} from './helpers/enum'
 
 export type ISubscriber<T> = _ISubscriber<T>
 export type IUnsubscribe = _IUnsubscribe
@@ -138,6 +143,8 @@ export type AsyncResultOf<TFunc> = _AsyncResultOf<TFunc>
 export type KeysOf<TObject, TValue> = _KeysOf<TObject, TValue>
 export type OptionalNested<TObject> = _OptionalNested<TObject>
 export type IRuleBuilder<TObject = any, TValueKeys extends string | number = never> = _IRuleBuilder<TObject, TValueKeys>
+export type EnumOf<TEnumType> = _EnumOf<TEnumType>
+export type EnumType<TEnum extends string | number = string | number> = _EnumType<TEnum>
 
 // endregion
 

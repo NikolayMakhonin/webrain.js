@@ -27,6 +27,24 @@ export function forEachEnum<TEnum extends string | number>(
 	}
 }
 
+export function forEachEnumFlags<TEnum extends number>(
+	enumType: EnumType<TEnum>,
+	callback: (value: TEnum, name: string) => boolean|void,
+) {
+	let flag = 1
+
+	while (true) {
+		const name = enumType[flag]
+		if (name == null) {
+			break
+		}
+		if (callback(flag as TEnum, name)) {
+			return
+		}
+		flag <<= 1
+	}
+}
+
 const enumValuesCache = new Map<EnumType, string[] | number[]>()
 
 export function getEnumValues<TEnum extends string | number>(
@@ -37,6 +55,23 @@ export function getEnumValues<TEnum extends string | number>(
 	if (values == null) {
 		values = []
 		forEachEnum(enumType, value => {
+			values.push(value)
+		})
+	}
+
+	return values
+}
+
+const enumFlagsCache = new Map<EnumType, string[] | number[]>()
+
+export function getEnumFlags<TEnum extends number>(
+	enumType: EnumType<TEnum>,
+): TEnum[] {
+	let values: TEnum[] = enumFlagsCache.get(enumType) as any
+
+	if (values == null) {
+		values = []
+		forEachEnumFlags(enumType, value => {
 			values.push(value)
 		})
 	}

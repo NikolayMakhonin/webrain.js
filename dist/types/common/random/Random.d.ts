@@ -1,4 +1,4 @@
-import { EnumType } from "../helpers/enum";
+import { EnumType } from '../helpers/enum';
 /** Usage:
     * 1) arrayShuffle(array, () => Math.random())
     * 2) arrayShuffle(array, () => rnd.next())
